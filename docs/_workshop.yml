@@ -1,0 +1,24 @@
+---
+id: quarkus-lab
+name: Quarkus Hands-on Lab
+
+vars:
+  ROUTE_SUBDOMAIN:
+  MASTER_URL:
+  CHE_URL:
+
+modules:
+  activate:
+  - intro
+  - basics
+  - cdi
+  - testing
+  - debugging
+  - native
+  - cloudnative
+  - extensions
+  - panache
+  - messaging
+  - kafka
+  - monitoring
+  - tracing

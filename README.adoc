@@ -1,0 +1,39 @@
+= Quarkus Workshop Guide
+
+This workshop focuses on https://quarkus.io[Quarkus], supersonic, subatomic container-native Java. The workshop uses https://eclipse.org/che[Eclipse Che] to develop Quarkus apps and deploy them to a Kubernetes cluster (based on OpenShift), and covers several other developer topics such as:
+
+* Dependency Injection
+* Testing Quarkus Apps
+* Debugging Quarkus Apps
+* Building Native Quarkus Apps
+* Developing Cloud Native with Quarkus
+* Using Quarkus extensions
+* Hibernate ORM with Panache 
+* Event-driven Messaging
+* Streaming Data with Quarkus and Kafka 
+* Monitoring with Prometheus and Grafana
+* Tracing Quarkus Apps with Jaeger and MicroProfile Tracing
+
+
+== Prerequisites
+
+Assumes you have a running OpenShift 4 cluster and have:
+
+- CLI Utils: `htpasswd` (part of Apache HTTPD) - used to generate users for OpenShift
+- https://github.com/mikefarah/yq[`yq`] (YAML processor)
+- OpenShift 4 CLI `oc` for your environment from https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/.
+
+[IMPORTANT]
+====
+If you not have OCP4 cluster then please proceed to https://try.openshift.com[try.openshift.com] to get one installed and configured before proceeding to next section.
+====
+
+== Setup Workshop
+
+Login to OpenShift with `cluster-admin` privileges and run:
+
+[source, none]
+```
+setup/preparelab.sh -a [ADMIN_PASSWORD] -c [COUNT]
+```
+
