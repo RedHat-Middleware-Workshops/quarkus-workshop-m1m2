@@ -190,10 +190,16 @@ oc get --export cm/custom -n che -o yaml | yq w - 'data.CHE_INFRA_KUBERNETES_PVC
 oc scale -n che deployment/che --replicas=0
 oc scale -n che deployment/che --replicas=1
 
-# Add custom stack manually
+# workaround for Che Terminal timeouts
+# must be run from AWS bastion host
 
-# Add che users
-# ./kcadm.sh config credentials --server http://$KEYCLOAK_SERVICE_HOST:$KEYCLOAK_SERVICE_PORT_HTTP/auth --realm codeready 
+# get load balancer name
+# sudo -u ec2-user aws elb describe-load-balancers | jq  '.LoadBalancerDescriptions | map(select( .DNSName == "'$(oc get svc router-default -n openshift-ingress -o jsonpath='{.status.loadBalancer.ingress[].hostname}')'" ))' | grep LoadBalancerName
+
+# update timeout to 5 minutes
+# aws elb modify-load-balancer-attributes --load-balancer-name <name> --load-balancer-attributes "{\"ConnectionSettings\":{\"IdleTimeout\":300}}"
+
+# Add custom stack manually
 
 # Scale the cluster
 WORKERCOUNT=$(oc get nodes|grep worker | wc -l)
