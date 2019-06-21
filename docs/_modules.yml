@@ -17,6 +17,8 @@ modules:
     name: Using Quarkus extensions
   panache:
     name: Hibernate ORM with Panache 
+  openapi:
+    name: Documenting and Testing APIs 
   messaging:
     name: Event-driven Messaging
   kafka:
@@ -25,3 +27,5 @@ modules:
     name: Monitoring with Prometheus and Grafana
   tracing:
     name: Tracing Quarkus Apps
+  security:
+    name: Securing Resources with Keycloak

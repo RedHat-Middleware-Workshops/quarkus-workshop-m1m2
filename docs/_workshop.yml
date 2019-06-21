@@ -18,7 +18,9 @@ modules:
   - cloudnative
   - extensions
   - panache
+  - openapi
   - messaging
   - kafka
   - monitoring
   - tracing
+  - security

@@ -1,7 +1,6 @@
-FROM registry.access.redhat.com/codeready-workspaces/stacks-java-rhel8:1.2
+# syntax = docker/dockerfile:experimental
 
-ARG RH_USERNAME
-ARG RH_PASSWORD
+FROM registry.access.redhat.com/codeready-workspaces/stacks-java-rhel8:1.2
 
 USER root
 
@@ -19,15 +18,18 @@ RUN tar xzf /tmp/mvn.tar.gz && rm -rf /tmp/mvn.tar.gz && mkdir /usr/local/maven 
 
 ENV PATH="/usr/local/maven/apache-maven-3.6.0/bin:${PATH}"
 
-ENV MAVEN_OPTS="-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled"
+RUN --mount=type=secret,id=rhsm username="$(grep RH_USERNAME /run/secrets/rhsm|cut -d= -f2)" && password="$(grep RH_PASSWORD /run/secrets/rhsm|cut -d= -f2)" && subscription-manager register --username $username --password $password --auto-attach && yum install -y gcc zlib-devel && yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && yum install -y siege && subscription-manager remove --all && subscription-manager unregister
 
-RUN subscription-manager register --username $RH_USERNAME --password $RH_PASSWORD --auto-attach && yum install -y gcc zlib-devel && yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && yum install -y siege && subscription-manager remove --all && subscription-manager unregister
+ENV MAVEN_OPTS="-Xmx4G -Xss128M -XX:MetaspaceSize=1G -XX:MaxMetaspaceSize=2G -XX:+CMSClassUnloadingEnabled"
 
-RUN chown -R jboss /home/jboss/.m2
-USER jboss
-
-RUN cd /tmp && mkdir project && cd project && mvn io.quarkus:quarkus-maven-plugin:0.16.1:create -DprojectGroupId=org.acme -DprojectArtifactId=footest -Dextensions="reactive-kafka,vert.x" && mvn clean compile package && mvn clean compile package -Pnative && mvn clean && cd / && rm -rf /tmp/project
+RUN cd /tmp && mkdir project && cd project && mvn io.quarkus:quarkus-maven-plugin:0.17.0:create -DprojectGroupId=org.acme -DprojectArtifactId=footest -Dextensions="quarkus-agroal,quarkus-arc,quarkus-hibernate-orm,quarkus-hibernate-orm-panache,quarkus-jdbc-h2,quarkus-jdbc-postgresql,quarkus-kubernetes,quarkus-scheduler,quarkus-smallrye-fault-tolerance,quarkus-smallrye-health,quarkus-smallrye-opentracing" && mvn clean compile package && mvn clean && cd / && rm -rf /tmp/project
+RUN cd /tmp && mkdir project && cd project && mvn io.quarkus:quarkus-maven-plugin:0.17.0:create -DprojectGroupId=org.acme -DprojectArtifactId=footest -Dextensions="quarkus-smallrye-reactive-streams-operators,quarkus-smallrye-reactive-messaging,quarkus-smallrye-reactive-messaging-kafka,quarkus-swagger-ui,quarkus-vertx,quarkus-kafka-client, quarkus-smallrye-metrics,quarkus-smallrye-openapi" && mvn clean compile package && mvn clean compile package -Pnative && mvn clean && cd / && rm -rf /tmp/project
 
 RUN siege && sed -i 's/^connection = close/connection = keep-alive/' $HOME/.siege/siege.conf && sed -i 's/^benchmark = false/benchmark = true/' $HOME/.siege/siege.conf
 
 RUN echo '-w "\n"' > $HOME/.curlrc
+
+USER root
+RUN chown -R jboss /home/jboss/.m2
+RUN chmod -R a+w /home/jboss/.m2
+USER jboss

@@ -1,1 +1,65 @@
-## The Basics
+## Dependency Injection
+
+In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean that will use the _ArC_ extension which provides a CDI-based dependency injection https://quarkus.io/guides/cdi-reference.html[solution] tailored for the Quarkus architecture.
+
+## Add Custom Bean
+
+Let’s modify the application and add a companion bean. In CodeReady, right-click on the `org.acme.people.service` package in the project browser and select _New_ --> _Java Class_. Name the class `GreetingService`, and then copy the below code into the class:
+
+[source,java,role="copypaste"]
+----
+package org.acme.people.service;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class GreetingService {
+
+    private String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+
+    public String greeting(String name) {
+        return "hello " + name + " from " + hostname;
+    }
+
+}
+----
+
+This is an injectable bean that implements a `greeting()` method returning a string `hello <hostname>` (where `<hostname>` is the Linux hostname of the machine on which the code runs).
+
+Next, open the existing `GreetingResource.java` class file and add a new field and method above the existing `hello` method:
+
+[source,java,role="copypaste"]
+----
+    @Inject
+    GreetingService service;
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/greeting/{name}")
+    public String greeting(@PathParam("name") String name) {
+        return service.greeting(name);
+    }
+----
+
+This will cause our new `GreetingResource` class to be instantiated and injected as the `service` field, and then the method `greeting` accesses this service to return the name.
+
+You may notice that you get red error squigglies when you paste this code due to missing import statements. There are two ways with Che to fix this. Either right-click on the offending statement, and choose **Quick Fix** and then choose to import the missing API, or use the _Assistant_ > _Organize Imports_ menu option to do them en masse. You may need to choose from multiple matches, e.g. make sure you choose to import `javax.ws.rs.PathParam` when fixing the missing `PathParam` import. In general, look for `javax` or other well-known names to import. If you get it wrong you'll find out soon enough.
+
+## Inspect the results
+
+Since we still have our app running frmo before, when you make these changes and reload the endpoint, Quarkus will notice all of these changes and live reload them.
+
+Check that it works as expected by loading the new endpoint using the Preview URL and adding the `/hello/greeting/quarkus` to the end of the URL:
+
+image::images/greetingpage.png[]
+
+Note we are exercising our new bean using the `/hello/greeting` endpoint, and you should see `hello quarkus from <hostname>`.
+
+[NOTE]
+====
+In this case, the hostname is the hostname from the node the app is running on within Kubernetes and will change later on.
+====
+
+## Congratulations!
+
+It's a familiar CDI-based environment for you Enterprise Java developers out there, with powerful mechanisms to reload your code _as you type_ (or very close to realtime). In the next step, we'll create some tests for our app, which should also be familiar to _all_ developers.

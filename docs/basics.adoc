@@ -10,7 +10,7 @@ In Che, click on **Import Project...**. In the dialog box, select **GITHUB** as 
 
 [source,none,role="copypaste"]
 ----
-https://github.com/jamesfalkner/summit-2019-devzone
+https://github.com/RedHatWorkshops/quarkus-workshop-labs
 ----
 
 image::imgs/import.png[]
@@ -28,7 +28,7 @@ image::imgs/structure.png[]
 The project has
 
 * The Maven structure
-* An `org.acme.quickstart.GreetingResource` resource exposed on `/hello`
+* An `org.acme.people.rest.GreetingResource` resource exposed on `/hello`, along with a simple test
 * A landing page that is accessible on `http://localhost:8080` after starting the application
 * The application configuration file
 
@@ -51,7 +51,7 @@ Double-click on `pom.xml` in the project browser to open it in the editor. You w
 
 And a few more `<dependency>` imports and other ancillary sections. We will be adding things to our `pom.xml` in future sections.
 
-Navigate to `src -> main -> java -> org.acme.quarkus.sample` in the project tree and double click on `GreetingResource.java`. This class has a very simple RESTful endpoint definition:
+Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`. This class has a very simple RESTful endpoint definition:
 
 [source, java]
 ----
@@ -75,7 +75,7 @@ Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Applicat
 
 ## Running the Application
 
-Now we are ready to run our application. In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Run Locally**:
+Now we are ready to run our application. In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Build and Run Locally**:
 
 image::images/runlocally.png[]
 
@@ -103,9 +103,11 @@ Since our RESTful endpoint listens on the `/hello` endpoint, add `/hello` to the
 
 You should see `hello` in your browser tab, which means its working!
 
+image::images/hellopage.png[]
+
 Now, let's exercise the **live reload** capabilities of Quarkus. In Che, edit the `GreetingResource.java` file and change `return "hello";` to `return "hola";` in the editor. Press `CTRL-S` (or `CMD-S` on Mac OS) to save the file. Don't recompile or restart anything. Just try to reload the same brower tab that was showing `hello`. It should now show `hola`.
 
-Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started.
+Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started. Leave the app running so we can continue to change it on the fly in the next section.
 
 [NOTE]
 ====

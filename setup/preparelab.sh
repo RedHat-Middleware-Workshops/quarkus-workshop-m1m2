@@ -201,6 +201,9 @@ oc scale -n che deployment/che --replicas=1
 
 # Add custom stack manually
 
+# Import realm from
+# https://raw.githubusercontent.com/quarkusio/quarkus-quickstarts/master/using-keycloak/config/quarkus-realm.json
+
 # Scale the cluster
 WORKERCOUNT=$(oc get nodes|grep worker | wc -l)
 if [ "$WORKERCOUNT" -lt 10 ] ; then
@@ -210,7 +213,16 @@ if [ "$WORKERCOUNT" -lt 10 ] ; then
     done
 fi
 
+# Install the strimzi operator for all namespaces
+# Install the prometheus operator for all namespaces
+
 # Pre-pull some images
 
 # Build stack
-# docker build --build-arg RH_USERNAME='YOURUSERNAME' --build-arg RH_PASSWORD='YOURPASSWORD' -t docker.io/schtool/che-quarkus-odo:j4k -f stack.Dockerfile .
+# Put your credentials in rhsm.secret file to look like:
+# RH_USERNAME=your-username
+# RH_PASSWORD=your-password
+#
+# then:
+# DOCKER_BUILDKIT=1 docker build --secret id=rhsm,src=rhsm.secret -t docker.io/username/che-quarkus-odo:latest -f stack.Dockerfile .
+# docker push docker.io/username/che-quarkus-odo:latest

@@ -1,1 +1,279 @@
-## The Basics
+## Testing
+
+In this step we'll show you how to effectively write functional and unit tests for your Quarkus Apps. 
+
+You should already have a completed test written for you, including the correct `pom.xml` setup where you should see 2 test dependencies:
+
+[source, xml]
+----
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-junit5</artifactId>
+    <version>${quarkus.version}</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured</artifactId>
+    <scope>test</scope>
+</dependency>
+----
+
+`quarkus-junit5` is required for testing, as it provides the `@QuarkusTest` annotation that controls the testing framework. `rest-assured` is not required but is a convenient way to test HTTP endpoints, we also provide integration that automatically sets the correct URL so no configuration is required.
+
+The basic test is in the `GreetingResourceTest` (in the `src/test/java/org/acme/people` directory). For example:
+
+[source, java]
+----
+@QuarkusTest
+public class GreetingResourceTest {
+
+    @Test
+    public void testHelloEndpoint() {
+        given()
+          .when().get("/hello")
+          .then()
+             .statusCode(200)
+             .body(is("hello"));
+    }
+----
+
+[NOTE]
+====
+When creating new tests, always double-check to be sure you're in the `src/test` directory tree, not `src/main`!
+====
+
+## Add a new test
+
+Add a new test in `GreetingResourceTest` that tests the `/hello/greeting` endpoint by copying this code below the existing test:
+
+[source, java, role="copypaste"]
+----
+    @Test
+    public void testGreetingEndpoint() {
+        String uuid = UUID.randomUUID().toString();
+        given()
+          .pathParam("name", uuid)
+          .when().get("/hello/greeting/{name}")
+          .then()
+            .statusCode(200)
+            .body(startsWith("hello " + uuid));
+    }
+
+}
+----
+
+## Test the app
+
+Let's test our app. In Che, using the same command palette, select **test**:
+
+image::images/testcmd.png[]
+
+The tests will run, and eventually complete. Did you get any errors? You probably got:
+
+[source, none]
+----
+[ERROR] Failures: 
+[ERROR]   GreetingResourceTest.testHelloEndpoint:18 1 expectation failed.
+Response body doesn't match expectation.
+Expected: is "hello"
+  Actual: hola
+----
+
+This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` and re-run the test and confirm it passes with `BUILD SUCCESS`.
+
+## Controlling the test port
+
+While Quarkus will listen on port `8080` by default, when running tests it defaults to `8081`. This allows you to run tests while having the application running in parallel (which you just did).
+
+You can configure the port used by tests by configuring `quarkus.http.test-port` in your `application.properties`. Open that file (it's in `src/main/resources`) and add a new line at the end:
+
+[source, none, role="copypaste"]
+----
+quarkus.http.test-port=8083
+----
+
+Now re-run the tests and look for 
+
+[source, none]
+----
+ INFO  [io.quarkus] (main) Quarkus 0.17.0 started in 1.997s. Listening on: http://[::]:8083
+----
+
+## Injecting a URI
+
+It is also possible to directly inject the URL into the test which can make is easy to use a different client. This is done via the `@TestHTTPResource` annotation.
+
+Let’s write a simple test that shows this off to load some static resources. First create a simple HTML file in `src/main/resources/META-INF/resources/`. Right-click on this directory and select _New -> HTML File_. Name the file `test` in the dialog box (which will cause the final filename to be `test.html`):
+
+image::images/createhtml.png[]
+
+Next, create a new test under `src/test/java` in the `org.acme.people` package called `StaticContentTest`. To do this, right-click on the `org.acme.people` package and select _New -> Java Class_. Name the class `StaticContentTest`. Replace the contents of the file with this code:
+
+[source, java, role="copypaste"]
+----
+package org.acme.people;
+
+@QuarkusTest
+public class StaticContentTest {
+
+    @TestHTTPResource("test.html") 
+    URL url;
+
+    @Test
+    public void testIndexHtml() throws Exception {
+        try (InputStream in = url.openStream()) {
+            String contents = readStream(in);
+            Assertions.assertTrue(contents.contains("<title>Testing with Quarkus</title>"));
+        }
+    }
+
+    private static String readStream(InputStream in) throws IOException {
+        byte[] data = new byte[1024];
+        int r;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        while ((r = in.read(data)) > 0) {
+            out.write(data, 0, r);
+        }
+        return new String(out.toByteArray(), StandardCharsets.UTF_8);
+    }
+}
+----
+
+You'll need to _Assistant -> Optimize Imports_ to import the right classes. In the dialog box, pick the appropriate class to import, clicking _Next >_ until you've eliminated all the ambiguities, and click _Finish_. In particular, be sure to import `java.io.InputStream`, `java.io.ByteArrayOutputStream`, and `java.net.URL`.
+
+The `@TestHTTPResource` annotation allows you to directly inject the URL of the Quarkus instance, the value of the annotation will be the path component of the URL. For now `@TestHTTPResource` allows you to inject URI, URL and String representations of the URL.
+
+Re-run the tests to ensure they're still passing.
+
+## Injection into tests
+
+So far we have only covered integration style tests that test the app via HTTP endpoints, but what if we want to do unit testing and test our beans directly?
+
+Quarkus supports this by allowing you to inject CDI beans into your tests via the `@Inject` annotation (in fact, tests in Quarkus are full CDI beans, so you can use all CDI functionality). Let’s create a simple test that tests the greeting service directly without using HTTP. Create a new test class in `src/test` in the `org.acme.people` package called `GreetingServiceTest`. Use the following code for the file's contents:
+
+[source, java, role="copypaste"]
+----
+package org.acme.people;
+
+import javax.inject.Inject;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
+public class GreetingServiceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("GreetingServiceTest");
+
+    @Inject 
+    GreetingService service;
+
+    @Test
+    public void testGreetingService() {
+        LOGGER.info("greeting: " + service.greeting("Quarkus"));
+        Assertions.assertTrue(service.greeting("Quarkus").startsWith("hello Quarkus"));
+    }
+}
+----
+
+Here we are injecting our `GreetingService` and calling it, just as our RESTful resource endpoint does in the production code.
+
+Again, use _Assistant -> Organize Imports_ to add any needed imports (such as `GreetingService`). Run the tests again to verify the new test passes.
+
+[NOTE]
+====
+As mentioned above Quarkus tests are actually full CDI beans, and as such you can apply CDI interceptors as you would normally. As an example, if you want a test method to run within the context of a transaction you can simply apply the `@Transactional` annotation to the method and the transaction interceptor will handle it.
+
+In addition to this you can also create your own test stereotypes. Stereotypes can be particularly useful in large applications where you have a number of beans that perform similar functions, as it allows you to do something akin to multiple inheritance (multiple annotations) without having to repeat yourself over and over.
+
+For example we could create a `@TransactionalQuarkusTest` if we needed to write a large number of tests that required transactional support with particular configuration. It would look like:
+
+[source, java]
+----
+@QuarkusTest
+@Stereotype
+@Transactional
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface TransactionalQuarkusTest {
+}
+----
+
+If we then apply this annotation to a test class it will act as if we had applied both the `@QuarkusTest` and `@Transactional` annotations, e.g.:
+
+[source, java]
+----
+@TransactionalQuarkusTest
+public class TestStereotypeTestCase {
+
+    @Inject
+    UserTransaction userTransaction;
+
+    @Test
+    public void testUserTransaction() throws Exception {
+        Assertions.assertEquals(Status.STATUS_ACTIVE, userTransaction.getStatus());
+    }
+
+}
+----
+====
+
+## Mock support
+
+Quarkus supports the use of mock objects using the CDI `@Alternative` mechanism. To use this simply override the bean you wish to mock with a class in the `src/test/java` directory, and put the `@Alternative` and `@Priority(1)`` annotations on the bean. Alternatively, a convenient `io.quarkus.test.Mock` stereotype annotation could be used. This built-in stereotype declares `@Alternative`, `@Priority(1)` and `@Dependent`.
+
+Let's mock our existing `GreetingService`. Although our existing service is pretty simple, in the real world the service might have too many dependencies on external systems to be feasible to call directly. 
+
+Create a new class in `src/test/java` in the `org.acme.people` package called `MockGreetingService` with the following code:
+
+[source, java, role="copypaste"]
+----
+package org.acme.people;
+
+import javax.enterprise.context.ApplicationScoped;
+import org.acme.people.service.GreetingService;
+import io.quarkus.test.Mock;
+
+@Mock
+@ApplicationScoped 
+public class MockGreetingService extends GreetingService {
+
+    @Override
+    public String greeting(String name) {
+        return "hello " + name + " from mock greeting";
+    }
+}
+----
+
+Now modify our existing `GreetingServiceTest` class to add a log statement showing the value retrieved during the test. Modify the `testGreetingService` method to look like:
+
+[source, java, role="copypaste"]
+----
+    private static final Logger LOGGER = LoggerFactory.getLogger("GreetingServiceTest");
+    
+    @Test
+    public void testGreetingService() {
+        LOGGER.info("greeting: " + service.greeting("Quarkus"));
+        Assertions.assertTrue(service.greeting("Quarkus").startsWith("hello Quarkus"));
+    }
+----
+
+Basically we've added a new `LOGGER.info` line. Don't forget to _Assistant > Optimize Imports_ to fix any needed imports (be sure to import `org.slf4j.Logger` and `org.slf4j.LoggerFactory`).
+
+Now run the tests again (using the command palette as usual), and watch the output closely - you will see:
+
+[source, none]
+----
+INFO  [GreetingServiceTest] (main) greeting: hello Quarkus from mock greeting
+----
+
+This confirms that our `MockGreetingService` is being used instead of the original `GreetingService`.
+
+## Summary
+
+In this section we covered basic testing of Quarkus Apps using the `@QuarkusTest` and supporting annotations. This is an important part of any software engineering project and with Quarkus, testing has never been easier. For more information on testing with Quarkus, be sure to review the https://quarkus.io/guides/getting-started-testing[Quarkus Testing Guide].
+
+In the next section we'll talk about how to effectively debug Quarkus applications. On with the show!
