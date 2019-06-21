@@ -1,0 +1,136 @@
+{
+    "name": "Quarkus - Java, CodeReady, odo",
+    "description": "Java JDK Stack for Quarkus Apps",
+    "scope": "general",
+    "workspaceConfig": {
+      "environments": {
+        "default": {
+          "recipe": {
+            "type": "dockerimage",
+            "content": "schtool/che-quarkus-odo:latest"
+          },
+          "machines": {
+            "dev-machine": {
+              "env": {},
+              "servers": {
+                "8080/tcp": {
+                  "attributes": {},
+                  "protocol": "http",
+                  "port": "8080"
+                },
+                "8000/tcp": {
+                  "attributes": {},
+                  "protocol": "http",
+                  "port": "8000"
+                }
+              },
+              "volumes": {},
+              "installers": [
+                "org.eclipse.che.exec",
+                "org.eclipse.che.terminal",
+                "org.eclipse.che.ws-agent",
+                "org.eclipse.che.ls.java"
+  
+              ],
+              "attributes": {
+                "memoryLimitBytes": "4294967296"
+              }
+            }
+          }
+        }
+      },
+      "commands": [
+        {
+          "commandLine": "mvn install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
+          "name": "build",
+          "type": "mvn",
+          "attributes": {
+            "goal": "Build",
+            "previewUrl": ""
+          }
+        },
+        {
+          "commandLine": "mvn clean install -f ${current.project.path}",
+          "name": "clean build",
+          "type": "mvn",
+          "attributes": {
+            "goal": "Build",
+            "previewUrl": ""
+          }
+        },
+        {
+          "commandLine": "mvn verify -f ${current.project.path}",
+          "name": "test",
+          "type": "mvn",
+          "attributes": {
+            "goal": "Test",
+            "previewUrl": ""
+          }
+        },
+        {
+          "commandLine": "mvn clean compile quarkus:dev -f ${current.project.path}",
+          "name": "Build and Run Locally",
+          "type": "custom",
+          "attributes": {
+            "goal": "Run",
+            "previewUrl": "${server.8080/tcp}"
+          }
+        },
+        {
+          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative ; oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5 --insecure-skip-tls-verify=true",
+          "name": "Build Native Quarkus App",
+          "type": "custom",
+          "attributes": {
+            "goal": "Package",
+            "previewUrl": ""
+          }
+        },
+        {
+          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package ; odo login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5  --insecure-skip-tls-verify=true",
+          "name": "Package for OpenShift",
+          "type": "custom",
+          "attributes": {
+            "goal": "Package",
+            "previewUrl": ""
+          }
+        }
+      ],
+      "projects": [],
+      "defaultEnv": "default",
+      "name": "default",
+      "links": []
+    },
+    "components": [
+      {
+        "version": "---",
+        "name": "CentOS"
+      },
+      {
+        "version": "1.8.0_45",
+        "name": "JDK"
+      },
+      {
+        "version": "3.6.0",
+        "name": "Maven"
+      },
+      {
+        "version": "2.4",
+        "name": "Ansible"
+      },
+      {
+        "version": "4.0.0",
+        "name": "OpenShift CLI"
+      }
+    ],
+    "creator": "ide",
+    "tags": [
+      "Java",
+      "JDK",
+      "Maven",
+      "Ansible",
+      "CentOS",
+      "Git"
+    ],
+    "id": "quarkus-java"
+  }
+  
