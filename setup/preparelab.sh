@@ -96,10 +96,12 @@ done
 # deploy guides
 oc new-project guides
 oc new-app quay.io/osevg/workshopper --name=web \
+      -e MASTER_URL=${MASTER_URL} \
+      -e CHE_URL=http://codeready-che.${HOSTNAME_SUFFIX} \
       -e ROUTE_SUBDOMAIN=${HOSTNAME_SUFFIX} \
       -e MASTER_URL=${MASTER_URL} \
-      -e CHE_URL=http://codeready-che.${ROUTE_SUBDOMAIN} \
-      -e WORKSHOPS_URLS="https://raw.githubusercontent.com/openshift-evangelists/workshopper-template/master/_workshop.yml" \
+      -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/" \
+      -e WORKSHOPS_URLS="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/_workshop.yml" \
       -e LOG_TO_STDOUT=true 
 oc expose svc/web
 
@@ -109,11 +111,15 @@ cat <<EOF | oc apply -n openshift-marketplace -f -
 apiVersion: operators.coreos.com/v1
 kind: CatalogSourceConfig
 metadata:
+  finalizers:
+  - finalizer.catalogsourceconfigs.operators.coreos.com
   name: installed-redhat-che
   namespace: openshift-marketplace
 spec:
   targetNamespace: che
   packages: codeready-workspaces
+  csDisplayName: Red Hat Operators
+  csPublisher: Red Hat
 EOF
 
 cat <<EOF | oc apply -n che -f -
@@ -122,6 +128,9 @@ kind: OperatorGroup
 metadata:
   name: che-operator-group
   namespace: che
+  generateName: che-
+  annotations:
+    olm.providedAPIs: CheCluster.v1.org.eclipse.che
 spec:
   targetNamespaces:
   - che
@@ -139,20 +148,31 @@ metadata:
 spec:
   channel: final
   installPlanApproval: Automatic
-  name: eclipse-che
-  source: installed-community-che
+  name: codeready-workspaces
+  source: installed-redhat-che
   sourceNamespace: che
   startingCSV: crwoperator.v1.2.0
 EOF
+
+# Wait for checluster to be a thing
+echo "Waiting for CheCluster CRDs"
+while [ true ] ; do
+  if [ "$(oc explain checluster)" ] ; then
+    break
+  fi
+  echo -n .
+  sleep 10
+done
 
 cat <<EOF | oc apply -n che -f -
 apiVersion: org.eclipse.che/v1
 kind: CheCluster
 metadata:
-  name: codereadyt
+  name: codeready
   namespace: che
 spec:
   server:
+    cheFlavor: codeready
     tlsSupport: false
     selfSignedCert: false
   database:
@@ -177,7 +197,7 @@ EOF
 # Wait for che to be up
 echo "Waiting for Che to come up..."
 while [ 1 ]; do
-  STAT=$(curl -w '%{http_code}' -o /dev/null http://codeready-che.${HOSTNAME_SUFFIX}/dashboard/)
+  STAT=$(curl -s -w '%{http_code}' -o /dev/null http://codeready-che.${HOSTNAME_SUFFIX}/dashboard/)
   if [ "$STAT" = 200 ] ; then
     break
   fi
@@ -187,8 +207,8 @@ done
 
 # workaround for PVC problem
 oc get --export cm/custom -n che -o yaml | yq w - 'data.CHE_INFRA_KUBERNETES_PVC_WAIT__BOUND' \"false\" | oc apply -f - -n che
-oc scale -n che deployment/che --replicas=0
-oc scale -n che deployment/che --replicas=1
+oc scale -n che deployment/codeready --replicas=0
+oc scale -n che deployment/codeready --replicas=1
 
 # workaround for Che Terminal timeouts
 # must be run from AWS bastion host
@@ -199,10 +219,34 @@ oc scale -n che deployment/che --replicas=1
 # update timeout to 5 minutes
 # aws elb modify-load-balancer-attributes --load-balancer-name <name> --load-balancer-attributes "{\"ConnectionSettings\":{\"IdleTimeout\":300}}"
 
-# Add custom stack manually
+# get keycloak admin password
+KEYCLOAK_USER="$(oc set env deployment/keycloak --list |grep SSO_ADMIN_USERNAME | cut -d= -f2)"
+KEYCLOAK_PASSWORD="$(oc set env deployment/keycloak --list |grep SSO_ADMIN_PASSWORD | cut -d= -f2)"
+SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&grant_type=password&client_id=admin-cli" \
+  -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/master/protocol/openid-connect/token | \
+  jq  -r '.access_token')
 
 # Import realm from
 # https://raw.githubusercontent.com/quarkusio/quarkus-quickstarts/master/using-keycloak/config/quarkus-realm.json
+TMPREALM=$(mktemp)
+curl -s -o $TMPREALM https://raw.githubusercontent.com/quarkusio/quarkus-quickstarts/master/using-keycloak/config/quarkus-realm.json
+
+curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${TMPREALM} \
+  -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms
+
+rm -f ${TMPREALM}
+
+# Import stack definition
+SSO_CHE_TOKEN=$(curl -s -d "username=admin&password=admin&grant_type=password&client_id=admin-cli" \
+  -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/codeready/protocol/openid-connect/token | \
+  jq  -r '.access_token')
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
+    --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${MYDIR}/../files/stack.json \
+    "http://codeready-che.${HOSTNAME_SUFFIX}/api/stack"
+
+curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${TMPREALM} \
+  -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms
 
 # Scale the cluster
 WORKERCOUNT=$(oc get nodes|grep worker | wc -l)

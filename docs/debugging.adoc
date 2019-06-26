@@ -1,1 +1,19 @@
-## The Basics
+## Debugging in Dev Mode
+
+Debugging is an art of finding errors (bugs) and eradicating (debug) them from a piece of code written in any programming language. Quarkus apps are no different in this regard and you can use the raw Java command line debugger (`jdb`) or, if your IDE supports it, graphical debugging. Most IDEs have integration with Java debuggers, including Eclipse Che, so let's exercise it.
+
+## Write some bad code
+
+Let's intruduce a subtle bug in our application and use the debugger to debug it.
+
+Open up the 
+Debugging is 
+You can run a Quarkus application in debug mode using:
+
+[source, java]
+----
+./mvnw compile quarkus:dev -Ddebug=true
+----
+
+Then, attach your debugger to `localhost:5005`.
+
