@@ -1,0 +1,155 @@
+== Deploy to OpenShift
+
+With our app fully ready for its first cloud native deployment, let's package it up for deployment to our Kubernetes platform as a native image. We'll use some OpenShift tooling to accomplish this.
+
+OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
+
+Built around a core of OCI container packaging and Kubernetes container cluster management, OKD and OpenShift are augmented with additional application lifecycle management functionality and DevOps tooling. The platform provides a complete developer centric container application platform, which encompasses the original Container as a Service (CaaS) functionality of Kubernetes, along with Platform as a Service (PaaS) functionality.
+
+
+=== Build native image
+
+Let's rebuild our native image with all our changes thus far. Using the Command Palette, select **Build Native Quarkus App** and wait for it to finish (this runs `mvn clean package -Pnative` under the hood).
+
+As you recall, the output of this process is a native Linux binary. To package it as a Linux container, and store it in OpenShift's internal image registry, run the following command:
+
+Now that we have our app built as a container, let's deploy it to our cluster.
+
+=== Login to OpenShift
+
+Although your Eclipse Che workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So we'll log in with your workshop user. Open a Terminal and issue the following command.
+
+[source, sh, role="copypaste"]
+----
+oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true
+----
+
+Enter your username and password assigned to you:
+* Username: **userNN**
+* Password: **passNN**
+
+[WARNING]
+====
+Replace the `NN` with the student number you were assigned by the instructor (e.g. `user1/pass1`, or `user12/pass12`).
+
+Throughout this workshop, you may see commands or URLs that need to be changed based on your assigned student number. Don't forget to do this or else you may interfere with other students!
+====
+
+You should see:
+
+[source, none]
+----
+Login successful.
+
+You have one project on this server: "userNN-project"
+
+Using project "userNN-project".
+----
+
+Congratulations, you are now authenticated to the OpenShift server.
+
+https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[Namespaces]
+are a top level concept to help you organize your deployments and teams of developers. A
+namespace allows a community of users (or a user) to organize and manage
+their content in isolation from other communities. OpenShift _projects_ provide additional functionality for managing Kubernetes namespaces.
+
+For this scenario, a project has been created for you called `userNN-project` (where `NN` is your assigned student number). You will use this project to deploy your developed project in the next step.
+
+=== Deploy to OpenShift
+
+First, create a new _binary_ build within OpenShift
+[source,sh,role="copypaste"]
+----
+oc new-build quay.io/redhat/ubi-quarkus-native-runner --binary --name=people -l app=people
+----
+
+You should get a `--> Success` message at the end.
+
+[NOTE]
+====
+This build uses the new https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/getting_started_with_containers/using_red_hat_base_container_images_standard_and_minimal[Red Hat Universal Base Image], providing foundational software needed to run most applications, while staying at a reasonable size.
+====
+
+And then start and watch the build, which will take about a minute to complete:
+
+[source,sh,role="copypaste"]
+----
+oc start-build people --from-file target/*-runner --follow
+----
+
+This step will combine the native binary with a base OS image, create a new container image, and push it to an internal image registry.
+
+Once that's done, deploy the new image as an OpenShift application:
+
+[source,sh,role="copypaste"]
+----
+oc new-app people
+----
+
+and expose it to the world:
+
+[source,sh,role="copypaste"]
+----
+oc expose svc/people
+----
+
+Finally, make sure it's actually done rolling out:
+
+[source,sh,role="copypaste"]
+----
+oc rollout status -w dc/people
+----
+
+Wait for that command to report `replication controller "people-1" successfully rolled out` before continuing.
+
+And now we can access using `curl` once again. In the Terminal, run:
+
+[source,sh,role="copypaste copypaste-warning"]
+----
+curl http://people-userNN-project.{{ ROUTE_SUBDOMAIN }}/hello/greeting/quarkus-on-openshift # <1>
+----
+<1> Don't forget to replace `userNN` with your assigned number, e.g. `user12` or `user4`
+
+You should see:
+
+[source,none]
+----
+hello quarkus-on-openshift from people-1-9sgsm 
+----
+
+> Your hostname (the Kubernetes _pod_ in which your app runs) name will be different from the above.
+
+So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console]. Login with your assigned username and password (e.g. `user4/pass4`):
+
+Once logged in, click on the name of your project (userNN-project). Here is an overview of some of the resources the app is using and a dashboard of statistics. Click on the `1 of 1 pods` to view details about our running container. Click on the name of the container to get detailed metrics:
+
+::img
+
+There's the Quarkus native app, running with very little memory usage. Click on the **Logs** tab to see the console output from the app:
+
+::img
+
+This is the same output you saw earlier when you ran it "locally" with it's super-fast startup time.
+
+Navigate to _Networking > Routes_. Here you can see the single external route created when you ran the `oc expose` command earlier. You can click on the route link to open up the default Quarkus page that's packaged as part of our workshop application.
+
+# Connect MicroProfile health check
+
+Earlier you implemented a series of MicroProfile health checks. To make OpenShift aware of these available health checks and begin using them, run the following command:
+
+[source,sh,role="copypaste"]
+----
+oc set probe dc/people --readiness --liveness --get-url=http://:8080/health 
+----
+
+This configures both a _readiness_ probe (is the app initialized and ready to serve requests?) and a _liveness_ probe (is the app still up and ready to serve requests) with default timeouts. OpenShift will not route any traffic to pods that don't respond successfully to these probes. By editing these, it will trigger a new deployment so make sure the app comes up with its new probes in place:
+
+[source,sh,role="copypaste"]
+----
+oc rollout status -w dc/people
+----
+
+
+## Congratulations!
+
+This step covered the deployment of a Quarkus application on OpenShift. However, there is much more, and the integration with these cloud native platforms (through health checks, configuration management, and monitoring which we'll cover later) has been tailored to make Quarkus applications execution very smooth.
