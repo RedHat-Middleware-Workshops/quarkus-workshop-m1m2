@@ -4,16 +4,126 @@ Debugging is an art of finding errors (bugs) and eradicating (debug) them from a
 
 ## Write some bad code
 
-Let's intruduce a subtle bug in our application and use the debugger to debug it.
+Let's intruduce a subtle off-by-one bug in our application and use the debugger to debug it.
 
-Open up the 
-Debugging is 
-You can run a Quarkus application in debug mode using:
+Open up the `GreetingResource.java` class again, and add another RESTful interface to retrieve a name and strip all but the last character from it:
 
-[source, java]
+[source, java, role="copypaste"]
 ----
-./mvnw compile quarkus:dev -Ddebug=true
+    @GET
+    @Path("/letter")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String letter() {
+        String cuteName = CuteNameGenerator.generate();
+        int cuteNameLength = cuteName.length();
+        String lastLetter = cuteName.substring(cuteNameLength);
+        return lastLetter;
+    }
 ----
 
-Then, attach your debugger to `localhost:5005`.
+This code creates a new endpoint accessible at `/hello/letter` that generates a fake name using the `CuteNameGenerator` which has already been written for you, then
+returns the last character in the name using String's `substring()` method. But a bug has been reported where the last character is coming up blank. You can probably spot the bug right away but let's see how you could find this with the debugger, and more importantly fix it and re-test very quickly.
+
+## Run the app in debug mode
+
+Before you can debug the app, you need to run it in _debug mode_. Typically this means adding a lot of JVM command line switches, and Quarkus has simplified this for you.
+
+In Che, open up the command palette once again to run our app in Debug mode. Double-click on "Debug Quarkus App" from the menu
+to run the Quarkus app with a debugger. This will invoke `mvn compile quarkus:dev -Ddebug` under the the covers:
+
+::img
+
+You will see the tell-tale Java log statment showing that debugging is enabled: `Listening for transport dt_socket at address: 5005`.
+
+In the Terminal, access the endpoint:
+
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/hello/letter
+----
+
+You will see the problem: Nothing is returned!
+
+::img
+
+## Attach debugger
+
+_Remote debugging_ is a useful debugging technique for application development which allows looking into the code that is being executed somewhere else on a different machine and execute the code line-by-line to help investigate bugs and issues. Remote debugging is part of Java SE standard debugging architecture which you can learn more about it in https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html[Java docs].
+
+Although our app is now running locally, when Quarkus debugging is enabled it listens on a TCP port for connections via the standard protocol used for Java debugging (which could be on a remote server, or a separate container). 
+
+To connect to it, use the _Run > Edit Debug Configurations_ menu command. In the dialog, Click the `+` button next to `JAVA` to create a new Java debug configuration. You can name it whatever you want, but keep the `localhost` field as-is and select port `5005` in the port selection field:
+
+::img
+
+Click **Save** to save this configuration, and then click **Debug** to attach the debugger to our running Quarkus app. The debugger view will appear at the bottom of the screen with several small buttons used to start/stop execution, step into/over/out of code, and other operations.
+
+== Set a Breakpoint
+
+To debug the app, let's step through our function that has the bug. In the left gutter of the code, where the line numbers are shown, click once on the line `String cuteName = CuteNameGenerator.generate();` to set a breakpoint. The line number will be highlighted and the breakpoint will be registered in the debug pane:
+
+::img
+
+== Trigger the bug
+
+Now that we have a breakpoint, go back to the terminal (using the small square icon above the debug icon):
+
+::img
+
+In the Terminal issue the same curl command as before:
+
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/hello/letter
+----
+
+This time, the command will appear to hang as the breakpoint has been reached. The line where you set the breakpoint will be highlighted. Switch back to the debugging view (click the small bug icon under the square):
+
+::img
+
+You will see three main sections of the debug view:
+
+* **Breakpoints** - This lists the breakpoints you've set. Each Breakpoint can be further configured, or selectively disabled, by right-clicking on the breakpoint in the breakpoint list.
+
+* **Frames** - This is an ordered list of _stack frames_ showing the path through the code from the beginning of the thread to the current location in our code. There is a lot of steps along the way, and it's useful to know the execution path to this point in case the current point in the code isn't where the bug is.
+
+* **Variables** - Here you can see the value of local variables in the selected stack frame. In our code we have no local variables defined yet, but once we start stepping through the code, newly defined variables (like `cuteName`) will appear here.
+
+Step over the current line by clicking the **Step Over** button. This will fully execute the current line, and advance to the next line in the code and stop again. (You could also step _into_ methods for deeper debugging).
+
+At this point, `cuteName` is defined (and listed on the right side):
+
+Step over again, which executes the line to calculate the line's length (and appear in the variable list).
+
+Step over once more to extract the last letter of this name using the line's length as an offset to the `substring` method. See the bug?
+
+We need to pass an offset that is one _before_ the end, to get the last letter.
+
+Click the _Resume_ button (the far left button in the debug view) to let the method continue and return the value (your `curl` command has probably timed out by now).
+
+Fix the code by changing the line that calls `substring()` to read:
+
+[source, java, role="copypaste"]
+----
+String lastLetter = cuteName.substring(cuteNameLength - 1);
+----
+
+With the bug fixed, re-trigger the method by running the `curl` command again in the Terminal:
+
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/hello/letter
+----
+
+The breakpoint will be hit once again. step over the lines to verify the value of `lastLetter` is correct before the method returns. You've fixed the bug!
+
+Remove the breakpoint by clicking on the line number again to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now:
+
+::img
+
+Click the **End Debug Session** button to quit the debugging session:
+
+::img
+
+Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there.
 

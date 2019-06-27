@@ -5,6 +5,7 @@ name: Quarkus Hands-on Lab
 vars:
   ROUTE_SUBDOMAIN:
   MASTER_URL:
+  CONSOLE_URL:
   CHE_URL:
 
 modules:
@@ -16,6 +17,7 @@ modules:
   - debugging
   - native
   - cloudnative
+  - deploy
   - extensions
   - panache
   - openapi

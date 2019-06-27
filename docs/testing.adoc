@@ -69,7 +69,7 @@ Let's test our app. In Che, using the same command palette, select **test**:
 
 image::images/testcmd.png[]
 
-The tests will run, and eventually complete. Did you get any errors? You probably got:
+The tests will run, and eventually complete. Did you get any errors? You should have! You probably got:
 
 [source, none]
 ----

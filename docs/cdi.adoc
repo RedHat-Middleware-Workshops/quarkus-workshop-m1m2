@@ -45,9 +45,11 @@ This will cause our new `GreetingResource` class to be instantiated and injected
 
 You may notice that you get red error squigglies when you paste this code due to missing import statements. There are two ways with Che to fix this. Either right-click on the offending statement, and choose **Quick Fix** and then choose to import the missing API, or use the _Assistant_ > _Organize Imports_ menu option to do them en masse. You may need to choose from multiple matches, e.g. make sure you choose to import `javax.ws.rs.PathParam` when fixing the missing `PathParam` import. In general, look for `javax` or other well-known names to import. If you get it wrong you'll find out soon enough.
 
-## Inspect the results
+## Run the app
 
-Since we still have our app running frmo before, when you make these changes and reload the endpoint, Quarkus will notice all of these changes and live reload them.
+Once again, run the app in _dev_ mode by using the command palette and selecting **Build and Run Locally**.
+
+## Inspect the results
 
 Check that it works as expected by loading the new endpoint using the Preview URL and adding the `/hello/greeting/quarkus` to the end of the URL:
 

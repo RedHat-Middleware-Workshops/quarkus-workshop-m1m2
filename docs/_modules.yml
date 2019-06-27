@@ -13,6 +13,8 @@ modules:
     name: Building Native Quarkus Apps
   cloudnative:
     name: Developing Cloud Native with Quarkus
+  deploy:
+    name: "Deploying to the cloud"
   extensions:
     name: Using Quarkus extensions
   panache:

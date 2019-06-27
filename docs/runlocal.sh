@@ -6,6 +6,7 @@ docker run -it --rm -p 8080:8080 -v $(pwd):/app-data \
               -e LOG_TO_STDOUT=true \
               -e ROUTE_SUBDOMAIN=".route.subdomain.com" \
               -e MASTER_URL="https://master.url.com:8443" \
+              -e CONSOLE_URL="https://console.url.com:8443" \
               -e CHE_URL="http://che-che.master.com" \
               quay.io/osevg/workshopper
 

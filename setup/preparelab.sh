@@ -57,7 +57,7 @@ ROUTE=$(oc get route dummy -o=go-template --template='{{ .spec.host }}' -n $TMP_
 HOSTNAME_SUFFIX=$(echo $ROUTE | sed 's/^dummy-'${TMP_PROJ}'\.//g')
 oc delete project $TMP_PROJ
 MASTER_URL=$(oc whoami --show-server)
-
+CONSOLE_URL=$(oc whoami --show-console)
 # create users
 TMPHTPASS=$(mktemp)
 for i in {1..$USERCOUNT} ; do
@@ -97,9 +97,9 @@ done
 oc new-project guides
 oc new-app quay.io/osevg/workshopper --name=web \
       -e MASTER_URL=${MASTER_URL} \
+      -e CONSOLE_URL=${CONSOLE_URL} \
       -e CHE_URL=http://codeready-che.${HOSTNAME_SUFFIX} \
       -e ROUTE_SUBDOMAIN=${HOSTNAME_SUFFIX} \
-      -e MASTER_URL=${MASTER_URL} \
       -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/" \
       -e WORKSHOPS_URLS="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/_workshop.yml" \
       -e LOG_TO_STDOUT=true 
@@ -213,11 +213,14 @@ oc scale -n che deployment/codeready --replicas=1
 # workaround for Che Terminal timeouts
 # must be run from AWS bastion host
 
+# sudo -u ec2-user aws configure
+# Default region name [None]: us-east-1
+
 # get load balancer name
 # sudo -u ec2-user aws elb describe-load-balancers | jq  '.LoadBalancerDescriptions | map(select( .DNSName == "'$(oc get svc router-default -n openshift-ingress -o jsonpath='{.status.loadBalancer.ingress[].hostname}')'" ))' | grep LoadBalancerName
 
 # update timeout to 5 minutes
-# aws elb modify-load-balancer-attributes --load-balancer-name <name> --load-balancer-attributes "{\"ConnectionSettings\":{\"IdleTimeout\":300}}"
+# sudo -u ec2-user aws elb modify-load-balancer-attributes --load-balancer-name <name> --load-balancer-attributes "{\"ConnectionSettings\":{\"IdleTimeout\":300}}"
 
 # get keycloak admin password
 KEYCLOAK_USER="$(oc set env deployment/keycloak --list |grep SSO_ADMIN_USERNAME | cut -d= -f2)"
@@ -258,6 +261,7 @@ if [ "$WORKERCOUNT" -lt 10 ] ; then
 fi
 
 # Install the strimzi operator for all namespaces
+
 # Install the prometheus operator for all namespaces
 
 # Pre-pull some images

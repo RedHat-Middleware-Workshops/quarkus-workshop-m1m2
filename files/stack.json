@@ -22,6 +22,11 @@
                   "attributes": {},
                   "protocol": "http",
                   "port": "8000"
+                },
+                "5005/tcp": {
+                  "attributes": {},
+                  "protocol": "http",
+                  "port": "5005"
                 }
               },
               "volumes": {},
@@ -86,12 +91,21 @@
           }
         },
         {
-          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package ; odo login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5  --insecure-skip-tls-verify=true",
-          "name": "Package for OpenShift",
+          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package",
+          "name": "Create Executable JAR",
           "type": "custom",
           "attributes": {
             "goal": "Package",
             "previewUrl": ""
+          }
+        },
+        {
+          "commandLine": "mvn clean compile quarkus:dev -Ddebug -f ${current.project.path}",
+          "name": "Debug Quarkus App",
+          "type": "custom",
+          "attributes": {
+            "previewUrl": "${server.8080/tcp}",
+            "goal": "Debug"
           }
         }
       ],
