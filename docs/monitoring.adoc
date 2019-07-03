@@ -130,7 +130,7 @@ And then access the metrics again, this time we'll look for our new metric:
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/metrics | grep -i greeting
+curl http://localhost:8080/metrics/application
 ----
 
 You'll see:
@@ -147,6 +147,11 @@ This shows we've accessed the greetings once (`1.0`). Repeat the `curl` greeting
 [NOTE]
 ====
 The comments in the metrics output starting with `#` are part of the format and give human-readable descriptions to the metrics which you'll see later on.
+====
+
+[NOTE]
+====
+MicroProfile Metrics names are prefixed with things like `vendor:` or `application:` or `base:`. These can be selectively accessed by adding the name to the accessed endpoint, e.g. `curl http://localhost:8080/metrics/application` or `curl http://localhost:8080/metrics/base`.
 ====
 
 ## Add a few more
