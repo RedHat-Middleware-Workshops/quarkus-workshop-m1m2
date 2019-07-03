@@ -2,8 +2,6 @@
 
 In this step we will package the application as a Linux Container image, and deploy it to Kubernetes, and add a few features common to cloud native apps that you as a developer will need to handle. We'll use OpenShift 4 as our deployment target, which is a distribution of Kubernetes from Red Hat.
 
-== Deploy Container
-
 == Health Probes
 
 When building microservices, monitoring becomes of extreme importance to make sure all services are running at all times, and when they don't there are automatic actions triggered to rectify the issues. We'll cover more monitoring topics later, but for now let's explore Kubernetes Health Probes.
@@ -363,6 +361,10 @@ What did you get? You should get `hello production quarkus!` indicating that the
 In this example we read configuration properties from `application.properties`. You can also introduce custom configuration sources in the standard MicroProfile Config manner. To do this, you must provide a class which implements either `org.eclipse.microprofile.config.spi.ConfigSource` or `org.eclipse.microprofile.config.spi.ConfigSourceProvider`. Create a service file for the class and it will be detected and installed at application startup. https://microprofile.io/project/eclipse/microprofile-config[More Info]. This would be useful, for example, to read directly from **Kubernetes ConfigMap**s.
 ====
 
-== Congratulations
+## Cleanup
+
+Stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.
+
+## Congratulations
 
 Cloud native encompasses much more than health probes and externalized config. With Quarkus' _container and Kubernetes-first philosophy_, excellent performance, support for many cloud native frameworks, it's a great place to build your next cloud native app.

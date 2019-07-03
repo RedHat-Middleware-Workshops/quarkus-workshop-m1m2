@@ -127,3 +127,6 @@ Click the **End Debug Session** button to quit the debugging session:
 
 Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there.
 
+## Cleanup
+
+Stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.

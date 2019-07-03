@@ -97,7 +97,7 @@ This shows that our process is taking around 13.8 MB of memory (https://en.wikip
 The RSS and memory usage of any app, including Quarkus, will vary depending your specific environment, and will rise as the application experiences load.
 ====
 
-Make sure the app is still working as expected (we'll use `curl` this time to access it directly). In the Terminal run:
+Make sure the app is still working as expected (we'll use `curl` this time to access it directly). In a new Terminal run:
 
 [source,sh,role="copypaste"]
 ----

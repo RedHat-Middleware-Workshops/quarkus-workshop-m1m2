@@ -33,9 +33,11 @@ The endpoints (JDBC url, database credentials) are specified in `application.pro
 %prod.quarkus.datasource.driver: org.postgresql.Driver
 %dev.quarkus.datasource.url=jdbc:h2:tcp://localhost/person:default
 %dev.quarkus.datasource.driver=org.h2.Driver
+%test.quarkus.datasource.url=jdbc:h2:tcp://localhost/person:default
+%test.quarkus.datasource.driver=org.h2.Driver
 ----
 
-This causes the `%dev` properties to be active in development (and test) mode, and the `%prod` properties to be used when in production (not in dev or test).
+This causes the `%dev` properties to be active in development (and the `%test` in test mode), and the `%prod` properties to be used when in production (not in dev or test).
 
 [NOTE]
 ====
@@ -166,7 +168,7 @@ These statements will add some fake people to our database.
 
 ### Run the application
 
-Now we are ready to run our application. Using the command palette, select **Build and Run Locally**. You should see a bunch of log output that ends with:
+Now we are ready to run our application. Using the command palette, select **Build and Run Locally** (if you had a previous app running, CTRL-C or close the old Terminal before running it again). You should see a bunch of log output that ends with:
 
 [source, none]
 ----
@@ -539,6 +541,8 @@ Next, re-define the container build to use the OpenJDK image:
 oc delete bc/people
 oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.5 --binary --name=people
 ----
+
+We'll need to re-build the app as an Executable JAR. Using the command palette, select **Build Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
 And now start the build using our executable JAR:
 

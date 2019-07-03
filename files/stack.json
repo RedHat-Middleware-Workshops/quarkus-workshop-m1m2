@@ -46,24 +46,6 @@
       },
       "commands": [
         {
-          "commandLine": "mvn install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
-          "name": "build",
-          "type": "mvn",
-          "attributes": {
-            "goal": "Build",
-            "previewUrl": ""
-          }
-        },
-        {
-          "commandLine": "mvn clean install -f ${current.project.path}",
-          "name": "clean build",
-          "type": "mvn",
-          "attributes": {
-            "goal": "Build",
-            "previewUrl": ""
-          }
-        },
-        {
           "commandLine": "mvn verify -f ${current.project.path}",
           "name": "test",
           "type": "mvn",
@@ -82,7 +64,7 @@
           }
         },
         {
-          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative ; oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5 --insecure-skip-tls-verify=true",
+          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative -DskipTests; oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5 --insecure-skip-tls-verify=true",
           "name": "Build Native Quarkus App",
           "type": "custom",
           "attributes": {
@@ -91,7 +73,7 @@
           }
         },
         {
-          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package",
+          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -DskipTests",
           "name": "Create Executable JAR",
           "type": "custom",
           "attributes": {

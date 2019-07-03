@@ -50,6 +50,11 @@ When you run Quarkus applications, the list of extensions enabled are shown in t
 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, narayana-jta, resteasy]
 ----
 
+[NOTE]
+====
+During development, when you add new extensions you'll need to stop and re-start Quarkus apps, as it will not monitor the state of `pom.xml` and bring in new dependencies during live-reload mode. So be sure to stop and restart whenever you add new extensions!
+====
+
 ## Writing your own extension
 
 Quarkus extensions add a new developer focused behavior to the core offering, and consist of two distinct parts, buildtime augmentation and runtime container. The augmentation part is responsible for all metadata processing, such as reading annotations, XML descriptors etc. The output of this augmentation phase is recorded bytecode which is responsible for directly instantiating the relevant runtime services.

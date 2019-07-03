@@ -23,7 +23,7 @@ mvn quarkus:add-extension -Dextensions="openapi"
 
 This will add the extension to our project.
 
-Run the project again, using the command palette and selecting **Build and Run Locally**. This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
+Run the project again, using the command palette and selecting **Build and Run Locally** (if you had a previous app running, CTRL-C or close the old Terminal before running it again). This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
@@ -166,6 +166,9 @@ Now reload the same Swagger UI webpage (or if you already closed it, just click 
 
 ::img
 
+## Cleanup
+
+Stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.
 
 ## Congratulations
 
