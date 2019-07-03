@@ -173,6 +173,6 @@ In this exercise you learned more about the MicroProfile OpenAPI specification a
 
 There are additional types of documentation you can add, for example you can declare the security features and requirements of your API and then use these where appropriate in your paths and operations.
 
-
+Leave your project running, as we'll make more edits in the next section.
 
 
