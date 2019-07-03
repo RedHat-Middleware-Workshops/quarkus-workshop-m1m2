@@ -1,1 +1,585 @@
-## The Basics
+## Hibernate ORM with Panache
+
+Hibernate ORM is the de facto JPA implementation and offers you the full breadth of an Object Relational Mapper. It makes complex mappings possible, but many simple and common mappings can also be complex. Hibernate ORM with **Panache** focuses on making your entities trivial and fun to write and use with Quarkus.
+
+With Panache, we took an opinionated approach to make hibernate as easy as possible. Hibernate ORM with Panache offers the following:
+
+* By extending `PanacheEntity` in your entities, you will get an ID field that is auto-generated. If you require a custom ID strategy, you can extend `PanacheEntityBase` instead and handle the ID yourself.
+
+* By using Use public fields, there is no need for functionless getters and setters (those that simply get or set the field). You simply refer to fields like `Person.name` without the need to write a `Person.getName()` implementation. Panache will auto-generate any getters and setters you do not write, or you can develop your own getters/setters that do more than get/set, which will be called when the field is accessed directly.
+
+* The `PanacheEntity` superclass comes with lots of super useful static methods and you can add your own in your derived entity class, and much like traditional object-oriented programming it's natural and recommended to place custom queries as close to the entity as possible, ideally within the entity definition itself. Users can just start using your entity `Person` by typing `Person`, and getting completion for all the operations in a single place.
+
+* You don't need to write parts of the query that you don’t need: write `Person.find("order by name")` or `Person.find("name = ?1 and status = ?2", "stef", Status.Alive)` or even better `Person.find("name", "stef")`.
+
+That’s all there is to it: with Panache, Hibernate ORM has never looked so trim and neat.
+
+## People
+
+You may have wondered why we are using `people` in our Java APIs. We'll be creating a simple data-driven application that manages a set of people, who have a name, birth date, and eye color. In the previous lab we added the extension for Panache to our project, but we will need a few more for connecting to databases. Add these extensions with the following command:
+
+[source,sh,role="copypaste"]
+----
+mvn quarkus:add-extension -Dextensions="panache, h2, postgresql"
+----
+
+We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions.
+
+The endpoints (JDBC url, database credentials) are specified in `application.properties` using the Quarkus Profile support. So for example you'll find this:
+
+[source,none]
+----
+%prod.quarkus.datasource.url: jdbc:postgresql://postgres-database:5432/person
+%prod.quarkus.datasource.driver: org.postgresql.Driver
+%dev.quarkus.datasource.url=jdbc:h2:tcp://localhost/person:default
+%dev.quarkus.datasource.driver=org.h2.Driver
+----
+
+This causes the `%dev` properties to be active in development (and test) mode, and the `%prod` properties to be used when in production (not in dev or test).
+
+[NOTE]
+====
+These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide].
+====
+
+### Create Entity
+
+With our extension installed, we can now define our entity using Panache. 
+
+We'll first need the definition of eye colors, so let's create an `enum`. Create a new java class in `src/main/java/org/acme/people/model` called `EyeColor`, and add the following enum definition:
+
+[source,java,role="copypaste"]
+----
+package org.acme.people.model;
+
+public enum EyeColor {
+    BLUE, GREEN, HAZEL, BROWN
+}
+----
+
+This app will be a database of people, each of which have a name, birthdate, and eye color. We'll need an entity, so open up the `src/main/java/org/acme/people/model/Person.java`{{open}} file, and replace the stub code in the file with the following:
+
+[source,java,role="copypaste"]
+----
+package org.acme.people.model;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
+import org.acme.people.model.EyeColor;
+
+@Entity
+public class Person extends PanacheEntity {
+    // the person's name
+    public String name;
+    
+    // the person's birthdate
+    public LocalDate birth;
+
+    // the person's eye color
+    @Enumerated(EnumType.STRING)
+    @Column(length = 8)
+    public EyeColor eyes;
+
+    // TODO: Add more queries
+}
+----
+
+[NOTE]
+====
+You will incrementally replace the `// TODO` elements as we go along, so don't delete them just yet!
+====
+
+As you can see we've defined the three fields `name`, `birth`, and `eyes`. We're using the Java Persistence API's `@Enumerated` field type for our eye color.
+
+### Define RESTful endpoint
+
+Next, we'll create a `PersonResource` class which we will use for our RESTful endpoint. Create a new Java class in the `src/main/java/org/acme/people/rest` directory called `PersonResource` with the following code:
+
+[source,java,role="copypaste"]
+----
+package org.acme.people.rest;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.transaction.Transactional;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+
+import org.acme.people.model.DataTable;
+import org.acme.people.model.EyeColor;
+import org.acme.people.model.Person;
+
+import io.quarkus.panache.common.Parameters;
+import io.quarkus.runtime.StartupEvent;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+
+@Path("/person")
+@ApplicationScoped
+public class PersonResource {
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Person> getAll() {
+        return Person.listAll();
+    }
+
+    // TODO: add basic queries
+    
+    // TODO: add datatable query
+
+    // TODO: Add lifecycle hook
+
+}
+----
+
+As you can see we've implemented our first Panache-based query, the `getAll` method, which will return our list of people as a JSON object when we access the `GET /person` endpoint. This is defined using standard JAX-RS `@Path` and `@GET` and `@Produces` annotations.
+
+### Add sample data
+
+Let's add some sample data to the database so we can test things out. Create a new file `src/main/resources/import.sql` and add some SQL statements to the file to run on startup:
+
+[source,sql,role="copypaste"]
+----
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Farid Ulyanov', to_date('1974-08-15', 'YYYY-MM-dd'), 'BLUE')
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Salvador L. Witcher', to_date('1984-05-24', 'YYYY-MM-dd'), 'BROWN')
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Huỳnh Kim Huê', to_date('1999-04-25', 'YYYY-MM-dd'), 'HAZEL')
+----
+
+These statements will add some fake people to our database.
+
+### Run the application
+
+Now we are ready to run our application. Using the command palette, select **Build and Run Locally**. You should see a bunch of log output that ends with:
+
+[source, none]
+----
+12:56:43,106 INFO  [io.quarkus] Quarkus 0.12.0 started in 2.138s. Listening on: http://[::]:8080
+12:56:43,106 INFO  [io.quarkus] Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, narayana-jta, resteasy, resteasy-jsonb]```
+----
+
+With the app running, let's try out our first RESTful endpoint to retrieve all the sample users. Open up a separate Terminal and issue the following command:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/person | jq
+----
+
+We call the endpoint with `curl` then send the output through `jq` to make the output prettier. You should see:
+
+[source,json]
+----
+[
+  {
+    "persistent": true,
+    "id": 1,
+    "birth": "1974-08-15",
+    "eyes": "BLUE",
+    "name": "Farid Ulyanov"
+  },
+  {
+    "persistent": true,
+    "id": 2,
+    "birth": "1984-05-24",
+    "eyes": "BROWN",
+    "name": "Salvador L. Witcher"
+  },
+  {
+    "persistent": true,
+    "id": 3,
+    "birth": "1999-04-25",
+    "eyes": "HAZEL",
+    "name": "Huỳnh Kim Huê"
+  }
+]
+----
+
+It's working! We'll leave it running and use Quarkus' Live Reload feature to automatically update our app as we make changes. Note that the `id` and `persistent` fields were added to our entity, but never appear in our query APIs and can be safely ignored most of the time. 
+
+Advanced use cases may require a custom ID strategy, which can by done by extending `PanacheEntityBase` instead of `PanacheEntity`, and declaring a public `id` field with the necessary policy. For example (do not copy this code into your app):
+
+[source,java]
+----
+@Id
+@SequenceGenerator(
+          name = "personSequence",
+          sequenceName = "person_id_seq",
+          allocationSize = 1,
+          initialValue = 4)
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personSequence")
+public Integer id;
+----
+
+## Add Basic Queries
+
+Let’s modify the application and add some queries. Much like traditional object-oriented programming, Panache and Quarkus recommend you place your custom entity queries as close to the entity definition as possible, in this case in the entity definition itself. Open the `Person` entity class (it's in the `org.acme.person.model` package), and add the following code under the `// TODO: Add more queries` comment:
+
+[source,java,role="copypaste"]
+----
+public static List<Person> findByColor(EyeColor color) {
+    return list("eyes", color);
+}
+
+public static List<Person> getBeforeYear(int year) {
+    return Person.<Person>streamAll()
+    .filter(p -> p.birth.getYear() <= year)
+    .collect(Collectors.toList());
+}
+----
+
+These two queries will find a list of people in our database based on eye color, or birth year. Note the `getBeforeYear` is implemented using the Java Streams API.
+
+> All list methods in Panache-based entities (those that extend from `PanacheEntity`) have equivalent stream versions. So `list` has a `stream` variant, `listAll`-->`streamAll` and so on.
+
+With our custom entity queries implemented in our `Person` entity class, let's add RESTful endpoints to `PersonResource` to access them. 
+
+Open the `PersonResource` class and add a new endpoint under the `//TODO: add basic queries` comment:
+
+[source,java,role="copypaste"]
+----
+@GET
+@Path("/eyes/{color}")
+@Produces(MediaType.APPLICATION_JSON)
+public List<Person> findByColor(@PathParam(value = "color") EyeColor color) {
+    return Person.findByColor(color);
+}
+
+@GET
+@Path("/birth/before/{year}")
+@Produces(MediaType.APPLICATION_JSON)
+public List<Person> getBeforeYear(@PathParam(value = "year") int year) {
+    return Person.getBeforeYear(year);
+}
+----
+
+### Inspect the results
+
+Since we still have our app running using `mvn quarkus:dev`, when you make these changes and reload the endpoint, Quarkus will notice all of these changes and live reload them.
+
+Check that it works as expected by testing the new endpoints. Let's find all the people with `BLUE` eyes. Execute in your Terminal:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/person/eyes/BLUE | jq
+----
+
+You should only see **one** person with BLUE eyes:
+
+[source,json]
+----
+[
+  {
+    "persistent": true,
+    "id": 1,
+    "birth": "1974-08-15",
+    "eyes": "BLUE",
+    "name": "Farid Ulyanov"
+  }
+]
+----
+
+And let's find people born in 1990 or earlier:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/person/birth/before/1990 | jq`
+----
+
+You should see **two** people born in 1990 or earlier:
+
+[source,json]
+----
+[
+  {
+    "persistent": true,
+    "id": 1,
+    "birth": "1974-08-15",
+    "eyes": "BLUE",
+    "name": "Farid Ulyanov"
+  },
+  {
+    "persistent": true,
+    "id": 2,
+    "birth": "1984-05-24",
+    "eyes": "BROWN",
+    "name": "Salvador L. Witcher"
+  }
+]
+----
+
+The `Person` entity's superclass comes with lots of super useful static methods and you can add your own in your entity class. Users can just start using your entity `Person` by typing `Person`, and getting completion for all the operations in a single place.
+
+In the next step we'll show you how Panache can help to adapt entities to high performance frontends, even in the face of millions of records.
+
+## Add Paging and Filtering
+
+In the previous step you added a few more custom queries to your entity and the associated RESTful endpoints. In this step we'll build a slightly more complex query including filtering, searching and paging capabilities. 
+
+### Showing data in tables
+
+Earlier we used `curl` to access our data, which is very useful for testing, but for real applications you will usually surface the data in other ways, like on web pages using tables, with options for searching, sorting, filtering, paging, etc. Quarkus and Panache make this easy to adapt your application for any display library or framework.
+
+Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is ineffecient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
+
+### Add Datatables endpoint
+
+https://www.datatables.net/manual/server-side[DataTables documentation] shows that its frontend will call an endpoint on the backend to retrieve some amount of data. It will pass several query parameters to tell the server what to sort, filter, search, and which data to return based on the page size and current page the user is viewing. For this example, we'll only support a subset:
+
+* `start` - The index of the first element needed
+* `length` - Total number records to return (or less, if there are less records that meet criteria)
+* `search[value]` - The value of the search box
+* `draw` - DataTables does asnychronous processing, so this value is sent with each request, expecting it to be returned as-is, so DataTables can piece things back together on the frontend if a user clicks things quickly.
+  
+Open the `PersonResource` resource class and add the following code below the `// TODO: add datatable query` comment:
+
+[source,java,role="copypaste"]
+----
+    @GET
+    @Path("/datatable")
+    @Produces(MediaType.APPLICATION_JSON)
+    public DataTable datatable(
+        @QueryParam(value = "draw") int draw,
+        @QueryParam(value = "start") int start,
+        @QueryParam(value = "length") int length,
+        @QueryParam(value = "search[value]") String searchVal
+
+        ) {
+            // TODO: Begin result
+
+            // TODO: Filter based on search
+
+            // TODO: Page and return
+
+    }
+----
+
+Here we are using JAX-RS `@QueryParam` values to specify the incoming parameters and be able to use them when the frontend calls the `GET /person/datatable` endpoint.
+
+We'll fill in the `TODO`s to build this method.
+
+DataTables requires a specific JSON payload to be returned from this, and we've pre-created a POJO `DataTable` class representing this structure in `src/main/java/org/acme/people/model/DataTable.java`. This simple structure includes these fields:
+
+* `draw` - The async processing record id
+* `recordsTotal` - Total records in database
+* `recordsFiltered` - Total records that match filtering criteria
+* `data` - The actual array of records
+* `error` - Error string, if any
+  
+So, in our `PersonResource` endpoint, we'll start with an empty `result` object using the pre-created `DataTable` model. Add this code below the `// TODO: Begin Result` comment:
+
+[source,java,role="copypaste"]
+----
+DataTable result = new DataTable();
+result.setDraw(draw);
+----
+
+Next, if the request includes a search parameter, let's take care of that by including a search query, otherwise just collect all records. Add this code below the `// TODO: Filter based on search` marker:
+
+[source,java,role="copypaste"]
+----
+PanacheQuery<Person> filteredPeople;
+            
+if (searchVal != null && !searchVal.isEmpty()) {
+    filteredPeople = Person.<Person>find("name like :search",
+        Parameters.with("search", "%" + searchVal + "%"));
+} else {
+    filteredPeople = Person.findAll();
+}
+----
+
+And finally, we use the built-in Panache `page` operator to seek to the correct page of records and stream the number of entries desired, set the values into the `result` and return it. Add this code below the `// TODO: Page and return` marker:
+
+[source,java,role="copypaste"]
+----
+int page_number = start / length;
+filteredPeople.page(page_number, length);
+
+result.setRecordsFiltered(filteredPeople.count());
+result.setData(filteredPeople.list());
+result.setRecordsTotal(Person.count());
+
+return result;  
+----
+
+Let's test out our new endpoint using `curl` to search for names with `yan` in their name. Execute this in the Terminal:
+
+[source,sh,role="copypaste"]
+----
+curl "http://localhost:8080/person/datatable?draw=1&start=0&length=10&search\[value\]=yan" | jq
+----
+
+This should return a single entity (since in our 3-person sample data, only one has `yan` in their name), embedded in the return object that DataTable is expecting (with the `draw`, `recordsFiltered`, `recordsTotal` etc):
+
+[source,json]
+----
+{
+  "data": [
+    {
+      "persistent": true,
+      "id": 1,
+      "birth": "1974-08-15",
+      "eyes": "BLUE",
+      "name": "Farid Ulyanov"
+    }
+  ],
+  "draw": 1,
+  "recordsFiltered": 1,
+  "recordsTotal": 3
+}
+----
+
+### Add lifecycle hook
+
+You often need to execute custom actions when the application starts and clean up everything when the application stops. In this case we'll add an action that will pre-generate a lot of fake data.
+
+Managed beans (like our `PersonResource`) can listen for lifecycle events by using the `@Observes` annotation on method signatures, which will be called when the associated event occurs.
+  
+Open the `PersonResource` resource class and add the following lifecycle listener at the `// TODO: Add lifecycle hook` marker:
+
+[source,java,role="copypaste"]
+----
+@Transactional
+void onStart(@Observes StartupEvent ev) {
+    for (int i = 0; i < 10000; i++) {
+        String name = CuteNameGenerator.generate();
+        LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 20 * 52 * -1)));
+        EyeColor color = EyeColor.values()[(int)(Math.floor(Math.random() * EyeColor.values().length))];
+        Person p = new Person();
+        p.birth = birth;
+        p.eyes = color;
+        p.name = name;
+        Person.persist(p);
+    }
+}
+----
+
+This code will insert 10,000 fake people with random birthdates, eye colors, and names at startup. Note the use of the `@Transactional` annotation - this is required for methods that make changes to the underlying database (and automatically executes the method in a Transaction for you).
+
+Although this is listening for `StartupEvent`, and our application has already started, in `quarkus:dev` mode Quarkus will still fire this event once. So let's test it out and see if it picks up our new data. We'll search for a single letter `F` and limit the results to `2`:
+
+[source,sh,role="copypaste"]
+----
+curl "http://localhost:8080/person/datatable?draw=1&start=0&length=2&search\[value\]=F" | jq
+----
+
+[NOTE]
+====
+Adding 10k entries will make startup time artificially high, around 5-10 seconds. 
+====
+
+You should get up to 2 records returned, but the total number available should show many more indicating our search found many more, and the total number of records should now be `10003` (the 10k we added plus the 3 original values):
+
+[source, json]
+----
+{
+  "data": [
+    {
+      "persistent": true,
+      "id": 1,
+      "birth": "1974-08-15",
+      "eyes": "BLUE",
+      "name": "Farid Ulyanov"
+    },
+    {
+      "persistent": true,
+      "id": 10,
+      "birth": "2001-11-26",
+      "eyes": "GREEN",
+      "name": "Phantom Finger"
+    }
+  ],
+  "draw": 1,
+  "recordsFiltered": 1316,
+  "recordsTotal": 10003
+}
+----
+
+Note the values for `recordsFiltered` (the number of records with the letter `F` in the name), and `recordsTotal`. The value you see for `recordsFiltered` may be different than the above value, since the number of records with an `F` in the name may vary since the data is random.
+
+# Cleanup
+
+We're done with development, so go back to the first Terminal tab and press `CTRL-C` (or just close the running tab) to stop our running application.
+
+## Deploy to OpenShift
+
+In previous steps we deployed our sample application as a native binary. Now let's switch to a JVM-based deployment. Our production environment needs a "real" database so let's deploy a Postgres database. Run the following command to startup a database in our cluster:
+
+[source,sh,role="copypaste"]
+----
+oc new-app \
+    -e POSTGRESQL_USER=sa \
+    -e POSTGRESQL_PASSWORD=sa \
+    -e POSTGRESQL_DATABASE=person \
+    --name=postgres-database \
+    openshift/postgresql
+----
+
+With our database running, re-build the application as an executable JAR using the command palette and selecting **Package Executable JAR**.
+
+Next, re-define the container build to use the OpenJDK image:
+
+[source,sh,role="copypaste"]
+----
+oc delete bc/people
+oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.5 --binary --name=people
+----
+
+And now start the build using our executable JAR:
+
+[source,sh,role="copypaste"]
+----
+oc start-build people --from-file target/*-runner.jar --follow
+----
+
+This will re-build the image by starting with the OpenJDK base image, adding in our executable JAR, and packaging the result as a container image on the internal registry.
+
+This will also trigger a re-deployment of our existing app. Verify the app started up correctly:
+
+[source,sh,role="copypaste"]
+----
+oc rollout status -w dc/people
+----
+
+And now we can access using `curl` once again to find everyone born in or before the year 2000 (there will be many).
+
+[source,sh,role="copypaste"]
+----
+curl $(oc get route people -o=go-template --template='{{ .spec.host }}')/person/birth/before/2000 | jq
+----
+
+Now that we have our app running on OpenShift, let's see what we can do.
+
+Run the following command to output the full URL to our DataTable graphical frontend:
+
+[source,sh,role="copypaste"]
+----
+echo "http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/datatable.html"
+----
+
+Copy and paste that URL into a new browser tab to access it. It should look like:
+
+::img
+
+Notice the total number of records reported at the bottom. Type in a single letter, e.g. `F` in the search box and see how responsive the app is. Type additional letters to narrow the search. Rather than having all 10k records loaded in the browser, DataTable makes a call back to our `/person/datatable` REST endpoint to fetch only those records that should be shown, based on page size, current page you're looking at, and any search filters. With a page size of `10` each REST call will only return up to 10 records, no matter how many there are in the database.
+
+Skip around a few pages, try some different searches, and notice that the data is only loaded when needed. The overall performance is very good even for low-bandwidth connections or huge data sets.
+
+## Congratulations
+
+In this exercise you got a glimpse of the power of Quarkus apps when dealing with large amounts of data. There is much more to Quarkus than fast startup times and low resource usage, so keep going! 

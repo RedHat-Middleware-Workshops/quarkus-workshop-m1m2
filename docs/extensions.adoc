@@ -1,1 +1,65 @@
-## The Basics
+## Quarkus Extensions
+
+One of the main goals of Quarkus is ease of extensibility and to build a vibrant ecosystem.
+
+Think of Quarkus extensions as your project dependencies. Extensions configure, boot and integrate a framework or technology into your Quarkus application. They also do all of the heavy lifting of providing the right information to GraalVM for your application to compile natively.
+
+Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
+
+Retrieve the list of possible extensions using the Maven plugin. Run this in the Terminal:
+
+[source,sh,role="copypaste"]
+----
+mvn quarkus:list-extensions
+----
+
+You can see the list of ~50 different extensions available to you.
+
+Adding an extension is simiarly easy. With Maven, you can add extensions using `mvn quarkus:add-extension -Dextensions="hibernate-validator"`. The extension name can be the maven groupId/artifactId name of the extension: e.g. `io.quarkus:quarkus-agroal`. But you can pass a partial name and Quarkus will do its best to find the right extension. For example, `agroal`, `Agroal` or `agro` will expand to io.quarkus:quarkus-agroal. If no extension is found or if more than one extensions match, you will see a warning and a list of possible matches in the command result.
+
+## Add an extension
+
+Later on in this lab we'll be using Hibernate with Panache, so let's add that extension here. In the Terminal, run the following command to add the _Hibernate ORM with Panache_ extension to your project:
+
+[source,sh,role="copypaste"]
+----
+mvn quarkus:add-extension -Dextensions="panache"
+----
+
+Notice we are using the "short" name `panache` instead of the fully qualified name `io.quarkus:quarkus-hibernate-orm-panache`. 
+
+The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences using the following command:
+
+[source,sh,role="copypaste"]
+----
+git diff pom.xml
+----
+
+[source, none]
+----
++    <dependency>
++      <groupId>io.quarkus</groupId>
++      <artifactId>quarkus-hibernate-orm-panache</artifactId>
++    </dependency>
+----
+
+When you run Quarkus applications, the list of extensions enabled are shown in the output, such as:
+
+[source, none]
+----
+INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, narayana-jta, resteasy]
+----
+
+## Writing your own extension
+
+Quarkus extensions add a new developer focused behavior to the core offering, and consist of two distinct parts, buildtime augmentation and runtime container. The augmentation part is responsible for all metadata processing, such as reading annotations, XML descriptors etc. The output of this augmentation phase is recorded bytecode which is responsible for directly instantiating the relevant runtime services.
+
+This means that metadata is only processed once at build time, which both saves on startup time, and also on memory usage as the classes etc that are used for processing are not loaded (or even present) in the runtime JVM.
+
+Writing a Quarkus extension is beyond the scope of this lab, so consult the https://quarkus.io/guides/extension-authors-guide[Extension Author's Guide] for more detail on writing your own extension.
+
+## Congratulations
+
+Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
+
+We'll be adding additional extensions as we go along in other sections of this workshop.

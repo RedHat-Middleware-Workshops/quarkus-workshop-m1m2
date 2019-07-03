@@ -102,13 +102,12 @@ oc rollout status -w dc/people
 
 Wait for that command to report `replication controller "people-1" successfully rolled out` before continuing.
 
-And now we can access using `curl` once again. In the Terminal, run:
+And now we can access using `curl` once again. In the Terminal, run this command, which constructs the URL using `oc get route` and then calls `curl` to access the endpoint:
 
-[source,sh,role="copypaste copypaste-warning"]
+[source,sh,role="copypaste copypaste"]
 ----
-curl http://people-userNN-project.{{ ROUTE_SUBDOMAIN }}/hello/greeting/quarkus-on-openshift # <1>
+curl $(oc get route people -o=go-template --template='{{ .spec.host }}')/hello/greeting/quarkus-on-openshift
 ----
-<1> Don't forget to replace `userNN` with your assigned number, e.g. `user12` or `user4`
 
 You should see:
 

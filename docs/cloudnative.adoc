@@ -43,7 +43,7 @@ We can now implement our Health Check using the MicroProfile APIs. Create a new 
 
 [source, java, role="copypaste"
 ----
-package org.acme.people.rest;
+package org.acme.people.health;
 
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;

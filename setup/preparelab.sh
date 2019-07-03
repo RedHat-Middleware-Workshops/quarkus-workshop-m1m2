@@ -49,6 +49,9 @@ if [ ! "$(oc get clusterrolebindings)" ] ; then
   exit 1
 fi
 
+# adjust limits for admin
+oc delete userquota/default
+
 # get routing suffix
 TMP_PROJ="dummy-$RANDOM"
 oc new-project $TMP_PROJ
@@ -84,6 +87,9 @@ sleep 30
 
 # Make the admin as cluster admin
 oc adm policy add-cluster-role-to-user cluster-admin admin
+
+# become admin
+oc login -u admin -p "${ADMIN_PASSWORD}" --insecure-skip-tls-verify
 
 # create projects for users
 for i in {1..$USERCOUNT} ; do
