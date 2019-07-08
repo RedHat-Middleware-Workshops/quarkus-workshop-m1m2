@@ -1,1 +1,298 @@
-## The Basics
+## Securing Quarkus APIs with Keycloak
+
+This exercise demonstrates how your Quarkus applications can use https://keyloak.org[Keycloak] to protect your JAX-RS applications using _bearer token authorization_, where these tokens are issued by a Keycloak Server.
+
+Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed.
+
+Keycloak is a OAuth 2.0 compliant Authorization Server, capable of issuing access tokens so that you can use them to access protected resources. We are not going to enter into the details on what OAuth 2.0 is and how it works but give you a guideline on how to use OAuth 2.0 in your JAX-RS applications using the Quarkus Keycloak Extension.
+
+If you are already familiar with Keycloak, you’ll notice that the extension is basically another adapter implementation but specific for Quarkus applications. Otherwise, you can find more information in Keycloak documentation.
+
+## Add Keycloak to Quarkus
+
+Like other exercises, we'll need another extension to enable the use of Keycloak. Install it with:
+
+[source,sh,role="copypaste"]
+----
+mvn quarkus:add-extension -Dextensions="keycloak"
+----
+
+This will add the necessary entries in your `pom.xml` to bring in the Keycloak extension which is an implementation of a Keycloak Adapter for Quarkus applications and provides all the necessary capabilities to integrate with a Keycloak Server and perform bearer token authorization.
+
+## Create secured endpoints
+
+Create a new class in the `org.acme.people.rest` package called `SecuredResource` with the following code which will create **three new secured endpoints** all beginning with `/secured`:
+
+[source,java,role="copypaste"]
+----
+package org.acme.people.rest;
+
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.keycloak.KeycloakSecurityContext;
+
+@Path("/secured")
+public class SecuredResource {
+
+    @Inject
+    KeycloakSecurityContext keycloakSecurityContext;  // <1>
+
+    @GET
+    @Path("/me")   // <2>
+    @RolesAllowed("user")
+    @Produces(MediaType.APPLICATION_JSON)
+    @NoCache
+    public User me() {
+        return new User(keycloakSecurityContext);
+    }
+
+    @GET
+    @Path("/admin")  // <3>
+    @RolesAllowed("admin")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String admin() {
+        return "granted";
+    }
+
+    
+    @GET
+    @Path("/confidential")  // <4>
+    @Produces(MediaType.TEXT_PLAIN)
+    public String confidential() {
+        return "confidential";
+    }
+
+    public class User {
+
+        private final String userName;
+
+        User(KeycloakSecurityContext securityContext) {
+            this.userName = securityContext.getToken().getPreferredUsername();
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+    }
+}
+----
+<1> The `KeycloakSecurityContext` is an object produced by the Keycloak extension that you can use to obtain information from tokens sent to your application. In the source code above we are using this object to access the token representation and obtain the username of the user represented by the token.
+<2> Here we are using a `@RolesAllowed` annotation for the `/secured/me` endpoint to make sure that only users granted with the `user` role (i.e. are logged in) can access the endpoint.
+<3> For the `/secured/admin` we only want administrators (those granted the `admin` role in our identity management system) to be able to access
+<4> For the `/api/confidential` there is no explicit access control defined to this endpoint. The Keycloak extension will enforce access to this endpoint based on the policies defined in the Keycloak Server. For now, don’t worry about how the extension enforces access to `/api/confidential`. Just keep in mind that there is some configuration that we need to define to make this happen.
+
+## Configuring using the application.properties file
+
+The Keycloak extension allows you to define the adapter configuration using either the `application.properties` file or using a `keycloak.json`. Open up your `application.properties` file and add the following configuration for Keycloak:
+
+[source,none,role="copypaste"]
+----
+quarkus.keycloak.realm=quarkus # <1>
+quarkus.keycloak.auth-server-url=http://{{ KEYCLOAK_URL }}/auth
+quarkus.keycloak.resource=backend-service
+quarkus.keycloak.bearer-only=true
+quarkus.keycloak.credentials.secret=secret
+quarkus.keycloak.policy-enforcer.enable=true
+quarkus.keycloak.policy-enforcer.enforcement-mode=PERMISSIVE
+----
+
+We are using the same Keycloak instance that we use for Eclipse Che, and have pre-created the `quarkus` realm for you. This realm has some users pre-created:
+
+* `alice` is an ordinary user (will have the `user` role) whose password is `alice`
+* `admin` is an Administrator (has the `admin` role) and their password is `admin`
+* `jdoe` is an ordinary user (has the `user` role()) but has also been granted the `confidential` role in Keycloak, and their password is `jdoe`
+
+For more details about this file and all the supported options, please take a look at https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[Keycloak Adapter Config].
+
+## Rebuild and redeploy app
+
+First, re-build the app using the command palette and selecting **Build Executable JAR**. Once that's done, run the following command to re-deploy:
+
+[source,sh,role="copypaste"]
+----
+oc start-build people --from-file target/*-runner.jar --follow
+----
+
+## Confirm deployment
+
+Run and wait for the app to complete its rollout:
+
+[source,sh,role="copypaste"]
+----
+oc rollout status -w dc/people
+----
+
+## Test endpoints
+
+The application is using _bearer token authorization_ and the first thing to do to test any endpoint is obtain an access token from the Keycloak Server in order to access the application resources.
+
+### Test Alice
+
+Get a token for user `alice` with this command:
+
+[source,sh,role="copypaste"]
+----
+export ALICE_TOKEN=$(\
+    curl -X POST http://{{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    --user backend-service:secret \
+    -H 'content-type: application/x-www-form-urlencoded' \
+    -d 'username=alice&password=alice&grant_type=password' | jq --raw-output '.access_token' \
+ )
+----
+This issues a `curl` command to Keycloak (using `backend-service` credentials which is a special user that is allowed acess to the Keycloak REST API), and fetches a token for Alice using their credentials. You can see the value of this token:
+
+[source,sh,role="copypaste"]
+----
+echo $ALICE_TOKEN
+----
+
+Any user is allowed to access the `/secured/me` endpoint which basically returns a JSON payload with personal details about the user that's part of the `KeycloakSecurityContext` object. 
+
+[NOTE]
+====
+There are other APIs you can use if you try to auto-complete the method name using Che, e.g. `getBirthDate()` or `getPicture()`. Place the cursor just after `securityContext.getToken().` and press CTRL-SPACE to see them:
+
+::img
+====
+
+Try out the secured API as Alice:
+
+[source,sh,role="copypaste"]
+----
+curl -v -X GET \
+  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me \
+  -H "Authorization: Bearer $ALICE_TOKEN"
+----
+
+You should see:
+
+[source,none]
+----
+TODO: OUTPUT
+----
+
+### Test Admin
+
+The `/secured/admin` endpoint can only be accessed by users with the `admin` role. If you try to access this endpoint with the previously issued access token, you should get a 403 response from the server. Try it:
+
+[source,sh,role="copypaste"]
+----
+curl -v -X GET \
+  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/admin \
+  -H "Authorization: Bearer $ALICE_TOKEN"
+----
+
+You should see:
+
+[source,none]
+----
+TODO: OUTPUT
+----
+
+Failed as expected! Obtain an Admin token:
+
+[source,sh,role="copypaste"]
+----
+export ADMIN_TOKEN=$(\
+    curl -X POST http://{{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    --user backend-service:secret \
+    -H 'content-type: application/x-www-form-urlencoded' \
+    -d 'username=admin&password=admin&grant_type=password' | jq --raw-output '.access_token' \
+ )
+----
+
+And try again with your new token:
+[source,sh,role="copypaste"]
+----
+curl -v -X GET \
+  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/admin \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+----
+
+You should see:
+
+[source,none]
+----
+TODO: OUTPUT
+----
+
+Success!
+
+### Test confidential
+
+The `/secured/confidential` endpoint is protected with a policy defined in the Keycloak Server. The policy only grants access to the resource if the user is granted with a `confidential` role. The difference here is that the application is delegating the access decision to Keycloak, so no explicit source code instrumentation is required. 
+
+First make sure even `admin` can't access the endpoint:
+
+[source,sh,role="copypaste"]
+----
+curl -v -X GET \
+  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/confidential \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+----
+
+You should see:
+
+[source,none]
+----
+TODO: output
+----
+
+Failed as expected!
+
+To access the confidential endpoint, you should obtain an access token for user `jdoe`:
+
+[source,sh,role="copypaste"]
+----
+export JDOE_TOKEN=$(\
+    curl -X POST http://{{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    --user backend-service:secret \
+    -H 'content-type: application/x-www-form-urlencoded' \
+    -d 'username=jdoe&password=jdoe&grant_type=password' | jq --raw-output '.access_token' \
+ )
+----
+
+And access the confidential endpoint with your new token:
+
+[source,sh,role="copypaste"]
+----
+curl -v -X GET \
+  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/confidential \
+  -H "Authorization: Bearer $JDOE_TOKEN"
+----
+
+You should see:
+
+[source,none]
+----
+TODO: OUTPUT
+----
+
+Success!
+
+## Congratulations!
+
+This exercise demonstrated how your Quarkus application can use Keycloak to protect your JAX-RS applications using bearer token authorization, where these tokens are issued by a Keycloak Server.
+
+Quarkus has a number of other security-related features, such as:
+
+* JSON Web Token support for Access Control - Quarkus application can utilize the https://microprofile.io/project/eclipse/microprofile-jwt-auth[MicroProfile JWT RBAC] to provide secured access to the JAX-RS endpoints. See https://quarkus.io/guides/jwt-guide[this guide] for more detail.
+
+* Quarkus comes with integration with the https://docs.jboss.org/author/display/WFLY/WildFly+Elytron+Security[Elytron security subsystem] to allow for RBAC based on the common security annotations `@RolesAllowed`, `@DenyAll`, `@PermitAll` on REST endpoints. See https://quarkus.io/guides/security-guide[this guide] for details. 
+
+
+
+
+
+
+
+
+
+
+

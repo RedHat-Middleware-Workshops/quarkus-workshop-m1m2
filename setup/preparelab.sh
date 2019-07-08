@@ -105,6 +105,7 @@ oc new-app quay.io/osevg/workshopper --name=web \
       -e MASTER_URL=${MASTER_URL} \
       -e CONSOLE_URL=${CONSOLE_URL} \
       -e CHE_URL=http://codeready-che.${HOSTNAME_SUFFIX} \
+      -e KEYCLOAK_URL=http://keycloak-che.${HOSTNAME_SUFFIX} \
       -e ROUTE_SUBDOMAIN=${HOSTNAME_SUFFIX} \
       -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/" \
       -e WORKSHOPS_URLS="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/_workshop.yml" \

@@ -7,6 +7,8 @@ vars:
   MASTER_URL:
   CONSOLE_URL:
   CHE_URL:
+  KEYCLOAK_URL:
+  
 
 modules:
   activate:
