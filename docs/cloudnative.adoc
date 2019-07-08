@@ -1,8 +1,8 @@
-== Cloud Native
+## Cloud Native
 
 In this step we will package the application as a Linux Container image, and deploy it to Kubernetes, and add a few features common to cloud native apps that you as a developer will need to handle. We'll use OpenShift 4 as our deployment target, which is a distribution of Kubernetes from Red Hat.
 
-== Health Probes
+## Health Probes
 
 When building microservices, monitoring becomes of extreme importance to make sure all services are running at all times, and when they don't there are automatic actions triggered to rectify the issues. We'll cover more monitoring topics later, but for now let's explore Kubernetes Health Probes.
 
@@ -10,13 +10,13 @@ Kubernetes health probes offers a solution for monitoring application health and
 
 ::img
 
-Furthermore, there are of course a category of issues that can't be resolved by restarting the container. In those scenarios, the container never recovers and traffic will no longer be sent to it (which can have cascading effects on the rest of the system, possibly requiring human intervention, which is why monitoring is crucial to availability).
+There are of course a category of issues that can't be resolved by restarting the container. In those scenarios, the container never recovers and traffic will no longer be sent to it (which can have cascading effects on the rest of the system, possibly requiring human intervention, which is why monitoring is crucial to availability).
 
 Quarkus application developers can utilize the MicroProfile Health specification to write HTTP health probes for their applications. These endpoints by default provide basic data about the service however they all provide a way to customize the health data and add more meaningful information (e.g. database connection health, backoffice system availability, etc).
 
-=== Create a Probe
+### Add Extension
 
-Let's build a simple REST application endpoint exposes https://microprofile.io[MicroProfile] Health functionalities at the `/health` endpoint according to the specification. It will also provide several other REST endpoints to allow us to dynamically change the healthness of our Quarkus application.
+Let's build a simple REST application endpoint exposes https://microprofile.io[MicroProfile] Health functionalities at the `/health` endpoint according to the specification. It will also provide several other REST endpoints to allow us to dynamically query the health of our Quarkus application.
 
 We'll need to add a https://quarkus.io/extensions[Quarkus Extension] to enable this feature in our app. Fortunately, adding a Quarkus extension is super easy. We'll cover extensions in more depth in other sections of this workshop but for now, open a Terminal and execute the following command to add the extension to our project's `pom.xml`:
 
@@ -35,22 +35,42 @@ This will add the extension below to your `pom.xml`:
 </dependency>
 ----
 
-Next, Run the app once more by using the command palette and select **Build and Run Locally** to start the app up in dev local mode.
+Next, Run the app once more by using the command palette and select **Build and Run Locally** to start the app up in dev local mode. With no code, Quarkus still provides a default health check which may be enough for you if all you need is to know the app started. Try to access the `/health` endpoint on the Terminal:
 
-We can now implement our Health Check using the MicroProfile APIs. Create a new Java class - `org.acme.people.health.SimpleHealthCheck` (hint: right-click on the `org.acme.people.health` package and select _New > Java Class_ and name it `SimpleHealthCheck`). In this file, implement the health check (you can copy/paste this code):
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/health
+----
+
+You'll see:
+
+[source,json]
+----
+{
+    "status": "UP",
+    "checks": [
+    ]
+}
+----
+
+This default health check will return success as long as the app is running - if it crashes, the health check will fail.
+
+### Add a probe
+
+We can now implement a better Health Check using the MicroProfile APIs. Create a new Java class - `org.acme.people.health.SimpleHealthCheck` (hint: right-click on the `org.acme.people.health` package and select _New > Java Class_ and name it `SimpleHealthCheck`). In this file, implement the health check (you can copy/paste this code):
 
 [source, java, role="copypaste"
 ----
 package org.acme.people.health;
 
-import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.Readiness;
 
 import javax.enterprise.context.ApplicationScoped;
 
-@Health
 @ApplicationScoped
+@Readiness
 public class SimpleHealthCheck implements HealthCheck {
 
     @Override
@@ -60,7 +80,17 @@ public class SimpleHealthCheck implements HealthCheck {
 }
 ----
 
-As you can see health check procedures are defined as implementations of the `HealthCheck` interface which are defined as CDI beans with the `@Health` annotation. `HealthCheck` is a functional interface whose single method `call` returns a `HealthCheckResponse` object which can be easily constructed by the fluent builder API shown above.
+As you can see health check procedures are defined as implementations of the `HealthCheck` interface which are defined as CDI beans with the either the `@Readiness` or `@Liveness` annotation. `HealthCheck` is a functional interface whose single method `call` returns a `HealthCheckResponse` object which can be easily constructed by the fluent builder API shown above. This simple example will serve as our _Readiness_ probe.
+
+[NOTE]
+====
+There are two types of probes in Quarkus apps (and Kubernetes):
+
+* Readiness Probe - This probe indicates when an application is ready to start serving requests at the beginning of its life. New application containers will not get any traffic routed to it until its Liveness probes indicate it's ready.
+* Liveness Probe - Sometimes, applications are temporarily unable to serve traffic. For example, an application might need to load large data or configuration files during startup, or depend on external services after startup. In such cases, you don’t want to kill the application, but you don’t want to send it requests either, until its _Liveness_ probes indicate its ready.
+
+Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail.
+====
 
 As we have started our Quarkus application in dev mode simply open a Terminal window and run:
 
@@ -79,32 +109,32 @@ Congratulations! You’ve created your first Quarkus health check procedure. Let
 
 In the previous step we created a simple health check with only the minimal attributes, namely, the health check name and its state (`UP` or `DOWN`). However, MicroProfile also provides a way for the applications to supply arbitrary data in the form of key/value pairs sent in the health check response. This can be done by using the `withData(key, value)`` method of the health check response builder API. This is useful to provide additional info about passing or failing health checks, to give some indication of the problem when failures are investigated.
 
-Let’s create our second health check procedure. Create another Java class `org.acme.people.health.DataHealthCheck` with the following code:
+Let’s create our second health check procedure, a _Liveness_ probe. Create another Java class `org.acme.people.health.DataHealthCheck` with the following code:
 
 [source, java, role="copypaste"]
 ----
 package org.acme.people.health;
 
-import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.Liveness;
 
 import javax.enterprise.context.ApplicationScoped;
 
-@Health
 @ApplicationScoped
+@Liveness
 public class DataHealthCheck implements HealthCheck {
 
     @Override
     public HealthCheckResponse call() {
         return HealthCheckResponse.named("Health check with data")
-                .up()
-                .withData("foo", "fooValue")
-                .withData("bar", "barValue")
-                .build();
+        .up()
+        .withData("foo", "fooValue")
+        .withData("bar", "barValue")
+        .build();
+
     }
 }
-
 ----
 
 If you rerun the health check procedure again by accessing the `/health` endpoint with `curl` you can see that the new health check Health check with data is present in the `checks` array. This check contains a new attribute called `data` which is a JSON object consisting of the properties we have defined in our health check procedure above.
@@ -113,26 +143,25 @@ If you rerun the health check procedure again by accessing the `/health` endpoin
 
 In this section we create another health check which simulates a connection to an external service provider such as a database. For simplicity reasons, we only determine whether the database is accessible or not by a configuration property.
 
-Let’s create our final health check procedure. Create another Java class `org.acme.people.health.DatabaseConnectionHealthCheck` with the following code:
+Let’s create our final health check procedure (another Liveness probe). Create another Java class `org.acme.people.health.DatabaseConnectionHealthCheck` with the following code:
 
 [source, java, role="copypaste"]
 ----
 package org.acme.people.health;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
+import org.eclipse.microprofile.health.Liveness;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-@Health
 @ApplicationScoped
+@Liveness
 public class DatabaseConnectionHealthCheck implements HealthCheck {
 
-    @ConfigProperty(name = "database.up", defaultValue = "false")
+    @ConfigProperty(name = "database.up", defaultValue = "true")
     private boolean databaseUp;
 
     @Override
@@ -163,6 +192,28 @@ public class DatabaseConnectionHealthCheck implements HealthCheck {
 If you now rerun the health check (by running the same `curl` command from before) the overall outcome should be `DOWN` and you should see in the `checks` array the newly added Database connection health check which is down and the error message explaining why it failed.
 
 As we shouldn’t leave this application with a health check in DOWN state and because we are running Quarkus dev mode you can add `database.up=true` to the end of the `src/main/resources/application.properties` file and rerun the health check again — it should be up again.
+
+### Accessing liveness and readiness separately
+
+Quarkus apps can access the two different types using two different endpoints. This is useful when configuring Kubernetes with probes which we'll do later, as it can access each separately (and configure each with different timeouts, periods, failure thresholds, etc). For example, You may want your Readiness probe to wait 30 seconds before starting, but Liveness should wait 2 minutes and only wait 10 seconds between retries.
+
+Access the two endpoints. Each endpoint will only report on its specific type of probe:
+
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/health/live
+----
+
+You should only see the single Liveness probe.
+
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/health/ready
+----
+
+You should only see our 2 readiness probes.
+
+Later, when we deploy this to our Kubernetes cluster, we'll configure it to use these endpoints.
 
 == Externalized Configuration
 

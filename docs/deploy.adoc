@@ -134,11 +134,12 @@ Navigate to _Networking > Routes_. Here you can see the single external route cr
 
 # Connect MicroProfile health check
 
-Earlier you implemented a series of MicroProfile health checks. To make OpenShift aware of these available health checks and begin using them, run the following command:
+Earlier you implemented a series of MicroProfile health checks. To make OpenShift aware of these available health checks and begin using them, run the following two commands:
 
 [source,sh,role="copypaste"]
 ----
-oc set probe dc/people --readiness --liveness --get-url=http://:8080/health 
+oc set probe dc/people --readiness --get-url=http://:8080/health/ready
+oc set probe dc/people --liveness --get-url=http://:8080/health/live
 ----
 
 This configures both a _readiness_ probe (is the app initialized and ready to serve requests?) and a _liveness_ probe (is the app still up and ready to serve requests) with default timeouts. OpenShift will not route any traffic to pods that don't respond successfully to these probes. By editing these, it will trigger a new deployment so make sure the app comes up with its new probes in place:
