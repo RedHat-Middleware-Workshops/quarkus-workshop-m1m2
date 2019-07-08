@@ -220,6 +220,15 @@ Enter `application:org_acme_people_stream_name_converter_converted_names` in the
 
 Of course Quarkus apps use very little memory, even for apps stuffed with all sorts of extensions and code.
 
+## Beyond Prometheus
+
+Prometheus offers a powerful way to capture metrics, a rich query language and alerting of unusual or unexpected conditions. Another open source project, https://grafana.com/[Grafana] is commonly used as a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards]:
+
+::img
+
+### Extra Credit after this workshop
+
+If you have time after completing this workshop, try running grafana and hooking it up to your Prometheus instance you've created. Hint: `oc new-app grafana/grafana && oc expose svc/grafana` and then access Grafana at the URL emitted by this command: `echo http://$(oc get route grafana -o=go-template --template='{{ .spec.host }}')`, add Prometheus as a data source at `http://prometheus:9090`, and create a custom dashboard showing some of your application metrics, or import an existing dashboard from the Grafana community.
 
 ## Cleanup
 
