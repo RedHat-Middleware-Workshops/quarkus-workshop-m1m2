@@ -18,10 +18,10 @@ If your application is still running from the previous exercise, go back to its 
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="openapi"
+mvn quarkus:add-extension -Dextensions="openapi,resteasy-jsonb"
 ----
 
-This will add the extension to our project.
+This will add the extension (along with JSON-B to generate the json documents for OpenAPI) to our project.
 
 Run the project again, using the command palette and selecting **Build and Run Locally** (if you had a previous app running, CTRL-C or close the old Terminal before running it again). This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
 

@@ -458,7 +458,7 @@ Open the `PersonResource` resource class and add the following lifecycle listene
 ----
 @Transactional
 void onStart(@Observes StartupEvent ev) {
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 1000; i++) {
         String name = CuteNameGenerator.generate();
         LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 20 * 52 * -1)));
         EyeColor color = EyeColor.values()[(int)(Math.floor(Math.random() * EyeColor.values().length))];
@@ -471,7 +471,7 @@ void onStart(@Observes StartupEvent ev) {
 }
 ----
 
-This code will insert 10,000 fake people with random birthdates, eye colors, and names at startup. Note the use of the `@Transactional` annotation - this is required for methods that make changes to the underlying database (and automatically executes the method in a Transaction for you).
+This code will insert 1,000 fake people with random birthdates, eye colors, and names at startup. Note the use of the `@Transactional` annotation - this is required for methods that make changes to the underlying database (and automatically executes the method in a Transaction for you).
 
 Although this is listening for `StartupEvent`, and our application has already started, in `quarkus:dev` mode Quarkus will still fire this event once. So let's test it out and see if it picks up our new data. We'll search for a single letter `F` and limit the results to `2`:
 
@@ -482,10 +482,10 @@ curl "http://localhost:8080/person/datatable?draw=1&start=0&length=2&search\[val
 
 [NOTE]
 ====
-Adding 10k entries will make startup time artificially high, around 5-10 seconds. 
+Adding 1k entries will make startup time artificially high, around 3-5 seconds. 
 ====
 
-You should get up to 2 records returned, but the total number available should show many more indicating our search found many more, and the total number of records should now be `10003` (the 10k we added plus the 3 original values):
+You should get up to 2 records returned, but the total number available should show many more indicating our search found many more, and the total number of records should now be `1003` (the 1k we added plus the 3 original values):
 
 [source, json]
 ----
@@ -507,8 +507,8 @@ You should get up to 2 records returned, but the total number available should s
     }
   ],
   "draw": 1,
-  "recordsFiltered": 1316,
-  "recordsTotal": 10003
+  "recordsFiltered": 131,
+  "recordsTotal": 1003
 }
 ----
 
@@ -534,13 +534,15 @@ oc new-app \
 
 With our database running, re-build the application as an executable JAR using the command palette and selecting **Package Executable JAR**.
 
-Next, re-define the container build to use the OpenJDK image:
+Next, re-define the container build to use the OpenJDK image using these two commands:
 
 [source,sh,role="copypaste"]
 ----
-oc delete bc/people
+oc delete bc/people 
 oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.5 --binary --name=people
+oc set env dc/people JAVA_OPTIONS='-Dfile.encoding=UTF8' # <1>
 ----
+<1> We need to set the file encoding to handle the special characters in our sample data
 
 We'll need to re-build the app as an Executable JAR. Using the command palette, select **Build Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
