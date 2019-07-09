@@ -45,7 +45,7 @@ When creating new tests, always double-check to be sure you're in the `src/test`
 
 ## Add a new test
 
-Add a new test in `GreetingResourceTest` that tests the `/hello/greeting` endpoint by copying this code below the existing test:
+Add a new test in the `GreetingResourceTest` class that tests the `/hello/greeting` endpoint by copying this code below the existing test:
 
 [source, java, role="copypaste"]
 ----
@@ -59,15 +59,13 @@ Add a new test in `GreetingResourceTest` that tests the `/hello/greeting` endpoi
             .statusCode(200)
             .body(startsWith("hello " + uuid));
     }
-
-}
 ----
 
 ## Test the app
 
-Let's test our app. In Che, using the same command palette, select **test**:
+Let's test our app. In Che, using the same command palette, double-click on **Run Quarkus Tests**:
 
-image::images/testcmd.png[]
+image::testcmd.png[testcmd,600]
 
 The tests will run, and eventually complete. Did you get any errors? You should have! You probably got:
 
@@ -80,11 +78,11 @@ Expected: is "hello"
   Actual: hola
 ----
 
-This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` and re-run the test and confirm it passes with `BUILD SUCCESS`.
+This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and re-run the test and confirm it passes with `BUILD SUCCESS`.
 
 ## Controlling the test port
 
-While Quarkus will listen on port `8080` by default, when running tests it defaults to `8081`. This allows you to run tests while having the application running in parallel (which you just did).
+While Quarkus will listen on port `8080` by default, when running tests it defaults to `8081`. This allows you to run tests while having the application running in parallel (which you just did - your app is still running from the previous exercises).
 
 You can configure the port used by tests by configuring `quarkus.http.test-port` in your `application.properties`. Open that file (it's in `src/main/resources`) and add a new line at the end:
 
@@ -97,7 +95,7 @@ Now re-run the tests and look for
 
 [source, none]
 ----
- INFO  [io.quarkus] (main) Quarkus 0.17.0 started in 1.997s. Listening on: http://[::]:8083
+ INFO  [io.quarkus] (main) Quarkus x.xx.x started in 1.997s. Listening on: http://[::]:8083
 ----
 
 ## Injecting a URI
@@ -106,7 +104,9 @@ It is also possible to directly inject the URL into the test which can make is e
 
 Let’s write a simple test that shows this off to load some static resources. First create a simple HTML file in `src/main/resources/META-INF/resources/`. Right-click on this directory and select _New -> HTML File_. Name the file `test` in the dialog box (which will cause the final filename to be `test.html`):
 
-image::images/createhtml.png[]
+image::createhtml.png[html,500]
+
+Between the `<title></title>` tags, add `Testing with Quarkus`. Our test will verify this string.
 
 Next, create a new test under `src/test/java` in the `org.acme.people` package called `StaticContentTest`. To do this, right-click on the `org.acme.people` package and select _New -> Java Class_. Name the class `StaticContentTest`. Replace the contents of the file with this code:
 
@@ -150,7 +150,9 @@ Re-run the tests to ensure they're still passing.
 
 So far we have only covered integration style tests that test the app via HTTP endpoints, but what if we want to do unit testing and test our beans directly?
 
-Quarkus supports this by allowing you to inject CDI beans into your tests via the `@Inject` annotation (in fact, tests in Quarkus are full CDI beans, so you can use all CDI functionality). Let’s create a simple test that tests the greeting service directly without using HTTP. Create a new test class in `src/test` in the `org.acme.people` package called `GreetingServiceTest`. Use the following code for the file's contents:
+Quarkus supports this by allowing you to inject CDI beans into your tests via the `@Inject` annotation (in fact, tests in Quarkus are full CDI beans, so you can use all CDI functionality). Let’s create a simple test that tests the greeting service directly without using HTTP.
+
+Create a new test class in `src/test` in the `org.acme.people` package called `GreetingServiceTest`. Use the following code for the file's contents (note we've included the proper imports for you):
 
 [source, java, role="copypaste"]
 ----
@@ -158,8 +160,11 @@ package org.acme.people;
 
 import javax.inject.Inject;
 
+import org.acme.people.service.GreetingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -181,7 +186,7 @@ public class GreetingServiceTest {
 
 Here we are injecting our `GreetingService` and calling it, just as our RESTful resource endpoint does in the production code.
 
-Again, use _Assistant -> Organize Imports_ to add any needed imports (such as `GreetingService`). Run the tests again to verify the new test passes.
+Run the tests again to verify the new test passes.
 
 [NOTE]
 ====
@@ -252,8 +257,6 @@ Now modify our existing `GreetingServiceTest` class to add a log statement showi
 
 [source, java, role="copypaste"]
 ----
-    private static final Logger LOGGER = LoggerFactory.getLogger("GreetingServiceTest");
-    
     @Test
     public void testGreetingService() {
         LOGGER.info("greeting: " + service.greeting("Quarkus"));
@@ -267,7 +270,8 @@ Now run the tests again (using the command palette as usual), and watch the outp
 
 [source, none]
 ----
-INFO  [GreetingServiceTest] (main) greeting: hello Quarkus from mock greeting
+[INFO] Running org.acme.people.GreetingServiceTest
+[INFO]  [GreetingServiceTest] (main) greeting: hello Quarkus from mock greeting
 ----
 
 This confirms that our `MockGreetingService` is being used instead of the original `GreetingService`.

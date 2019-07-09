@@ -1,10 +1,15 @@
 ## Dependency Injection
 
-In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean that will use the _ArC_ extension which provides a CDI-based dependency injection https://quarkus.io/guides/cdi-reference.html[solution] tailored for the Quarkus architecture.
+In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification,target=_blank]. However, it is not a full CDI implementation verified by the TCK. Only a subset of the CDI features is implemented - see also the https://quarkus.io/guides/cdi-reference#supported_features[list of supported features, target=_blank] and the https://quarkus.io/guides/cdi-reference#limitations[list of limitations, target=_blank].
 
 ## Add Custom Bean
 
-Let’s modify the application and add a companion bean. In CodeReady, right-click on the `org.acme.people.service` package in the project browser and select _New_ --> _Java Class_. Name the class `GreetingService`, and then copy the below code into the class:
+Let’s modify the application and add a companion bean. In CodeReady, right-click on the `org.acme.people.service` package in the project browser and select _New_ --> _Java Class_. Name the class `GreetingService`.
+
+image::newclass.png[newclass,600]
+image::classname.png[classname,400]
+
+Next, copy the below code into the class:
 
 [source,java,role="copypaste"]
 ----
@@ -43,7 +48,16 @@ Next, open the existing `GreetingResource.java` class file and add a new field a
 
 This will cause our new `GreetingResource` class to be instantiated and injected as the `service` field, and then the method `greeting` accesses this service to return the name.
 
-You may notice that you get red error squigglies when you paste this code due to missing import statements. There are two ways with Che to fix this. Either right-click on the offending statement, and choose **Quick Fix** and then choose to import the missing API, or use the _Assistant_ > _Organize Imports_ menu option to do them en masse. You may need to choose from multiple matches, e.g. make sure you choose to import `javax.ws.rs.PathParam` when fixing the missing `PathParam` import. In general, look for `javax` or other well-known names to import. If you get it wrong you'll find out soon enough.
+You will get red error squigglies when you paste this code due to missing import statements:
+
+image::importerror.png[error,500]
+
+Use the _Assistant_ > _Organize Imports_ menu option to fix this and import the right classes. You may need to choose from multiple matches, e.g. make sure you choose to import `javax.ws.rs.PathParam` when fixing the missing `PathParam` import. In general, look for `javax` or other well-known names to import. If you get it wrong you'll find out soon enough.
+
+[WARNING]
+====
+If you do not get red squigglies, or you can't make them disappear, try to close the file and re-open it, or reload your web browser. This is a known issue with Che on recent versions of Kubernetes.
+====
 
 ## Run the app
 
@@ -51,15 +65,13 @@ Once again, run the app in _dev_ mode by using the command palette and selecting
 
 ## Inspect the results
 
-Check that it works as expected by loading the new endpoint using the Preview URL and adding the `/hello/greeting/quarkus` to the end of the URL:
+Check that it works as expected by loading the new endpoint using the Preview URL and adding the `/hello/greeting/quarkus` to the end of the URL, just as you did before.
 
-image::images/greetingpage.png[]
-
-Note we are exercising our new bean using the `/hello/greeting` endpoint, and you should see `hello quarkus from <hostname>`.
+Note we are exercising our new bean using the `/hello/greeting/quarkus` endpoint, and you should see `hello quarkus from <hostname>`.
 
 [NOTE]
 ====
-In this case, the hostname is the hostname from the node the app is running on within Kubernetes and will change later on.
+In this case, the hostname is the hostname from the pod the app is running on within Kubernetes and will change later on.
 ====
 
 ## Congratulations!
