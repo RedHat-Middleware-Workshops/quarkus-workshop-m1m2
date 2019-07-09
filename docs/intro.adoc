@@ -1,11 +1,12 @@
 ## What is Quarkus?
 
-you username: {{ USER_NAME }}
 image::imgs/logo.png[]
 
-Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot] and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy to your development_.
+Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot,window=_blank2 and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy to your development_.
 
-## Conventions
+Throughout this lab you'll discover how Quarkus can make your development of cloud native apps faster and more productive.
+ 
+## Click-to-Copy
 You will see various code and command blocks throughout these exercises. Some of
 the command blocks can be copy/pasted directly. Others will require modification
 of the command before execution, for example to add your unique user ID assigned by the instructor. If you see a command block with a red border
@@ -34,7 +35,7 @@ text to make for easier copying.
 
 ## Your Development Environment
 
-You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che]. To get started, {{ CHE_URL }}[access the Che instance] and register as a new user using the username you've been assigned (e.g. `user32`, `user8`, etc):
+You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che,window=_blank]. To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and register as a new user using the username you've been assigned (e.g. `user32`, `user8`, etc):
 
 image::imgs/che-register.png[]
 

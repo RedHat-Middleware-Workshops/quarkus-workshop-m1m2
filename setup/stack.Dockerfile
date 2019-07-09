@@ -4,13 +4,11 @@ FROM registry.access.redhat.com/codeready-workspaces/stacks-java-rhel8:1.2
 
 USER root
 
-RUN wget -O /usr/local/bin/odo https://github.com/openshift/odo/releases/download/v1.0.0-beta2/odo-linux-amd64 && chmod a+x /usr/local/bin/odo
-
 RUN wget -O /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/oc/4.1/linux/oc.tar.gz && cd /usr/bin && tar -xvzf /tmp/oc.tar.gz && chmod a+x /usr/bin/oc && rm -f /tmp/oc.tar.gz
 
-RUN wget -O /tmp/graalvm.tar.gz https://github.com/oracle/graal/releases/download/vm-1.0.0-rc16/graalvm-ce-1.0.0-rc16-linux-amd64.tar.gz && cd /usr/local && tar -xvzf /tmp/graalvm.tar.gz && rm -rf /tmp/graalvm.tar.gz
+RUN wget -O /tmp/graalvm.tar.gz https://github.com/oracle/graal/releases/download/vm-19.0.2/graalvm-ce-linux-amd64-19.0.2.tar.gz && cd /usr/local && tar -xvzf /tmp/graalvm.tar.gz && rm -rf /tmp/graalvm.tar.gz
 
-ENV GRAALVM_HOME="/usr/local/graalvm-ce-1.0.0-rc16"
+ENV GRAALVM_HOME="/usr/local/graalvm-ce-19.0.2"
 
 RUN wget -O /tmp/mvn.tar.gz http://www.eu.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz
 
@@ -22,8 +20,9 @@ RUN --mount=type=secret,id=rhsm username="$(grep RH_USERNAME /run/secrets/rhsm|c
 
 ENV MAVEN_OPTS="-Xmx4G -Xss128M -XX:MetaspaceSize=1G -XX:MaxMetaspaceSize=2G -XX:+CMSClassUnloadingEnabled"
 
-RUN cd /tmp && mkdir project && cd project && mvn io.quarkus:quarkus-maven-plugin:0.17.0:create -DprojectGroupId=org.acme -DprojectArtifactId=footest -Dextensions="quarkus-agroal,quarkus-arc,quarkus-hibernate-orm,quarkus-hibernate-orm-panache,quarkus-jdbc-h2,quarkus-jdbc-postgresql,quarkus-kubernetes,quarkus-scheduler,quarkus-smallrye-fault-tolerance,quarkus-smallrye-health,quarkus-smallrye-opentracing" && mvn clean compile package && mvn clean && cd / && rm -rf /tmp/project
-RUN cd /tmp && mkdir project && cd project && mvn io.quarkus:quarkus-maven-plugin:0.17.0:create -DprojectGroupId=org.acme -DprojectArtifactId=footest -Dextensions="quarkus-smallrye-reactive-streams-operators,quarkus-smallrye-reactive-messaging,quarkus-smallrye-reactive-messaging-kafka,quarkus-swagger-ui,quarkus-vertx,quarkus-kafka-client, quarkus-smallrye-metrics,quarkus-smallrye-openapi" && mvn clean compile package && mvn clean compile package -Pnative && mvn clean && cd / && rm -rf /tmp/project
+RUN cd /tmp && mkdir project && cd project && mvn io.quarkus:quarkus-maven-plugin:0.18.0:create -DprojectGroupId=org.acme -DprojectArtifactId=footest -Dextensions="quarkus-agroal,quarkus-arc,quarkus-hibernate-orm,quarkus-hibernate-orm-panache,quarkus-jdbc-h2,quarkus-jdbc-postgresql,quarkus-kubernetes,quarkus-scheduler,quarkus-smallrye-fault-tolerance,quarkus-smallrye-health,quarkus-smallrye-opentracing" && mvn clean compile package && mvn clean && cd / && rm -rf /tmp/project
+RUN ${GRAALVM_HOME}/bin/gu install native-image
+RUN cd /tmp && mkdir project && cd project && mvn io.quarkus:quarkus-maven-plugin:0.18.0:create -DprojectGroupId=org.acme -DprojectArtifactId=footest -Dextensions="quarkus-smallrye-reactive-streams-operators,quarkus-smallrye-reactive-messaging,quarkus-smallrye-reactive-messaging-kafka,quarkus-swagger-ui,quarkus-vertx,quarkus-kafka-client, quarkus-smallrye-metrics,quarkus-smallrye-openapi" && mvn clean compile package && mvn clean compile package -Pnative && mvn clean && cd / && rm -rf /tmp/project
 
 RUN siege && sed -i 's/^connection = close/connection = keep-alive/' $HOME/.siege/siege.conf && sed -i 's/^benchmark = false/benchmark = true/' $HOME/.siege/siege.conf
 

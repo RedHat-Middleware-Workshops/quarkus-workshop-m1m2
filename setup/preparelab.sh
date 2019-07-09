@@ -89,7 +89,7 @@ sleep 30
 oc adm policy add-cluster-role-to-user cluster-admin admin
 
 # become admin
-oc login -u admin -p "${ADMIN_PASSWORD}" --insecure-skip-tls-verify
+oc login $MASTER_URL -u admin -p "${ADMIN_PASSWORD}" --insecure-skip-tls-verify
 
 # create projects for users
 for i in {1..$USERCOUNT} ; do
@@ -255,9 +255,6 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
     --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${MYDIR}/../files/stack.json \
     "http://codeready-che.${HOSTNAME_SUFFIX}/api/stack"
 
-curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${TMPREALM} \
-  -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms
-
 # Scale the cluster
 WORKERCOUNT=$(oc get nodes|grep worker | wc -l)
 if [ "$WORKERCOUNT" -lt 10 ] ; then
@@ -307,5 +304,5 @@ EOF
 # RH_PASSWORD=your-password
 #
 # then:
-# DOCKER_BUILDKIT=1 docker build --secret id=rhsm,src=rhsm.secret -t docker.io/username/che-quarkus-odo:latest -f stack.Dockerfile .
+# DOCKER_BUILDKIT=1 docker build --progress=plain --secret id=rhsm,src=rhsm.secret -t docker.io/username/che-quarkus-odo:latest -f stack.Dockerfile .
 # docker push docker.io/username/che-quarkus-odo:latest

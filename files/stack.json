@@ -38,7 +38,7 @@
   
               ],
               "attributes": {
-                "memoryLimitBytes": "4294967296"
+                "memoryLimitBytes": "3221225472"
               }
             }
           }
@@ -47,7 +47,7 @@
       "commands": [
         {
           "commandLine": "mvn verify -f ${current.project.path}",
-          "name": "test",
+          "name": "Run Quarkus Tests",
           "type": "mvn",
           "attributes": {
             "goal": "Test",
@@ -64,7 +64,7 @@
           }
         },
         {
-          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative -DskipTests; oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5 --insecure-skip-tls-verify=true",
+          "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative -DskipTests",
           "name": "Build Native Quarkus App",
           "type": "custom",
           "attributes": {
@@ -114,7 +114,7 @@
         "name": "Ansible"
       },
       {
-        "version": "4.0.0",
+        "version": "4.1.0",
         "name": "OpenShift CLI"
       }
     ],

@@ -10,7 +10,7 @@ GraalVM is already installed for you. Inspect the value of the `GRAALVM_HOME` va
 
 [source,sh,role="copypaste"]
 ----
-echo $GRAALVM_HOM
+echo $GRAALVM_HOME
 ----
 
 ## Build the image
@@ -48,6 +48,11 @@ We use a profile because, you will see very soon, packaging the native image tak
 Create a native executable by once again opening the command palette and choose **Build Native Quarkus App**. This will execute `mvn clean package -Pnative` behind the scenes. The `-Pnative` argument selects the `native` maven profile which invokes the Graal compiler.
 
 This will take a minute or so to finish. Wait for it!
+
+[NOTE]
+====
+You can safely ignore any warnings like `Warning: RecomputeFieldValue.FieldOffset automatic substitution failed.` These are harmless and will be removed in future releases of Quarkus.
+====
 
 [NOTE]
 ====
