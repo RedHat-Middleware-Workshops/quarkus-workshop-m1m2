@@ -2,7 +2,7 @@
 
 In this step, you will create a straightforward application serving a `hello` endpoint. To demonstrate dependency injection this endpoint uses a `greeting` bean. 
 
-image::imgs/arch.png[]
+image::arch.png[arch,800]
 
 ## Import new project
 
@@ -13,17 +13,17 @@ In Che, click on **Import Project...**. In the dialog box, select **GITHUB** as 
 https://github.com/RedHatWorkshops/quarkus-workshop-labs
 ----
 
-image::imgs/import.png[]
+image::import.png[import,800]
 
 After a few seconds, you'll get a _Project Configuration_ Dialog. Select **Maven** as the project type, and click **Save**.
 
-image::imgs/importmaven.png[]
+image::importmaven.png[maven,800]
 
 This will tell Che that the project is a Maven-based project, and be able to resolve dependencies and do error checking on the `pom.xml` file.
 
 The structure of the project can be seen in the project browser to the left of the code editor:
 
-image::imgs/structure.png[]
+image::structure.png[structure,800]
 
 The project has
 
@@ -77,9 +77,14 @@ Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Applicat
 
 Now we are ready to run our application. In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Build and Run Locally**:
 
-image::images/runlocally.png[]
+image::runlocally.png[runlocal,800]
 
 This will compile and run the app using `mvn compile quarkus:dev` in a Terminal window. 
+
+[NOTE]
+====
+The first time you build the app, new dependencies may be downloaded via maven. This should only happen once, after that things will go even faster
+====
 
 You should see:
 
@@ -93,19 +98,19 @@ You should see:
 
 Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). Che also makes the app accessible from outside the container by creating a Route (ingress) that is displayed at the top of the Terminal window. Look for _Preview URL_:
 
-image::imgs/previewurl.png[]
+image::previewurl.png[preview,800]
 
 Click on this Preview link to open the link in a new tab, which will access the default Quarkus HTML page included in this app:
 
-image::images/defaultpage.png[]
+image::defaultpage.png[default,800]
 
 Since our RESTful endpoint listens on the `/hello` endpoint, add `/hello` to the end of the URL in your browser tab to access it.
 
 You should see `hello` in your browser tab, which means its working!
 
-image::images/hellopage.png[]
+image::hellopage.png[hello,800]
 
-Now, let's exercise the **live reload** capabilities of Quarkus. In Che, edit the `GreetingResource.java` file and change `return "hello";` to `return "hola";` in the editor. Press `CTRL-S` (or `CMD-S` on Mac OS) to save the file. Don't recompile or restart anything. Just try to reload the same brower tab that was showing `hello`. It should now show `hola`.
+Now, let's exercise the **live reload** capabilities of Quarkus. In Che, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. Press `CTRL-S` (or `CMD-S` on Mac OS) to save the file. Don't recompile or restart anything. Just try to reload the same brower tab that was showing `hello`. It should now show `hola`.
 
 Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started. Leave the app running so we can continue to change it on the fly in the next section.
 
@@ -123,11 +128,13 @@ This will also listen for a debugger on port `5005`. If your want to wait for th
 
 Let's stop the original application so we can package and re-run it as an executable JAR. In the terminal, press `CTRL-C` to stop the application (some browsers don't support this command - simply close the Terminal using the 'X' button on the tab, which will also kill the running app).
 
+image::kill.png[kill,800]
+
 ### Package the app
 
 Quarkus apps can be packaged as an executable JAR file or a native binary. We'll cover native binaries later, so for now, let's package as an executable JAR.
 
-Using the command palette, select _Build Executable JAR_. This runs `mvn package` under the hood, and when done produces 2 jar files in the `target/` directory:
+Using the command palette, select **Create Executable JAR**. This runs `mvn package` under the hood, and when done produces 2 jar files in the `target/` directory:
 
 * `people-1.0-SNAPSHOT.jar` - containing just the classes and resources of the projects, it’s the regular artifact produced by the Maven build
 
@@ -135,7 +142,11 @@ Using the command palette, select _Build Executable JAR_. This runs `mvn package
 
 ## Opening new Terminals
 
-Several steps in this workshop require you to execute commands in a Terminal. To open a new Terminal window, simply right-click on the project name `quarkus-workshop-labs` in the project browser on the left and select **Open In Terminal**. This will open a new Terminal window and set the current directory to the project directory. You could also use the `+` button on the Terminal tabs area, but you would need to change the directory using `cd quarkus-workshop-labs` before executing commands.
+Several steps in this workshop require you to execute commands in a Terminal. To open a new Terminal window, simply right-click on the project name `quarkus-workshop-labs` in the project browser on the left and select **Open In Terminal**:
+
+image::term.png[term,800]
+
+This will open a new Terminal window and set the current directory to the project directory. You could also use the `+` button on the Terminal tabs area, but you would need to change the directory using `cd quarkus-workshop-labs` before executing commands.
 
 ## Run the executable JAR
 
