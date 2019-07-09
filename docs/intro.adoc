@@ -37,7 +37,7 @@ text to make for easier copying.
 
 You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che,window=_blank]. To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and log in using the username and password you've been assigned (e.g. `userNN/passNN`):
 
-image::che-login.png[]
+image::che-login.png[800]
 
 Once you log in, you'll be placed on your personal dashboard allowing you to spawn new workspaces to work on code in a traditional IDE environment. Click on the **Add Workspace** tab on the left, and select the _Quarkus Java_ stack, and click **Create & Open** to start the workspace:
 
