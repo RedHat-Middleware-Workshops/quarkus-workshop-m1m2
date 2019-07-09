@@ -2,7 +2,7 @@
 
 image::imgs/logo.png[]
 
-Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot,window=_blank2 and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy to your development_.
+Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot,window=_blank] and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy to your development_.
 
 Throughout this lab you'll discover how Quarkus can make your development of cloud native apps faster and more productive.
  
@@ -33,13 +33,13 @@ Most command blocks support auto highlighting with a click. If you hover over
 the command block above and left-click, it should automatically highlight all the
 text to make for easier copying.
 
-## Your Development Environment
+## Access Your Development Environment
 
-You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che,window=_blank]. To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and register as a new user using the username you've been assigned (e.g. `user32`, `user8`, etc):
+You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che,window=_blank]. To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and log in using the username and password you've been assigned (e.g. `userNN/passNN`):
 
-image::imgs/che-register.png[]
+image::imgs/che-login.png[]
 
-Once you register, you'll be placed on your personal dashboard allowing you to spawn new workspaces to work on code in a traditional IDE environment. Click on the **Add Workspace** tab on the left, and select the "J4K Stack - Java, Quarkus, odo", and click **Create & Open** to start the workspace:
+Once you log in, you'll be placed on your personal dashboard allowing you to spawn new workspaces to work on code in a traditional IDE environment. Click on the **Add Workspace** tab on the left, and select the _Quarkus Java_ stack, and click **Create & Open** to start the workspace:
 
 image::imgs/che-createworkspace.png[]
 

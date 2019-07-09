@@ -246,6 +246,14 @@ curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/jso
 
 rm -f ${TMPREALM}
 
+# Create Che users
+for i in {1..$USERCOUNT} ; do
+    USERNAME=user${i}
+    FIRSTNAME=User${i}
+    LASTNAME=Developer
+    curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d '{"username":"user'${i}'","enabled":true,"emailVerified": true,"firstName": "User'${i}'","lastName": "Developer","email": "user'${i}'@no-reply.com", "credentials":[{"type":"password","value":"pass'${i}'","temporary":false}]}' -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms/codeready/users
+done
+
 # Import stack definition
 SSO_CHE_TOKEN=$(curl -s -d "username=admin&password=admin&grant_type=password&client_id=admin-cli" \
   -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/codeready/protocol/openid-connect/token | \
@@ -254,6 +262,9 @@ SSO_CHE_TOKEN=$(curl -s -d "username=admin&password=admin&grant_type=password&cl
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
     --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${MYDIR}/../files/stack.json \
     "http://codeready-che.${HOSTNAME_SUFFIX}/api/stack"
+
+# MANUALLY set permissions according to
+# https://access.redhat.com/documentation/en-us/red_hat_codeready_workspaces/1.2/html/administration_guide/administering_workspaces#stacks
 
 # Scale the cluster
 WORKERCOUNT=$(oc get nodes|grep worker | wc -l)
