@@ -182,6 +182,10 @@ spec:
     cheFlavor: codeready
     tlsSupport: false
     selfSignedCert: false
+    serverMemoryRequest: '2Gi'
+    serverMemoryLimit: '6Gi'
+
+
   database:
     externalDb: false
     chePostgresHostName: ''
@@ -216,6 +220,18 @@ done
 oc get --export cm/custom -n che -o yaml | yq w - 'data.CHE_INFRA_KUBERNETES_PVC_WAIT__BOUND' \"false\" | oc apply -f - -n che
 oc scale -n che deployment/codeready --replicas=0
 oc scale -n che deployment/codeready --replicas=1
+
+# Wait for che to be back up
+echo "Waiting for Che to come back up..."
+while [ 1 ]; do
+  STAT=$(curl -s -w '%{http_code}' -o /dev/null http://codeready-che.${HOSTNAME_SUFFIX}/dashboard/)
+  if [ "$STAT" = 200 ] ; then
+    break
+  fi
+  echo -n .
+  sleep 10
+done
+
 
 # workaround for Che Terminal timeouts
 # must be run from AWS bastion host
@@ -265,6 +281,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 
 # MANUALLY set permissions according to
 # https://access.redhat.com/documentation/en-us/red_hat_codeready_workspaces/1.2/html/administration_guide/administering_workspaces#stacks
+# THEN
 
 # Scale the cluster
 WORKERCOUNT=$(oc get nodes|grep worker | wc -l)
@@ -274,6 +291,28 @@ if [ "$WORKERCOUNT" -lt 10 ] ; then
       oc patch -n openshift-machine-api machineset/$i -p '{"spec":{"replicas": 3}}' --type=merge
     done
 fi
+
+# Adjust cpu limits to 500/1500
+# oc patch -n che limitrange/che-core-resource-limits -p '' --type=merge
+
+# import stack image
+oc create -n openshift -f $MYDIR/../files/stack.imagestream.yaml
+oc import-image --all quarkus-stack -n openshift
+
+# Pre-create workspaces for users
+for i in {1..$USERCOUNT} ; do
+    SSO_CHE_TOKEN=$(curl -s -d "username=user${i}&password=pass${i}&grant_type=password&client_id=admin-cli" \
+        -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/codeready/protocol/openid-connect/token | jq  -r '.access_token')
+
+    TMPWORK=$(mktemp)
+    sed 's/WORKSPACENAME/WORKSPACE'${i}'/g' $MYDIR/../files/workspace.json > $TMPWORK
+
+    curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
+    --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${TMPWORK} \
+    "http://codeready-che.${HOSTNAME_SUFFIX}/api/workspace?start-after-create=true&namespace=user${i}"
+    rm -f $TMPWORK
+done
+
 
 # Install the strimzi operator for all namespaces
 cat <<EOF | oc apply -n openshift-marketplace -f -

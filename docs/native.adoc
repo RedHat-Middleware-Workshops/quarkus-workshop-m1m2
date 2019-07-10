@@ -47,7 +47,7 @@ We use a profile because, you will see very soon, packaging the native image tak
 
 Create a native executable by once again opening the command palette and choose **Build Native Quarkus App**. This will execute `mvn clean package -Pnative` behind the scenes. The `-Pnative` argument selects the `native` maven profile which invokes the Graal compiler.
 
-This will take a minute or so to finish. Wait for it!
+**This will take about 3-4 minutes to finish. Wait for it!**
 
 [NOTE]
 ====
@@ -74,11 +74,11 @@ Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
 ----
-2019-03-07 18:34:16,642 INFO  [io.quarkus] (main) Quarkus 0.17.0 started in 0.004s. Listening on: http://127.0.0.1:8080
-2019-03-07 18:34:16,643 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
+2019-07-10 04:04:11,817 INFO  [io.quarkus] (main) Quarkus 0.18.0 started in 0.015s. Listening on: http://[::]:8080
+2019-07-10 04:04:11,818 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, jdbc-h2, narayana-jta, resteasy]
 ----
 
-That's 4 milliseconds. A _mere 4000 nanoseconds_. 
+That's 15 milliseconds to start up.
 
 And extremely low memory usage as reported by the Linux `ps` utility. While the app is running, open another Terminal (click the `+` button on the terminal tabs line) and run:
 

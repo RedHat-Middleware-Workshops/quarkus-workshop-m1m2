@@ -1,5 +1,5 @@
 {
-    "name": "Quarkus - Java, CodeReady, odo",
+    "name": "Quarkus Java, CodeReady, odo",
     "description": "Java JDK Stack for Quarkus Apps",
     "scope": "general",
     "workspaceConfig": {
@@ -7,7 +7,7 @@
         "default": {
           "recipe": {
             "type": "dockerimage",
-            "content": "schtool/che-quarkus-odo:latest"
+            "content": "image-registry.openshift-image-registry.svc:5000/openshift/quarkus-stack:1.0"
           },
           "machines": {
             "dev-machine": {
@@ -38,7 +38,7 @@
   
               ],
               "attributes": {
-                "memoryLimitBytes": "3221225472"
+                "memoryLimitBytes": "5368709120"
               }
             }
           }
