@@ -4,12 +4,9 @@ With our app fully ready for its first cloud native deployment, let's package it
 
 OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
 
-Built around a core of OCI container packaging and Kubernetes container cluster management, OKD and OpenShift are augmented with additional application lifecycle management functionality and DevOps tooling. The platform provides a complete developer centric container application platform, which encompasses the original Container as a Service (CaaS) functionality of Kubernetes, along with Platform as a Service (PaaS) functionality.
-
-
 === Build native image
 
-Let's rebuild our native image with all our changes thus far. Using the Command Palette, select **Build Native Quarkus App** and wait for it to finish (this runs `mvn clean package -Pnative` under the hood).
+Let's rebuild our native image with all our changes thus far. Using the Command Palette, select **Build Native Quarkus App** and wait 3-4 minutes for it to finish (this runs `mvn clean package -Pnative` under the hood).
 
 As you recall, the output of this process is a native Linux binary. To package it as a Linux container, and store it in OpenShift's internal image registry, run the following command:
 
@@ -31,8 +28,6 @@ Enter your username and password assigned to you:
 [WARNING]
 ====
 Replace the `NN` with the student number you were assigned by the instructor (e.g. `user1/pass1`, or `user12/pass12`).
-
-Throughout this workshop, you may see commands or URLs that need to be changed based on your assigned student number. Don't forget to do this or else you may interfere with other students!
 ====
 
 You should see:
@@ -44,6 +39,7 @@ Login successful.
 You have one project on this server: "userNN-project"
 
 Using project "userNN-project".
+Welcome! See 'oc help' to get started.
 ----
 
 Congratulations, you are now authenticated to the OpenShift server.
@@ -109,6 +105,11 @@ And now we can access using `curl` once again. In the Terminal, run this command
 curl $(oc get route people -o=go-template --template='{{ .spec.host }}')/hello/greeting/quarkus-on-openshift
 ----
 
+[NOTE]
+====
+The above `curl` command constructs the URL to your running app on the cluster using the `oc get route` command.
+====
+
 You should see:
 
 [source,none]
@@ -116,21 +117,38 @@ You should see:
 hello quarkus-on-openshift from people-1-9sgsm 
 ----
 
-> Your hostname (the Kubernetes _pod_ in which your app runs) name will be different from the above.
+[NOTE]
+====
+Your hostname (the Kubernetes _pod_ in which your app runs) name will be different from the above.
+====
 
-So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console]. Login with your assigned username and password (e.g. `user4/pass4`):
+So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,target="_blank"]. Login with your assigned username and password (e.g. `user4/pass4`):
 
-Once logged in, click on the name of your project (userNN-project). Here is an overview of some of the resources the app is using and a dashboard of statistics. Click on the `1 of 1 pods` to view details about our running container. Click on the name of the container to get detailed metrics:
+image::[ocplogin.png,login,600]
 
-::img
+Once logged in, click on the name of your project (_userNN-project_):
+
+image::[ocpproj.png,project,600]
+
+Here is an overview of some of the resources the app is using and a dashboard of statistics. Click on the `1 of 1 pods` to view details about our running pods:
+
+image::[pods.png,pods,600]
+
+ Click on the name of the pod to get detailed metrics:
+
+image::[container.png,container,600]
 
 There's the Quarkus native app, running with very little memory usage. Click on the **Logs** tab to see the console output from the app:
 
-::img
+image::[podlogs.png,logs,600]
 
 This is the same output you saw earlier when you ran it "locally" with it's super-fast startup time.
 
-Navigate to _Networking > Routes_. Here you can see the single external route created when you ran the `oc expose` command earlier. You can click on the route link to open up the default Quarkus page that's packaged as part of our workshop application.
+Navigate to _Networking > Routes_. Here you can see the single external route created when you ran the `oc expose` command earlier:
+
+image::[route.png,route,600]
+
+You can click on the route link to open up the default Quarkus page that's packaged as part of our workshop application.
 
 # Connect MicroProfile health check
 
