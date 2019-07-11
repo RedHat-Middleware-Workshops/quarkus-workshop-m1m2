@@ -1,12 +1,12 @@
 ## Documenting APIs in Quarkus
 
-Exposing APIs has become an essential part of all modern applications. At the center of this revolution known as the API Economy we find _RESTful_ APIs, which can transform any application into language agnostic services that can be called from anywhere: on-premises, private cloud, public cloud, etc.
+Exposing APIs has become an essential part of all modern applications. At the center of this revolution known as the _API Economy_ we find _RESTful_ APIs, which can transform any application into language agnostic services that can be called from anywhere: on-premises, private cloud, public cloud, etc.
 
 This guide explains how your Quarkus application can expose its API description through an OpenAPI specification and how you can test it via a user-friendly UI named _Swagger UI_.
 
 An OpenAPI definition can then be used by documentation generation tools to display the API, code generation tools to generate servers and clients in various programming languages, testing tools, and many other use cases.
 
-Quarkus implements the https://github.com/eclipse/microprofile-open-api/[MicroProfile Open API Specification] and as such exposes several developer APIs for documenting your application's APIs.
+Quarkus implements the https://github.com/eclipse/microprofile-open-api/[MicroProfile Open API Specification,target=_blank] and as such exposes several developer APIs for documenting your application's APIs.
 
 The MicroProfile OpenAPI specification requires vendors to produce a valid OpenAPI document from pure JAX-RS 2.0 applications, without the developer adding any special annotations for OpenAPI. This means that vendors must process all the relevant JAX-RS annotations (such as `@Path` and `@Consumes`) as well as Java objects (POJOs) used as input or output to JAX-RS operations.
 
@@ -18,10 +18,10 @@ If your application is still running from the previous exercise, go back to its 
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="openapi,resteasy-jsonb"
+mvn quarkus:add-extension -Dextensions="openapi"
 ----
 
-This will add the extension (along with JSON-B to generate the json documents for OpenAPI) to our project.
+This will add the extension to our project.
 
 Run the project again, using the command palette and selecting **Build and Run Locally** (if you had a previous app running, CTRL-C or close the old Terminal before running it again). This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
 
@@ -73,7 +73,7 @@ quarkus.smallrye-openapi.path=/myapi
 
 If you want JSON instead of YAML, use
 
-[source,none]
+[source,sh]
 ----
 curl -H "Accept: application/json" http://localhost:8080/openapi
 ----
@@ -105,17 +105,21 @@ quarkus.swagger-ui.path=/my-custom-path
 ----
 ====
 
-Since our app is already running, click on the _Preview URL_ shown at the top of the terminal. Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
+Since our app is already running, click on the _Preview URL_ shown at the top of the terminal (on the _Build and Run Locally_ tab). Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
 
-::img
+image::swagger.png[swagger,600]
 
 Using the UI, expand the `/person/birth/before/{year}` endpoint. Here you can basic detail about the endpoint: the name of the endpoint, parameters and their type, and the response type one can expect.
 
-::img
+image::swaggeryear.png[swaggeryear,600]
 
-Click the **Try it out** button to expand the box allowing you to try it. Enter the year `1990` in the box and click **Execute**. This accesses the endpoint in the same way that `curl` does, and shows you the result (along with corresponding metadata in the HTTP response):
+Click the **Try it out** button to expand the box allowing you to try it. Enter the year `1990` in the box and click **Execute**:
 
-::img
+image::swaggeryeartest.png[swaggeryeartest,600]
+
+This accesses the endpoint in the same way that `curl` does, and shows you the result (along with corresponding metadata in the HTTP response):
+
+image::swaggeryeartestresult.png[swaggeryeartestresult,600]
 
 Pretty handy way to test out your APIs!
 
@@ -134,15 +138,15 @@ So let's add a bit more documentation to our `/person/birth/before/{year}` endpo
 
 Add a few annotations:
 
-1. Add an `@Operation` annotation on the method to provide a brief summary and description:
+1. Add an `@Operation` annotation on the method to provide a brief summary and description. You'll need to _Assistant > Organize Imports_ to complete the import statements after adding the code:
 
 [source,java,role="copypaste"]
 ----
-@Operation(summary = "Finds Pets by status",
-           description = "Multiple status values can be provided with comma separated strings")
+@Operation(summary = "Finds people born before a specific year",
+           description = "Search the people database and return a list of people born before the specified year")
 ----
 
-2. Add an `@ApiResponses` annotation that documents two of the possible HTTP return values ("200" and "500") to the method signature:
+2. Add an `@ApiResponses` annotation below the `@Operation` that documents two of the possible HTTP return values ("200" and "500") to the method signature:
 
 [source,java,role="copypaste"]
 ----
@@ -162,9 +166,11 @@ Add a few annotations:
 @Parameter(description = "Cutoff year for searching for people", required = true)
 ----
 
-Now reload the same Swagger UI webpage (or if you already closed it, just click on the _Preview URL_ shown at the top of the terminal where the app is running. Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.) Notice the Swagger documention is more filled out for the endpoint to which we added extra OpenAPI documentation:
+Again, _Assistant > Organize Imports_ (and make sure to import the right `Parameter` class: `org.eclipse.microprofile.openapi.annotations.parameters.Parameter`)
 
-::img
+Now reload the same Swagger UI webpage. Notice the Swagger documention is more filled out for the endpoint to which we added extra OpenAPI documentation:
+
+image::swaggerparams.png[swaggerparams,600]
 
 ## Cleanup
 
@@ -175,7 +181,5 @@ Stop the app for now by pressing CTRL-C in the terminal or closing the Terminal 
 In this exercise you learned more about the MicroProfile OpenAPI specification and how to use it to do in-place documentation of your RESTful microservice APIs.
 
 There are additional types of documentation you can add, for example you can declare the security features and requirements of your API and then use these where appropriate in your paths and operations.
-
-Leave your project running, as we'll make more edits in the next section.
 
 
