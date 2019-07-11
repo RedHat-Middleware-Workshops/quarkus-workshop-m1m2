@@ -16,16 +16,16 @@ That’s all there is to it: with Panache, Hibernate ORM has never looked so tri
 
 ## People
 
-You may have wondered why we are using `people` in our Java APIs. We'll be creating a simple data-driven application that manages a set of people, who have a name, birth date, and eye color. In the previous lab we added the extension for Panache to our project, but we will need a few more for connecting to databases. Add these extensions with the following command:
+You may have wondered why we are using `people` in our Java APIs, and now you'll find out; we'll be creating a simple data-driven application that manages a set of people, who have a name, birth date, and eye color. In the previous lab we added the extension for Panache to our project, but we will need a few more for connecting to databases. Add these extensions with the following command:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="panache, h2, postgresql"
+mvn quarkus:add-extension -Dextensions="panache, h2, postgresql, resteasy-jsonb"
 ----
 
-We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions.
+We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-jsonb` is used to encode JSON objects.
 
-The endpoints (JDBC url, database credentials) are specified in `application.properties` using the Quarkus Profile support. So for example you'll find this:
+The database connection details (JDBC url, database credentials) are specified in `application.properties` using the Quarkus Profile support. So for example you'll find this:
 
 [source,none]
 ----
@@ -37,7 +37,7 @@ The endpoints (JDBC url, database credentials) are specified in `application.pro
 %test.quarkus.datasource.driver=org.h2.Driver
 ----
 
-This causes the `%dev` properties to be active in development (and the `%test` in test mode), and the `%prod` properties to be used when in production (not in dev or test).
+This causes the `%dev` properties (using H2 database) to be active in development (and the `%test` in test mode), and the `%prod` properties (using Postgres) to be used when in production (not in dev or test).
 
 [NOTE]
 ====
@@ -127,6 +127,7 @@ import javax.ws.rs.core.MediaType;
 import org.acme.people.model.DataTable;
 import org.acme.people.model.EyeColor;
 import org.acme.people.model.Person;
+import org.acme.people.utils.CuteNameGenerator;
 
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.runtime.StartupEvent;
@@ -151,20 +152,29 @@ public class PersonResource {
 }
 ----
 
+[NOTE]
+====
+You may see lots of warnings about unused imports. Ignore them, we'll use them later!
+====
+
 As you can see we've implemented our first Panache-based query, the `getAll` method, which will return our list of people as a JSON object when we access the `GET /person` endpoint. This is defined using standard JAX-RS `@Path` and `@GET` and `@Produces` annotations.
 
 ### Add sample data
 
 Let's add some sample data to the database so we can test things out. Create a new file `src/main/resources/import.sql` and add some SQL statements to the file to run on startup:
 
+image::importsql.png[importsql,800]
+
+image::importsqlfile.png[importsqlfile,600]
+
 [source,sql,role="copypaste"]
 ----
 INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Farid Ulyanov', to_date('1974-08-15', 'YYYY-MM-dd'), 'BLUE')
 INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Salvador L. Witcher', to_date('1984-05-24', 'YYYY-MM-dd'), 'BROWN')
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Huỳnh Kim Huê', to_date('1999-04-25', 'YYYY-MM-dd'), 'HAZEL')
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Kim Hu', to_date('1999-04-25', 'YYYY-MM-dd'), 'HAZEL')
 ----
 
-These statements will add some fake people to our database.
+These statements will add some fake people to our database on startup.
 
 ### Run the application
 
@@ -189,25 +199,22 @@ We call the endpoint with `curl` then send the output through `jq` to make the o
 ----
 [
   {
-    "persistent": true,
     "id": 1,
     "birth": "1974-08-15",
     "eyes": "BLUE",
     "name": "Farid Ulyanov"
   },
   {
-    "persistent": true,
     "id": 2,
     "birth": "1984-05-24",
     "eyes": "BROWN",
     "name": "Salvador L. Witcher"
   },
   {
-    "persistent": true,
     "id": 3,
     "birth": "1999-04-25",
     "eyes": "HAZEL",
-    "name": "Huỳnh Kim Huê"
+    "name": "Kim Hu"
   }
 ]
 ----
@@ -247,11 +254,14 @@ public static List<Person> getBeforeYear(int year) {
 
 These two queries will find a list of people in our database based on eye color, or birth year. Note the `getBeforeYear` is implemented using the Java Streams API.
 
-> All list methods in Panache-based entities (those that extend from `PanacheEntity`) have equivalent stream versions. So `list` has a `stream` variant, `listAll`-->`streamAll` and so on.
+[NOTE]
+====
+All list methods in Panache-based entities (those that extend from `PanacheEntity`) have equivalent stream versions. So `list` has a `stream` variant, `listAll`-->`streamAll` and so on.
+====
 
 With our custom entity queries implemented in our `Person` entity class, let's add RESTful endpoints to `PersonResource` to access them. 
 
-Open the `PersonResource` class and add a new endpoint under the `//TODO: add basic queries` comment:
+Open the `PersonResource` class and add two news endpoint under the `//TODO: add basic queries` comment:
 
 [source,java,role="copypaste"]
 ----
@@ -300,7 +310,7 @@ And let's find people born in 1990 or earlier:
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/person/birth/before/1990 | jq`
+curl http://localhost:8080/person/birth/before/1990 | jq
 ----
 
 You should see **two** people born in 1990 or earlier:
@@ -337,7 +347,7 @@ In the previous step you added a few more custom queries to your entity and the 
 
 Earlier we used `curl` to access our data, which is very useful for testing, but for real applications you will usually surface the data in other ways, like on web pages using tables, with options for searching, sorting, filtering, paging, etc. Quarkus and Panache make this easy to adapt your application for any display library or framework.
 
-Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is ineffecient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
+Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables,target=_blank]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is ineffecient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
 
 ### Add Datatables endpoint
 
@@ -388,8 +398,9 @@ So, in our `PersonResource` endpoint, we'll start with an empty `result` object 
 [source,java,role="copypaste"]
 ----
 DataTable result = new DataTable();
-result.setDraw(draw);
+result.setDraw(draw); // <1>
 ----
+<1> We initialize the `DataTable` return object with the value passed in, to ensure DataTables redraws in the correct order in case of async returns.
 
 Next, if the request includes a search parameter, let's take care of that by including a search query, otherwise just collect all records. Add this code below the `// TODO: Filter based on search` marker:
 
@@ -397,13 +408,14 @@ Next, if the request includes a search parameter, let's take care of that by inc
 ----
 PanacheQuery<Person> filteredPeople;
             
-if (searchVal != null && !searchVal.isEmpty()) {
+if (searchVal != null && !searchVal.isEmpty()) { // <1>
     filteredPeople = Person.<Person>find("name like :search",
         Parameters.with("search", "%" + searchVal + "%"));
 } else {
     filteredPeople = Person.findAll();
 }
 ----
+<1> If a search value was passed in, use it to search using the Panache `find` method. Otherwise, use `findAll` to skip filtering.
 
 And finally, we use the built-in Panache `page` operator to seek to the correct page of records and stream the number of entries desired, set the values into the `result` and return it. Add this code below the `// TODO: Page and return` marker:
 
@@ -482,7 +494,7 @@ curl "http://localhost:8080/person/datatable?draw=1&start=0&length=2&search\[val
 
 [NOTE]
 ====
-Adding 1k entries will make startup time artificially high, around 3-5 seconds. 
+Adding 1k entries will make startup time artificially high, around 1-2 seconds. 
 ====
 
 You should get up to 2 records returned, but the total number available should show many more indicating our search found many more, and the total number of records should now be `1003` (the 1k we added plus the 3 original values):
@@ -492,29 +504,27 @@ You should get up to 2 records returned, but the total number available should s
 {
   "data": [
     {
-      "persistent": true,
       "id": 1,
       "birth": "1974-08-15",
       "eyes": "BLUE",
       "name": "Farid Ulyanov"
     },
     {
-      "persistent": true,
-      "id": 10,
-      "birth": "2001-11-26",
-      "eyes": "GREEN",
-      "name": "Phantom Finger"
+      "id": 8,
+      "birth": "2008-06-26",
+      "eyes": "BROWN",
+      "name": "Cyan Face"
     }
   ],
   "draw": 1,
-  "recordsFiltered": 131,
+  "recordsFiltered": 126,
   "recordsTotal": 1003
 }
 ----
 
-Note the values for `recordsFiltered` (the number of records with the letter `F` in the name), and `recordsTotal`. The value you see for `recordsFiltered` may be different than the above value, since the number of records with an `F` in the name may vary since the data is random.
+Note the values for `recordsFiltered` (the number of records with the letter `F` in the name), and `recordsTotal`. The value you see for `recordsFiltered` may be different than the above value, since the number of records with an `F` in the name may vary since the data is random. But the `recordsTotal` shows our initial 3 values, plus the 1000 additional values we added in the lifecycle hook code.
 
-# Cleanup
+## Cleanup
 
 We're done with development, so go back to the first Terminal tab and press `CTRL-C` (or just close the running tab) to stop our running application.
 
@@ -532,19 +542,15 @@ oc new-app \
     openshift/postgresql
 ----
 
-With our database running, re-build the application as an executable JAR using the command palette and selecting **Package Executable JAR**.
+With our database running, re-build the application as an executable JAR using the command palette and selecting **Create Executable JAR**.
 
-Next, re-define the container build to use the OpenJDK image using these two commands:
+Next, re-define the container build to use the OpenJDK image using these commands:
 
 [source,sh,role="copypaste"]
 ----
 oc delete bc/people 
 oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.5 --binary --name=people
-oc set env dc/people JAVA_OPTIONS='-Dfile.encoding=UTF8' # <1>
 ----
-<1> We need to set the file encoding to handle the special characters in our sample data
-
-We'll need to re-build the app as an Executable JAR. Using the command palette, select **Build Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
 And now start the build using our executable JAR:
 
@@ -575,14 +581,14 @@ Run the following command to output the full URL to our DataTable graphical fron
 
 [source,sh,role="copypaste"]
 ----
-echo "http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/datatable.html"
+echo; echo "http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/datatable.html" ; echo
 ----
 
 Copy and paste that URL into a new browser tab to access it. It should look like:
 
-::img
+image::datatable.png[datatable,800]
 
-Notice the total number of records reported at the bottom. Type in a single letter, e.g. `F` in the search box and see how responsive the app is. Type additional letters to narrow the search. Rather than having all 10k records loaded in the browser, DataTable makes a call back to our `/person/datatable` REST endpoint to fetch only those records that should be shown, based on page size, current page you're looking at, and any search filters. With a page size of `10` each REST call will only return up to 10 records, no matter how many there are in the database.
+Notice the total number of records reported at the bottom. Type in a single letter, e.g. `F` in the search box and see how responsive the app is. Type additional letters to narrow the search. Rather than having all records loaded in the browser, DataTable makes a call back to our `/person/datatable` REST endpoint to fetch only those records that should be shown, based on page size, current page you're looking at, and any search filters. With a page size of `10` each REST call will only return up to 10 records, no matter how many there are in the database.
 
 Skip around a few pages, try some different searches, and notice that the data is only loaded when needed. The overall performance is very good even for low-bandwidth connections or huge data sets.
 

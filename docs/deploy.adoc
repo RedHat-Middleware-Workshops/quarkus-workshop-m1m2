@@ -124,29 +124,29 @@ Your hostname (the Kubernetes _pod_ in which your app runs) name will be differe
 
 So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,target="_blank"]. Login with your assigned username and password (e.g. `user4/pass4`):
 
-image::[ocplogin.png,login,600]
+image::ocplogin.png[login,600]
 
 Once logged in, click on the name of your project (_userNN-project_):
 
-image::[ocpproj.png,project,600]
+image::ocpproj.png[project,600]
 
 Here is an overview of some of the resources the app is using and a dashboard of statistics. Click on the `1 of 1 pods` to view details about our running pods:
 
-image::[pods.png,pods,600]
+image::pods.png[pods,600]
 
  Click on the name of the pod to get detailed metrics:
 
-image::[container.png,container,600]
+image::container.png[container,600]
 
 There's the Quarkus native app, running with very little memory usage. Click on the **Logs** tab to see the console output from the app:
 
-image::[podlogs.png,logs,600]
+image::podlogs.png[logs,600]
 
 This is the same output you saw earlier when you ran it "locally" with it's super-fast startup time.
 
 Navigate to _Networking > Routes_. Here you can see the single external route created when you ran the `oc expose` command earlier:
 
-image::[route.png,route,600]
+image::route.png[route,600]
 
 You can click on the route link to open up the default Quarkus page that's packaged as part of our workshop application.
 
