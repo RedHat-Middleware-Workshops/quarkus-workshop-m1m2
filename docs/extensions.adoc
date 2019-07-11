@@ -15,7 +15,7 @@ mvn quarkus:list-extensions
 
 You can see the list of ~50 different extensions available to you.
 
-Adding an extension is simiarly easy. With Maven, you can add extensions using `mvn quarkus:add-extension -Dextensions="hibernate-validator"`. The extension name can be the maven groupId/artifactId name of the extension: e.g. `io.quarkus:quarkus-agroal`. But you can pass a partial name and Quarkus will do its best to find the right extension. For example, `agroal`, `Agroal` or `agro` will expand to io.quarkus:quarkus-agroal. If no extension is found or if more than one extensions match, you will see a warning and a list of possible matches in the command result.
+Adding an extension is simiarly easy. With Maven, you can add extensions using `mvn quarkus:add-extension -Dextensions="extension1,extension2,..."`. The extension name can be the maven groupId/artifactId name of the extension: e.g. `io.quarkus:quarkus-agroal`. But you can pass a partial name and Quarkus will do its best to find the right extension. For example, `agroal`, `Agroal` or `agro` will expand to `io.quarkus:quarkus-agroal`. If no extension is found or if more than one extensions match, you will see a warning and a list of possible matches in the command result.
 
 ## Add an extension
 
@@ -39,9 +39,15 @@ git diff pom.xml
 ----
 +    <dependency>
 +      <groupId>io.quarkus</groupId>
++      <artifactId>quarkus-smallrye-health</artifactId>
++    </dependency>
++    <dependency>
++      <groupId>io.quarkus</groupId>
 +      <artifactId>quarkus-hibernate-orm-panache</artifactId>
 +    </dependency>
 ----
+
+The `quarkus-smallrye-health` was added in a previous exercise, and shows up here as well.
 
 When you run Quarkus applications, the list of extensions enabled are shown in the output, such as:
 
@@ -65,6 +71,6 @@ Writing a Quarkus extension is beyond the scope of this lab, so consult the http
 
 ## Congratulations
 
-Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
+Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem,target=_blank], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
 
 We'll be adding additional extensions as we go along in other sections of this workshop.

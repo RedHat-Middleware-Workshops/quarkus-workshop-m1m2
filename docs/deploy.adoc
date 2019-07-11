@@ -170,4 +170,4 @@ oc rollout status -w dc/people
 
 ## Congratulations!
 
-This step covered the deployment of a Quarkus application on OpenShift. However, there is much more, and the integration with these cloud native platforms (through health checks, configuration management, and monitoring which we'll cover later) has been tailored to make Quarkus applications execution very smooth.
+This step covered the deployment of a native Quarkus application on OpenShift. However, there is much more, and the integration with these cloud native platforms (through health checks, configuration management, and monitoring which we'll cover later) has been tailored to make Quarkus applications execution very smooth.
