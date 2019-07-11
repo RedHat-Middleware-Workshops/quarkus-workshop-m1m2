@@ -4,19 +4,16 @@ In this step we will package the application as a Linux Container image, and dep
 
 ## Health Probes
 
-When building microservices, monitoring becomes of extreme importance to make sure all services are running at all times, and when they don't there are automatic actions triggered to rectify the issues. We'll cover more monitoring topics later, but for now let's explore Kubernetes Health Probes.
-
-Kubernetes health probes offers a solution for monitoring application health and trying to automatically heal faulty containers by restarting them to fix issues such as a deadlock or resource exhaustion in the application which can be resolved by restarting the container. Restarting a container in such a state can help to make the application more available despite bugs.
-
-::img
-
-There are of course a category of issues that can't be resolved by restarting the container. In those scenarios, the container never recovers and traffic will no longer be sent to it (which can have cascading effects on the rest of the system, possibly requiring human intervention, which is why monitoring is crucial to availability).
-
 Quarkus application developers can utilize the MicroProfile Health specification to write HTTP health probes for their applications. These endpoints by default provide basic data about the service however they all provide a way to customize the health data and add more meaningful information (e.g. database connection health, backoffice system availability, etc).
+
+[NOTE]
+====
+There are of course a category of issues that can't be resolved by restarting the container. In those scenarios, the container never recovers and traffic will no longer be sent to it (which can have cascading effects on the rest of the system, possibly requiring human intervention, which is why monitoring is crucial to availability).
+====
 
 ### Add Extension
 
-Let's build a simple REST application endpoint exposes https://microprofile.io[MicroProfile] Health functionalities at the `/health` endpoint according to the specification. It will also provide several other REST endpoints to allow us to dynamically query the health of our Quarkus application.
+Let's build a simple REST application endpoint exposes https://microprofile.io[MicroProfile] Health checks at the `/health` endpoint according to the specification. It will also provide several other REST endpoints to allow us to dynamically query the health of our Quarkus application.
 
 We'll need to add a https://quarkus.io/extensions[Quarkus Extension] to enable this feature in our app. Fortunately, adding a Quarkus extension is super easy. We'll cover extensions in more depth in other sections of this workshop but for now, open a Terminal and execute the following command to add the extension to our project's `pom.xml`:
 
@@ -31,7 +28,7 @@ This will add the extension below to your `pom.xml`:
 ----
 <dependency>
     <groupId>io.quarkus</groupId>
-    <artifactId>quarkus-health</artifactId>
+    <artifactId>quarkus-smallrye-health</artifactId>
 </dependency>
 ----
 
@@ -101,7 +98,19 @@ curl http://localhost:8080/health
 
 The new health check procedure is now present in the `checks` array:
 
-::img
+[source,json]
+----
+{
+    "status": "UP",
+    "checks": [
+        {
+            "name": "Simple health check",
+            "status": "UP"
+        }
+    ]
+}
+----
+
 
 Congratulations! You’ve created your first Quarkus health check procedure. Let’s continue by exploring what else can be done with the MicroProfile Health specification.
 
@@ -161,7 +170,7 @@ import javax.enterprise.context.ApplicationScoped;
 @Liveness
 public class DatabaseConnectionHealthCheck implements HealthCheck {
 
-    @ConfigProperty(name = "database.up", defaultValue = "true")
+    @ConfigProperty(name = "database.up", defaultValue = "false")
     private boolean databaseUp;
 
     @Override
@@ -189,9 +198,20 @@ public class DatabaseConnectionHealthCheck implements HealthCheck {
 }
 ----
 
-If you now rerun the health check (by running the same `curl` command from before) the overall outcome should be `DOWN` and you should see in the `checks` array the newly added Database connection health check which is down and the error message explaining why it failed.
+If you now rerun the health check (by running the same `curl` command from before) the overall outcome should be `DOWN` and you should see in the `checks` array the newly added Database connection health check which is down and the error message explaining why it failed:
 
-As we shouldn’t leave this application with a health check in DOWN state and because we are running Quarkus dev mode you can add `database.up=true` to the end of the `src/main/resources/application.properties` file and rerun the health check again — it should be up again.
+[source,json]
+----
+        {
+            "name": "Database connection health check",
+            "status": "DOWN",
+            "data": {
+                "error": "Cannot contact database"
+            }
+        },
+----
+
+We shouldn’t leave this application with a health check in DOWN state. Because we are running Quarkus dev mode, add `database.up=true` to the end of the `src/main/resources/application.properties` file and rerun the health check again — it should be up again.
 
 ### Accessing liveness and readiness separately
 
@@ -204,14 +224,14 @@ Access the two endpoints. Each endpoint will only report on its specific type of
 curl http://localhost:8080/health/live
 ----
 
-You should only see the single Liveness probe.
+You should only see the two Liveness probes.
 
 [source, sh, role="copypaste"]
 ----
 curl http://localhost:8080/health/ready
 ----
 
-You should only see our 2 readiness probes.
+You should only see our single readiness probes.
 
 Later, when we deploy this to our Kubernetes cluster, we'll configure it to use these endpoints.
 
@@ -248,11 +268,14 @@ String suffix;
 Optional<String> name; 
 ----
 
-Note that:
+Remember to _Assistant > Organize Imports_ to import the `org.eclipse.microprofile.config.inject.ConfigProperty`.
 
+[NOTE]
+====
 . If you do not provide a value for the first property (`greeting.message`), the application startup will fail with `DeploymentException: No config value of type [class java.lang.String] exists for: greeting.message`
 . The default value for `greeting.suffix` is injected if the configuration does not provide a value for `greeting.suffix`.
 . The `greeting.name` property is optional - an empty `Optional` is injected if the configuration does not provide a value for `greeting.name`.
+====
 
 Now, modify the `hello()` method to use the injected properties:
 
@@ -295,17 +318,6 @@ We also need to update the functional test to reflect the changes made to endpoi
 
 [source,java,role="copypaste"]
 ----
-package org.acme.config.people;
-
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Test;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
-
-@QuarkusTest
-public class GreetingResourceTest {
-
     @Test
     public void testHelloEndpoint() {
         given()
@@ -314,15 +326,13 @@ public class GreetingResourceTest {
              .statusCode(200)
              .body(is("hello quarkus!")); // Modified line
     }
-
-}
 ----
 
-Since our applcation is still running from before, thanks to Quarkus Live Reload we should immediately see changes. Go ahead and update `application.properties`, by changing the `greeting.message`, `greeting.name`, or adding `greeting.suffix` and running the same `curl http://localhost:8080/hello` after each change.
+Since our applcation is still running from before, thanks to Quarkus Live Reload we should immediately see changes. Update `application.properties`, by changing the `greeting.message`, `greeting.name`, or adding `greeting.suffix` and running the same `curl http://localhost:8080/hello` after each change.
 
 === Quarkus Configuration options
 
-Quarkus itself is configured via the same mechanism as your application. Quarkus reserves the `quarkus.` namespace for its own configuration. For example to configure the HTTP server port you can set a value for `quarkus.http.port` in `application.properties`.
+Quarkus itself is configured via the same mechanism as your application. Quarkus reserves the `quarkus.` namespace for its own configuration.
 
 It is also possible to generate an example `application.properties` with _all known_ configuration properties, to make it easy to see what Quarkus configuration options are available. To do this, open a Terminal and run:
 
@@ -335,23 +345,23 @@ This will create a `src/main/resources/application.properties.example` file that
 
 === Overriding properties at runtime
 
-In _dev_ mode, properties can be changed at will and reflected in the running app, however once you are ready to package your app for deployment, you'll not be running in _dev_ mode anymore, but rather building and packaging (e.g. into fat JAR or native executable. Quarkus will do much of its configuration and bootstrap at build time. Most properties will then be read and set during the _build time_ step. To change them, you have to stop the application, re-package it, and restart. 
+As you have seen, in _dev_ mode, properties can be changed at will and reflected in the running app, however once you are ready to package your app for deployment, you'll not be running in _dev_ mode anymore, but rather building and packaging (e.g. into fat JAR or native executable.) Quarkus will do much of its configuration and bootstrap at build time. Most properties will then be read and set during the _build time_ step. To change them, you have to stop the application, re-package it, and restart. 
 
 Extensions _do_ define some properties as overridable at runtime. A canonical example is the database URL, username and password which is only known specifically in your target environment. **This is a tradeoff** as the more runtime properties are available, the less build time pre-work Quarkus can do. The list of runtime properties is therefore lean.
 
 You can override these runtime properties with the following mechanisms (in decreasing priority):
 
 * using system properties:
-.. for a runner jar: `java -Dquarkus.datasource.password=youshallnotpass -jar target/myapp-runner.jar`
-.. for a native executable: ``./target/myapp-runner -Dquarkus.datasource.password=youshallnotpass`
+. for a runner jar: `java -Dquarkus.datasource.password=youshallnotpass -jar target/myapp-runner.jar`
+. for a native executable: ``./target/myapp-runner -Dquarkus.datasource.password=youshallnotpass`
 
 * using environment variables:
-.. for a runner jar: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass java -jar target/myapp-runner.jar`
-.. for a native executable: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass ./target/myapp-runner`
+. for a runner jar: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass java -jar target/myapp-runner.jar`
+. for a native executable: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass ./target/myapp-runner`
 
 [NOTE]
 ====
-Environment variables names are following the conversion rules of https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources[Eclipse MicroProfile]
+Environment variables names are following the conversion rules of https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources[Eclipse MicroProfile Config sources]
 ====
 
 === Configuration Profiles
@@ -376,7 +386,7 @@ By default Quarkus has three profiles, although it is possible to use as many as
 
 ==== Exercise Configuration Profile
 
-Let's give this a go. In your `application.properties`, add a different `message.prefix` for the `prod` profile. To do this, change the content of `application.properties` to be:
+Let's give this a go. In your `application.properties`, add a different `message.prefix` for the `prod` profile. To do this, change the content of the `greeting.` properties in `application.properties` to be:
 
 [source,none,role="copypaste"]
 ----
@@ -385,15 +395,24 @@ greeting.name = quarkus
 %prod.greeting.name = production quarkus
 ----
 
-Now, if you have a running Quarkus app, CTRL-C it (or close the Terminal window). We need to re-build the app as an executable JAR so we can run it with different runtime profiles.
+Verify that in _dev_ mode (which you're currently running in) that:
 
-Build an executable JAR just as before using the command palette and choosing **Build Executable JAR**.
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/hello
+----
+
+produces `hello quarkus!`.
+
+Next, CTRL-C it (or close the "Build and Run Locally" Terminal window). We need to re-build the app as an executable JAR so it runs with the `prod` profile.
+
+Build an executable JAR just as before using the command palette and choosing **Create Executable JAR**.
 
 Next, open a new Terminal window and run the the app:
 
 [source,sh,role="copypaste"]
 ----
-java -jar target/*-runner.java
+java -jar target/*-runner.jar
 ----
 
 Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`. 

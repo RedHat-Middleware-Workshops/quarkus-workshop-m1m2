@@ -4,7 +4,7 @@ Let’s now produce a native executable for our application. It improves the sta
 
 GraalVM is a universal virtual machine for compiling and running applications written in JavaScript, Python, Ruby, R, JVM-based languages like Java, Scala, Groovy, Kotlin, Clojure, and LLVM-based languages such as C and C++. It includes ahead-of-time compilation, aggressive dead code elimination, and optimal packaging as native binaries that moves a lot of startup logic to _build-time_, thereby reducing startup time and memory resource requirements significantly.
 
-::image[../foo.png]
+image::[nativearch.png, native, 600]
 
 GraalVM is already installed for you. Inspect the value of the `GRAALVM_HOME` variable in the Terminal with:
 
@@ -124,4 +124,4 @@ Go to the first Terminal tab and press `CTRL-C` to stop our native app (or close
 
 ## Congratulations!
 
-You've now built a Java application as an executable JAR and a Linux native binary. We'll explore the benefits of native binaries later in when we start deploying to Kubernetes. But unti then we'll focus on the Java developer features of Quarkus.
+You've now built a Java application as an executable JAR and a Linux native binary. We'll explore the benefits of native binaries later in when we start deploying to Kubernetes.
