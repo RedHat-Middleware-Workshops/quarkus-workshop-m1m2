@@ -29,9 +29,9 @@ Strimzi provides three operators:
 
 ## The Goal
 
-In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using _server-sent events_ and displayed in the browser.
+In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using _server-sent events_ and displayed in the browser. It will look like this:
 
-::img
+image::names.png[names,800]
 
 ## Deploy Kafka via Strimzi
 

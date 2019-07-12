@@ -2,9 +2,9 @@
 
 This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics] specification through the SmallRye Metrics extension.
 
-MicroProfile Metrics allows applications to gather various metrics and statistics that provide insights into what is happening inside the application.
+MicroProfile Metrics allows applications to gather various metrics and statistics that provide insights into what is happening inside the application. They ey serve to pinpoint issues, provide long term trend data for capacity planning and pro-active discovery of issues (e.g. disk usage growing without bounds). Metrics can also help those scheduling systems decide when to scale the application to run on more or fewer machines.
 
-The metrics can be read remotely using JSON format or the _OpenMetrics_ format, so that they can be processed by additional tools such as Prometheus, and stored for analysis and visualisation. We will use Prometheus and Grafana to collect and display metrics for our app.
+The metrics can be read remotely using JSON format or the https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format[OpenMetrics text format], so that they can be processed by additional tools such as Prometheus, and stored for analysis and visualisation. You can then use tools like http://prometheus.io[Prometheus] and http://grafana.com[Grafana] to collect and display metrics for your Quarkus apps.
 
 ### Install Prometheus
 
@@ -14,8 +14,6 @@ First, let's install Prometheus. Prometheus is an open-source systems monitoring
 * https://prometheus.io/docs/prometheus/latest/querying/basics/[PromQL], a flexible query language to leverage this dimensionality
 * time series collection happens via a pull model over HTTP
 
-And much more. Learn more at http://prometheus.io. 
-
 To install it, first create a Kubernetes ConfigMap that will hold the Prometheus configuration. In the Terminal, run the following:
 
 [source,sh,role="copypaste"]
@@ -23,25 +21,21 @@ To install it, first create a Kubernetes ConfigMap that will hold the Prometheus
 oc create configmap prom --from-file=prometheus.yml=src/main/kubernetes/prometheus.yml
 ----
 
-This will create a ConfigMap using the contents of the `src/main/kubernetes/prometheus.yml` file in your project (we've created this file for you). It contains basic Prometheus configuration, plus a specific _target_ which instructs it to look for application metrics from both Prometheus itself, and our `people` app, on HTTP port 8080 at the `/metrics` endpoint. Our app does not yet expose this endpoint!
+This will create a ConfigMap using the contents of the `src/main/kubernetes/prometheus.yml` file in your project (we've created this file for you). It contains basic Prometheus configuration, plus a specific _target_ which instructs it to look for application metrics from both Prometheus itself, and our `people` app, on HTTP port 8080 at the `/metrics` endpoint. Here's a snippet of that file:
 
 [source,yml]
 ----
 scrape_configs:
-  # The job name is added as a label `job=` to any timeseries scraped from this config.
-  - job_name: 'prometheus'
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
+  - job_name: 'prometheus' # <1>
     static_configs:
     - targets: ['localhost:9090']
 
-  # Scrape configuration for our hello world app
-  - job_name: 'people_app'
+  - job_name: 'people_app' # <2>
     static_configs:
-    - targets: ['people:8080']
+    - targets: ['people:8080'] 
 ----
+<1> Configures Prometheus to scrape metrics from itself
+<2> COnfigures Prometheus to scrape metrics from Kubernetes service `people` on port `8080` with HTTP, at the default metrics endpoint of `/metrics`
 
 Next, deploy and expose Prometheus using its public Docker Hub image:
 
@@ -92,7 +86,7 @@ You will be able to immediately see the raw metrics generated from Quarkus apps.
 curl http://localhost:8080/metrics
 ----
 
-You will see a bunch of metrics in the OpenMetrics form:
+You will see a bunch of metrics in the OpenMetrics format:
 
 [source, none]
 ----
@@ -117,7 +111,7 @@ Open the `GreetingService` class (in the `org.acme.people.service` package). Let
 @Counted(name = "greetings", monotonic = true, description = "How many greetings we've given.")
 ----
 
-(You'll need to import the new `Counted` class).
+(You'll need to import the new `Counted` class using _Assistant > Organize Imports_).
 
 Trigger a greeting:
 
@@ -126,7 +120,7 @@ Trigger a greeting:
 curl http://localhost:8080/hello/greeting/quarkus
 ----
 
-And then access the metrics again, this time we'll look for our new metric:
+And then access the metrics again, this time we'll look for our new metric, specifying a scope of _application_ in the URL so that only metrics in that _scope_ are returned:
 
 [source,sh,role="copypaste"]
 ----
@@ -151,7 +145,7 @@ The comments in the metrics output starting with `#` are part of the format and 
 
 [NOTE]
 ====
-MicroProfile Metrics names are prefixed with things like `vendor:` or `application:` or `base:`. These can be selectively accessed by adding the name to the accessed endpoint, e.g. `curl http://localhost:8080/metrics/application` or `curl http://localhost:8080/metrics/base`.
+In the OpenMicroProfile Metrics names are prefixed with things like `vendor:` or `application:` or `base:`. These _scopes_ can be selectively accessed by adding the name to the accessed endpoint, e.g. `curl http://localhost:8080/metrics/application` or `curl http://localhost:8080/metrics/base`.
 ====
 
 ## Add a few more
@@ -168,11 +162,11 @@ Don't forget to import the correct classes as before.
 
 ## Rebuild Executable JAR
 
-Now we are ready to run our application on the cluster. Using the command palette, select **Build Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
+Now we are ready to run our application on the cluster. Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
 ## Deploy
 
-Let's deploy our app to the cluster and see if Prometheus picks up our metrics! To do this, start the build using our executable JAR:
+Let's deploy our app to the cluster and see if Prometheus picks up our metrics! To do this, start the container build using our executable JAR:
 
 [source,sh,role="copypaste"]
 ----
@@ -190,7 +184,7 @@ oc rollout status -w dc/people
 
 ## Test
 
-You'll need to trigger the methods that we've instrumented, so first run this command to open the word cloud page:
+You'll need to trigger the methods that we've instrumented, so first run this command to get the URL to the word cloud page we previously created, and then open it in your browser, which will start producing names (and generating metrics):
 
 [source,sh,role="copypaste"]
 ----
@@ -210,13 +204,21 @@ Open a separate browser tab and navigate to that URL. You should see:
 
 This is the Prometheus GUI which lets you issue queries to retrieve metrics Prometheus has gathered. Start typing in the box to look for 'acme':
 
-::img
+image:prom.png[Prometheus,800]
 
 These are the metrics exposed by our application, both raw numbers (like number of converted names in the `application:org_acme_people_stream_name_converter_converted_names` metric) along with quantiles of the same data across different time periods (e.g. `application:org_acme_people_stream_name_converter_converter_rate_per_second`).
 
-Enter `application:org_acme_people_stream_name_converter_converted_names` in the box, and click **Execute**. This will fetch the values from our metric showing the number of converted names (which should be roughly linear since it's happening every 5 seconds). Click the **Graph** tab to see it visually. Cool! You can try this with some of the JVM metrics as well, e.g. try to graph the `process_resident_memory_bytes` to see how much memory our app is using over time:
+Select `application:org_acme_people_stream_name_converter_converted_names` in the box, and click **Execute**. This will fetch the values from our metric showing the number of converted names:
 
-::img
+image:promnames.png[names,800]
+
+Click the **Graph** tab to see it visually, and adjust the time period to `5m`:
+
+image:promg1.png[names,800]
+
+Cool! You can try this with some of the JVM metrics as well, e.g. try to graph the `process_resident_memory_bytes` to see how much memory our app is using over time:
+
+image:promg2.png[names,800]
 
 Of course Quarkus apps use very little memory, even for apps stuffed with all sorts of extensions and code.
 
@@ -224,7 +226,7 @@ Of course Quarkus apps use very little memory, even for apps stuffed with all so
 
 Prometheus offers a powerful way to capture metrics, a rich query language and alerting of unusual or unexpected conditions. Another open source project, https://grafana.com/[Grafana] is commonly used as a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards]:
 
-::img
+image::https://grafana.com/api/dashboards/3308/images/2099/image[Grafana dashboard,800]
 
 ### Extra Credit after this workshop
 
