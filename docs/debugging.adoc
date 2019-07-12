@@ -45,6 +45,9 @@ Click **Save** to save this configuration, and then click **Debug** to attach th
 
 You can switch between the debug pane and the Terminal panes using the small icons to the left of the debugger window.
 
+[caption="Click this to go to your terminals]
+image:termbox.png
+
 Terminals: image:termbox.png[float="right"] icon is for your Terminals
 Debugger:  image:bugicon.png[float="right"] icon is for the debugger.
 
