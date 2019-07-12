@@ -43,13 +43,9 @@ Click **Save** to save this configuration, and then click **Debug** to attach th
 
 You can switch between the debug pane and the Terminal panes using the small icons to the left of the debugger window:
 
-[NOTE]
-====
-* Click this to go to your terminals image:termbox.png[float="left"]
+Click this to go to your terminals image:termbox.png[float="left"]
 
-* Click this to show the Debug window image:bugicon.png[float="left"]
-
-====
+Click this to show the Debug window image:bugicon.png[float="left"]
 
 == Test app
 
