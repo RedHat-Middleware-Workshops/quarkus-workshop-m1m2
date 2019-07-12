@@ -2,11 +2,11 @@
 
 This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing] to provide distributed tracing for interactive web applications.
 
-In a cloud-native application, multiple microservices are collaborating to deliver the expected functionality. If you have hundreds of services, how do you debug an individual request as it travels through a distributed system? For Java enterprise developers, the Eclipse MicroProfile OpenTracing specification makes it easier. Let's find out how.
+In a distributed cloud-native application, multiple microservices are collaborating to deliver the expected functionality. If you have hundreds of services, how do you debug an individual request as it travels through a distributed system? For Java enterprise developers, the Eclipse MicroProfile OpenTracing specification makes it easier. Let's find out how.
 
 ## Install Jaeger
 
-Jaeger, inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems, including:
+https://www.jaegertracing.io/[Jaeger], inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems, including:
 
 * Distributed context propagation
 * Distributed transaction monitoring
@@ -40,10 +40,10 @@ Like other exercises, we'll need another extension to enable tracing. Install it
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="opentracing"
+mvn quarkus:add-extension -Dextensions="opentracing, rest-client"
 ----
 
-This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability. It will import the `smallrye-opentracing` extension which is an implementation of the MicroProfile OpenTracing specification used in Quarkus, along with the default https://www.jaegertracing.io/[Jaeger] tracer implementation.
+This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and anm HTTP REST Client we'll use pater. 
 
 Next, open the `application.properties` file (in the `src/main/resources` directory). Add the following lines to it to configure the default Jaeger tracer in Quarkus:
 
@@ -62,7 +62,7 @@ quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces # <3>
 
 Like many other Quarkus frameworks, sensible defaults and out of the box functionality means you can get immediate value out of Quarkus without changing any code. By default, all JAX-RS endpoints (like our `/hello` and others) are automatically traced. Let's see that in action by re-deploying our traced app.
 
-First, re-build the app using the command palette and selecting **Build Executable JAR**. Once that's done, run the following command to re-deploy:
+First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----
@@ -80,7 +80,7 @@ oc rollout status -w dc/people
 
 ## Trigger traces
 
-You'll need to trigger the HTTP endpoints, so let's re-visit our earlier DataTables-powered app. Run this command to open the table with our people database:
+You'll need to trigger some HTTP endpoints to generate traces, so let's re-visit our earlier DataTables-powered app. Run this command to open the table with our people database:
 
 [source,sh,role="copypaste"]
 ----
@@ -89,7 +89,7 @@ echo http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/
 
 Open that URL in a separate browser tab, and exercise the table a bit by paging through the entries to force several RESTful calls back to our app:
 
-::img
+image::paging.png[paging,600]
 
 ## Inspect traces
 
@@ -102,15 +102,15 @@ echo http://$(oc get route jaeger-query -o=go-template --template='{{ .spec.host
 
 Open that URL in a separate tab to arrive at the Jaeger Tracing console (leave the tab open as we'll use it later)
 
-::img
+image::jaegerui.png[jaeger,600]
 
 Using the menu on the left, select the `people` Service, and click **Find Traces**. Jaeger will show the collected traces on the right:
 
-::img
+image::find1.png[jaeger,600]
 
 Click on one of the traces from "a few seconds ago" to show the individual _spans_ of each trace:
 
-::img
+image::trace1.png[jaeger,600]
 
 You can see that this trace (along with the others) shows the incoming HTTP GET operation to the `/datatable` endpoint we created earlier, along with the time it took, and other ancillary info about the request. Not terribly interesting as it's a single call, but you can imagine with a real world app and multiple microservices working together, that traces could reveal a lot of detail.
 
@@ -121,7 +121,7 @@ Service Mesh technologies like https://istio.io[Istio] can provide even more tra
 
 ## Tracing external calls
 
-This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client] with Quarkus in order to trace external REST APIs requests with very little effort.
+This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client] with Quarkus in order to trace _external_, outbound requests with very little effort.
 
 We will use the publicly available https://swapi.co[Star Wars API] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
 
@@ -156,11 +156,11 @@ public class StarWarsPerson {
 }
 ----
 
-This contains a subset of the full Star Wars REST model, just enough to demonstrate tracing.
+This contains a subset of the full Star Wars model, just enough to demonstrate tracing.
 
 ### Create interface 
 
-Using the MicroProfile REST Client is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class in the `org.acme.people.service` package called `StarWarsService` with the following content:
+Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class in the `org.acme.people.service` package called `StarWarsService` with the following content:
 
 [source,java,role="copypaste"]
 ----
@@ -181,9 +181,9 @@ public interface StarWarsService {
 
     @GET
     @Path("/people/{id}/") // <2>
-    @Produces("application/json") <3>
-    @ClientHeaderParam(name="User-Agent", value="QuarkusLab") <4>
-    StarWarsPerson getPerson(@PathParam("id") int id); <5>
+    @Produces("application/json") // <3>
+    @ClientHeaderParam(name="User-Agent", value="QuarkusLab") // <4>
+    StarWarsPerson getPerson(@PathParam("id") int id); // <5>
 }
 ----
 <1> `@RegisterRestClient` allows Quarkus to know that this interface is meant to be available for CDI injection as a REST Client
@@ -227,13 +227,13 @@ public List<StarWarsPerson> getCharacters() {
 }
 ----
 <1> Our injected service
-<2> Generate a stream of integers that we will use as IDs to pass to the service
+<2> Generate a stream of 5 integers that we will use as IDs to pass to the service
 <3> For each of the integers, call the `StarWarsService::getPerson` method
 <4> Collect the results into a list and return it
 
 ## Test it out
 
-First, re-build the app using the command palette and selecting **Build Executable JAR**. Once that's done, run the following command to re-deploy:
+First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----
@@ -255,7 +255,7 @@ Try out our new endpoint by running the following command:
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/person/swpeople
+curl http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/person/swpeople
 ----
 
 You should see:
@@ -288,13 +288,13 @@ You should see:
 
 ## Inspect traces
 
-Go back to the Jaeger console tab, and click **Find Traces**. The new trace should appear the top with multiple spans:
+Go back to the Jaeger console tab, and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
 
-::img
+image::swpeople.png[swpeople,800]
 
 You can see that this trace (along with the others) shows multiple spans: the incoming HTTP GET operation to the `/swperson` endpoint we created earlier, and the external calls to the Star Wars API. Expand the traces to show the detail:
 
-::img
+image::swpeopleext.png[swpeopleext,800]
 
 ## Extra credit: Explicit method tracing
 
