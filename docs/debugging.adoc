@@ -41,15 +41,19 @@ image::debugconfig.png[debugconfig,600]
 
 Click **Save** to save this configuration, and then click **Debug** to attach the debugger to our running Quarkus app. The debugger view will appear at the bottom of the screen with several small buttons used to start/stop execution, step into/over/out of code, and other operations, and the app will begin executing.
 
-== Test app
-
 You can switch between the debug pane and the Terminal panes using the small icons to the left of the debugger window:
 
-[caption="Click this to go to your terminals"]
+[NOTE]
+====
+
+**Click this to go to your terminals::
 image::termbox.png[float="left"]
 
-Terminals: image:termbox.png[float="right"] icon is for your Terminals
-Debugger:  image:bugicon.png[float="right"] icon is for the debugger.
+** Click this to show the Debug window:
+image:bugicon.png[float="left"]
+====
+
+== Test app
 
 Click the Terminal button to go back to your terminal(s), and open a Terminal and run:
 
