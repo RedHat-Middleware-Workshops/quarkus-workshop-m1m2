@@ -43,7 +43,7 @@ Click **Save** to save this configuration, and then click **Debug** to attach th
 
 == Test app
 
-You can switch between the debug pane and the Terminal panes using the small icons: the image:termbox.png[Box] icon is for your Terminals, and the image:bugicon.png[Bug] icon is for the debugger. Click image:termbox.png[Box] to go back to your terminal(s), and open a Terminal and run:
+You can switch between the debug pane and the Terminal panes using the small icons: the image:termbox.png[Box,display=inline] icon is for your Terminals, and the image:bugicon.png[Bug,display=inline] icon is for the debugger. Click image:termbox.png[Box,display=inline] to go back to your terminal(s), and open a Terminal and run:
 
 [source,sh,role="copypaste"]
 ----
