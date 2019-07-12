@@ -45,12 +45,8 @@ You can switch between the debug pane and the Terminal panes using the small ico
 
 [NOTE]
 ====
-
-**Click this to go to your terminals::
-image::termbox.png[float="left"]
-
-** Click this to show the Debug window:
-image:bugicon.png[float="left"]
+** Click this to go to your terminals image:termbox.png[float="left"]
+** Click this to show the Debug window image:bugicon.png[float="left"]
 ====
 
 == Test app
