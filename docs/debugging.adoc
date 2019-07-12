@@ -43,9 +43,7 @@ Click **Save** to save this configuration, and then click **Debug** to attach th
 
 You can switch between the debug pane and the Terminal panes using the small icons to the left of the debugger window:
 
-Click this to go to your terminals image:termbox.png[float="left"]
-
-Click this to show the Debug window image:bugicon.png[float="left"]
+image::buttons.png[buttons, 600]
 
 == Test app
 
@@ -60,7 +58,7 @@ Although we were expecting `o`, we got nothing. There is something wrong with ou
 
 == Set a Breakpoint
 
-Click image:bugicon.png[Bug] to go back to the debugger.
+Click Debugger button to go back to the debugger.
 
 To debug the app, let's step through our function that has the bug. In the left gutter of the code, where the line numbers are shown, click once on the line number next to `int len = name.length();` to set a breakpoint. The line number will be highlighted and the breakpoint will be registered in the debug pane:
 
@@ -68,14 +66,14 @@ image::break.png[breakpoint,800]
 
 == Trigger the bug
 
-Now that we have a breakpoint, click image:termbox.png[Box] to return to the terminal. In the Terminal issue the same `curl` command as before:
+Now that we have a breakpoint, go back to Terminals with the Terminal button. In the Terminal issue the same `curl` command as before:
 
 [source, sh, role="copypaste"]
 ----
 curl http://localhost:8080/hello/lastletter/foo
 ----
 
-This time, the command will appear to hang as the breakpoint has been reached. The line where you set the breakpoint will be highlighted. Click image:bugicon.png[Bug] to go back to the debugger, which has paused the execution at the breakpoint:
+This time, the command will appear to hang as the breakpoint has been reached. The line where you set the breakpoint will be highlighted. Click the Debugger button to go back to the debugger, which has paused the execution at the breakpoint:
 
 image::breakreached.png[breakpointreached]
 
@@ -87,17 +85,21 @@ You will see three main sections of the debug view:
 
 * **Variables** - Here you can see the value of local variables in the selected stack frame. In our code we have no local variables defined yet, but once we start stepping through the code, newly defined variables (like `len`) will appear here.
 
-Step over the current line by clicking image:stepover.png[stepover] ("Step Over"). This will fully execute the current line, and advance to the next line in the code and stop again. (You could also step _into_ methods for deeper debugging).
+You can use the various buttons to step across code:
+
+image::debugbuttons.png[debugbuttons, 800]
+
+Step over the current line by clicking **Step Over**. This will fully execute the current line, and advance to the next line in the code and stop again. (You could also step _into_ methods for deeper debugging).
 
 At this point, `len` is defined (and listed on the right side):
 
 image::len.png[length, 200]
 
-Click image:stepover.png[stepover] again, which executes the line to grab the last letter using `len` an offset to the `substring` method. See the bug? Look at the value of `lastLetter` in the variables list on the right - it's empty!
+Click **Step Over** again, which executes the line to grab the last letter using `len` an offset to the `substring` method. See the bug? Look at the value of `lastLetter` in the variables list on the right - it's empty!
 
 We need to pass an offset that is one _before_ the end, to get the last letter.
 
-Click image:resume.png[resume] ("Resume") to let the method continue and return the value (your `curl` command has probably timed out by now).
+Click the **Resume** button to let the method continue and return the value (your `curl` command has probably timed out by now).
 
 Fix the code by changing the line that calls `substring()` to read:
 
@@ -119,10 +121,10 @@ Remove the breakpoint by clicking on the line number again to de-highlight it.  
 
 ::img
 
-Click image:end.png[end] ("End Debug Session") button to quit the debugging session.
+Click **End Debug Session** button to quit the debugging session.
 
 Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there.
 
 ## Cleanup
 
-Stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.
+Go back to your Terminals and stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.
