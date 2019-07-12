@@ -49,9 +49,9 @@ We'll start by creating a new asynchronous endpoint. Open the `PersonResource` c
 ----
     @Inject EventBus bus; // <1>
 ----
-<1> Be sure to import the correct `EventBus` class - which is `io.vertx.axle.core.eventbus.EventBus`. 
+<1> Use _Assistant > Organize Imports, and be sure to import the correct `EventBus` class - which is `io.vertx.axle.core.eventbus.EventBus`. 
 
-Next, create two new endpoints which creates new people in our database given a name, and finds people by their name:
+Next, create two new endpoints in the same class which creates new people in our database given a name, and finds people by their name:
 
 [source,java,role="copypaste"]
 ----
@@ -74,6 +74,8 @@ Next, create two new endpoints which creates new people in our database given a 
 <1> send the name to the `add-person` address
 <2> when we get the reply, extract the body and send this as response to the user
 
+Don't forget to _Assistant > Organize Imports_ and import the _axle_ variant of the `Message` class.
+
 This uses the request/reply dispatching mechanism. Instead of implementing the business logic inside the JAX-RS endpoint, we are sending a message. This message is consumed by another bean and the response is sent using the reply mechanism.
 
 The `EventBus` object provides methods to:
@@ -86,14 +88,14 @@ With this endpoint we can POST to the `/person/joe` endpoint to create a new use
 
 ### Try it, and fail
 
-With our endpoint, confirm it works using the Terminal to execute:
+With our endpoint, confirm it fails using the Terminal to execute:
 
 [source,sh,role="copypaste"]
 ----
 curl -X POST http://localhost:8080/person/joe
 ----
 
-**This will fail** with a timeout - we posted the message to the Vert.x event bus, but there's nothing to receive it!
+**This will fail** with a hang/timeout - we posted the message to the Vert.x event bus, but there's nothing to receive it!
 
 ### Create consumer
 
@@ -125,7 +127,7 @@ public class PersonService {
         p.birth = birth;
         p.eyes = color;
         p.name = name;
-        Person.persist(p); <1>
+        Person.persist(p); // <1>
         return p.name; // <2>        
     }
 
@@ -155,7 +157,7 @@ You should get back Joe!
 [source,json]
 ----
 {
-  "id": 4,
+  "id": 1004,
   "birth": "2000-03-15",
   "eyes": "BROWN",
   "name": "joe"

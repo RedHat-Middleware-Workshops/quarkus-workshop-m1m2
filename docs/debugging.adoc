@@ -93,7 +93,7 @@ Step over the current line by clicking **Step Over**. This will fully execute th
 
 At this point, `len` is defined (and listed on the right side):
 
-image::len.png[length, 200]
+image::len.png[length, 800]
 
 Click **Step Over** again, which executes the line to grab the last letter using `len` an offset to the `substring` method. See the bug? Look at the value of `lastLetter` in the variables list on the right - it's empty!
 
@@ -117,9 +117,7 @@ curl http://localhost:8080/hello/lastletter/foo
 
 The breakpoint will be hit once again. step over the lines to verify the value of `lastLetter` is correct before the method returns. You've fixed the bug!
 
-Remove the breakpoint by clicking on the line number again to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now:
-
-::img
+Remove the breakpoint by clicking on the line number again to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now: You should see `o`.
 
 Click **End Debug Session** button to quit the debugging session.
 
