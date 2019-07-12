@@ -43,11 +43,10 @@ Click **Save** to save this configuration, and then click **Debug** to attach th
 
 == Test app
 
-You can switch between the debug pane and the Terminal panes using the small icons to the left of the debugger window.
+You can switch between the debug pane and the Terminal panes using the small icons to the left of the debugger window:
 
-.FooBar
 [caption="Click this to go to your terminals"]
-image::termbox.png[]
+image::termbox.png[float="left"]
 
 Terminals: image:termbox.png[float="right"] icon is for your Terminals
 Debugger:  image:bugicon.png[float="right"] icon is for the debugger.
