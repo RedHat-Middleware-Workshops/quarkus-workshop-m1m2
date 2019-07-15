@@ -20,9 +20,8 @@ Some configuration of the extensions is required. Add this to your `application.
 [source,none,role="copypaste"]
 ----
 mp.jwt.verify.publickey.location=META-INF/resources/publicKey.pem  # <1>
-mp.jwt.verify.issuer=https://quarkus.io/using-jwt-rbac   # <2>
+mp.jwt.verify.issuer={{KEYCLOAK_URL}}/auth/realms/quarkus   # <2>
 quarkus.smallrye-jwt.auth-mechanism=MP-JWT   # <3>
-quarkus.smallrye-jwt.realm-name=quarkus
 
 ----
 <1> Sets public key location for JWT authentication. This file has been created for you.
@@ -343,12 +342,12 @@ You should see:
 [source,none]
 ----
 hello alice, isSecure: false, authScheme: MP-JWT, hasJWT: true
-Injected issuer: ["http://keycloak-che.apps.cluster-orlando-c811.orlando-c811.openshiftworkshop.com/auth/realms/quarkus"]
+Injected issuer: ["{{KEYCLOAK_URL}}/auth/realms/quarkus"]
 
 Claim Name: [sub] Claim Value: [eb4123a3-b722-4798-9af5-8957f823657a]
 Claim Name: [email_verified] Claim Value: [false]
 Claim Name: [raw_token] Claim Value: [omitted][
-Claim Name: [iss] Claim Value: [http://keycloak-che.apps.cluster-orlando-c811.orlando-c811.openshiftworkshop.com/auth/realms/quarkus]
+Claim Name: [iss] Claim Value: [{{KEYCLOAK_URL}}auth/realms/quarkus]
 Claim Name: [groups] Claim Value: [[]]
 Claim Name: [typ] Claim Value: ["Bearer"]
 Claim Name: [preferred_username] Claim Value: [alice]
