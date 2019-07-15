@@ -30,6 +30,4 @@ modules:
   tracing:
     name: Tracing Quarkus Apps
   security:
-    name: Securing Resources with Keycloak
-  extra:
-    name: Extra Credit
+    name: Securing Quarkus APIs

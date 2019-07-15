@@ -28,4 +28,3 @@ modules:
   - monitoring
   - tracing
   - security
-  - extra
