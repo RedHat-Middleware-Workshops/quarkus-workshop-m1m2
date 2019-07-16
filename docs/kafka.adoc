@@ -95,6 +95,12 @@ mvn quarkus:add-extension -Dextensions="kafka"
 
 This will add the necessary entries in your `pom.xml` to bring in the Kafka extension.
 
+== The Application You Will Build
+
+The app consists of 3 components that pass messages via Kafka and an in-memory stream, then uses SSE to push messages to the browser. It looks like:
+
+image::kafkaarch.png[kafka, 800]
+
 == Create name generator
 
 To start building the app, create a new Java class in the `org.acme.people.stream` called `NameGenerator`. This class will generate random names and publish them to our Kafka topic for further processing. Use this code:
