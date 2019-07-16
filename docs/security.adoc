@@ -1,6 +1,6 @@
 ## Securing Quarkus APIs
 
-Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC], https://keyloak.org[Keycloak] and https://en.wikipedia.org/wiki/OAuth[OAuth] in your Quarkus applications.
+Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC], https://keyloak.org[Keycloak] and https://en.wikipedia.org/wiki/OAuth[OAuth] to secure your Quarkus applications.
 
 ## Add JWT to Quarkus
 
@@ -17,7 +17,7 @@ This will add the necessary entries in your `pom.xml` to bring in JWT support.
 
 Some configuration of the extension is required. Add this to your `application.properties`:
 
-[source,none,role="copypaste"]
+[source,properties,role="copypaste"]
 ----
 mp.jwt.verify.publickey.location={{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/certs  # <1>
 mp.jwt.verify.issuer={{KEYCLOAK_URL}}/auth/realms/quarkus   # <2>
