@@ -142,7 +142,7 @@ So let's add a bit more documentation to our `/person/birth/before/{year}` endpo
 
 Add a few annotations:
 
-**1. Add an `@Operation` annotation on the method to provide a brief summary and description. You'll need to _Assistant > Organize Imports_ to complete the import statements after adding the code:**
+**1. Add an `@Operation` annotation on the `getBeforeYear` method to provide a brief summary and description. You'll need to _Assistant > Organize Imports_ to complete the import statements after adding the code:**
 
 [source,java,role="copypaste"]
 ----
@@ -172,7 +172,31 @@ Add a few annotations:
 
 Again, _Assistant > Organize Imports_ (and make sure to import the right `Parameter` class: `org.eclipse.microprofile.openapi.annotations.parameters.Parameter`)
 
-Now reload the same Swagger UI webpage. Notice the Swagger documention is more filled out for the endpoint to which we added extra OpenAPI documentation:
+The final method should look like:
+
+[source,java]
+----
+@Operation(summary = "Finds people born before a specific year",
+           description = "Search the people database and return a list of people born before the specified year")
+@APIResponses(value = {
+    @APIResponse(responseCode = "200", description = "The list of people born before the specified year",
+        content = @Content(
+            schema = @Schema(implementation = Person.class)
+        )),
+    @APIResponse(responseCode = "500", description = "Something bad happened")
+})
+@GET
+@Path("/birth/before/{year}")
+@Produces(MediaType.APPLICATION_JSON)
+public List<Person> getBeforeYear(
+    @Parameter(description = "Cutoff year for searching for people", required = true)
+    @PathParam(value = "year") int year) {
+    
+    return Person.getBeforeYear(year);
+}
+----
+
+Now reload the same Swagger UI webpage (and expand the `/person/birth/before/{year}` section). Notice the Swagger documention is more filled out for the endpoint to which we added extra OpenAPI documentation:
 
 image::swaggerparams.png[swaggerparams,600]
 

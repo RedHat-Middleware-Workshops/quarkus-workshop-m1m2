@@ -168,6 +168,8 @@ image::importsql.png[importsql,800]
 
 image::importsqlfile.png[importsqlfile,600]
 
+Add these lines to `import.sql` file you just created:
+
 [source,sql,role="copypaste"]
 ----
 INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Farid Ulyanov', to_date('1974-08-15', 'YYYY-MM-dd'), 'BLUE')

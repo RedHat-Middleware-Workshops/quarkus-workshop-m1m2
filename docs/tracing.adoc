@@ -195,7 +195,7 @@ public interface StarWarsService {
 <4> The Star Wars API requires a `User-Agent` header, so with Quarkus we add that with `@ClientHeaderParam`. Other parameters can be added here as needed.
 <5> The `getPerson` method gives our code the ability to query the Star Wars API by `id`. The client will handle all the networking and marshalling leaving our code clean of such technical details.
 
-=== Configure endppint
+=== Configure endpoint
 
 In order to determine the base URL to which REST calls will be made, the REST Client uses configuration from `application.properties`. To configure it, add this to your `application.properties` (in `src/main/resource`):
 

@@ -23,6 +23,7 @@ oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-sk
 ----
 
 Enter your username and password assigned to you:
+
 * Username: **userNN**
 * Password: **passNN**
 
