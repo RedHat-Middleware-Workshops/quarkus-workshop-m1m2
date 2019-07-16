@@ -2,58 +2,36 @@
 
 Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC], https://keyloak.org[Keycloak] and https://en.wikipedia.org/wiki/OAuth[OAuth] in your Quarkus applications.
 
-## Add Keycloak + JWT to Quarkus
+## Add JWT to Quarkus
 
-Like other exercises, we'll need another extension to enable the use of Keycloak and MicroProfile JWT. Install them with:
+Like other exercises, we'll need another extension to enable the use of MicroProfile JWT. Install it with:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="keycloak, jwt"
+mvn quarkus:add-extension -Dextensions="jwt"
 ----
 
-This will add the necessary entries in your `pom.xml` to bring in the Keycloak and JWT extensions.
+This will add the necessary entries in your `pom.xml` to bring in JWT support.
 
 ## Configure Quarkus for MicroProfile JWT
 
-Some configuration of the extensions is required. Add this to your `application.properties`:
+Some configuration of the extension is required. Add this to your `application.properties`:
 
 [source,none,role="copypaste"]
 ----
-mp.jwt.verify.publickey.location=META-INF/resources/publicKey.pem  # <1>
+mp.jwt.verify.publickey.location={{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/certs  # <1>
 mp.jwt.verify.issuer={{KEYCLOAK_URL}}/auth/realms/quarkus   # <2>
 quarkus.smallrye-jwt.auth-mechanism=MP-JWT   # <3>
-
+quarkus.smallrye-jwt.realmName=quarkus
+quarkus.smallrye-jwt.enabled=true
 ----
-<1> Sets public key location for JWT authentication. This file has been created for you.
+<1> Sets public key location for JWT authentication. Keycloak exports this for you at the URL.
 <2> Issuer URL. This must match the incoming JWT `iss` _claims_ or else authentication fails.
 <3> Sets authentication mechanism name to `MP-JWT`, the MicroProfile JWT RBAC specification standard name for the token based authentication mechanism.
 
-## Configuring Keycloak
+# Create protected endpoints
 
-Next, add these to your `application.properties` for Keycloak:
-
-[source,none,role="copypaste"]
-----
-quarkus.keycloak.realm=quarkus
-quarkus.keycloak.auth-server-url={{ KEYCLOAK_URL }}/auth
-quarkus.keycloak.resource=backend-service
-quarkus.keycloak.bearer-only=true
-quarkus.keycloak.credentials.secret=secret
-quarkus.keycloak.policy-enforcer.enable=true
-quarkus.keycloak.policy-enforcer.enforcement-mode=PERMISSIVE
-----
-
-We are using the same Keycloak instance that we use for Eclipse Che, and have pre-created the `quarkus` realm for you. This realm has some users pre-created:
-
-* `alice` is an ordinary user (will have the `user` role) whose password is `alice`
-* `admin` is an Administrator (has the `admin` role) and their password is `admin`
-* `jdoe` is an ordinary user (has the `user` role()) but has also been granted the `confidential` role in Keycloak, and their password is `jdoe`
-
-For more details about this file and all the supported options, please take a look at https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[Keycloak Adapter Config].
-
-## Create secured endpoints
-
-Create a new class in the `org.acme.people.rest` package called `SecuredResource` with the following code which will create **four new secured endpoints** all beginning with `/secured`:
+We'll create 2 JWT-protected endpoints. Create a new class `JWTResource` in the `org.acme.people.rest` package with the following code:
 
 [source,java,role="copypaste"]
 ----
@@ -76,89 +54,54 @@ import javax.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.keycloak.KeycloakSecurityContext;
 
 @Path("/secured")
 @RequestScoped // <1>
-public class SecuredResource {
+public class JWTResource {
 
     @Inject
-    KeycloakSecurityContext keycloakSecurityContext;  // <2>
-
-    @Inject
-    JsonWebToken jwt;  // <3>
+    JsonWebToken jwt;  // <2>
 
     @Inject 
     @Claim(standard = Claims.iss) 
-    Optional<JsonString> issuer; // <4>
+    Optional<JsonString> issuer; // <3>
+
+    @GET
+    @Path("/me")
+    @RolesAllowed("user")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String me(@Context SecurityContext ctx) {  // <4>
+        Principal caller = ctx.getUserPrincipal();
+        String name = caller == null ? "anonymous" : caller.getName();
+        boolean hasJWT = jwt != null;
+        return String.format("hello %s, isSecure: %s, authScheme: %s, hasJWT: %s\n", name, ctx.isSecure(), ctx.getAuthenticationScheme(), hasJWT);
+    }
 
     @GET
     @Path("/me/jwt") 
-    @PermitAll
+    @RolesAllowed("admin")
     @Produces(MediaType.TEXT_PLAIN)
-    public String meJwt(@Context SecurityContext ctx) {   // <5>
+    public String meJwt(@Context SecurityContext ctx) {   // <4>
         Principal caller = ctx.getUserPrincipal();
         String name = caller == null ? "anonymous" : caller.getName();
         boolean hasJWT = jwt != null;
 
         final StringBuilder helloReply = new StringBuilder(String.format("hello %s, isSecure: %s, authScheme: %s, hasJWT: %s\n", name, ctx.isSecure(), ctx.getAuthenticationScheme(), hasJWT));
         if (hasJWT && (jwt.getClaimNames() != null)) {
-            helloReply.append("Injected issuer: [" + issuer.get() + "]\n");
+            helloReply.append("Injected issuer: [" + issuer.get() + "]\n"); <5>
             jwt.getClaimNames().forEach(n -> {
                 helloReply.append("\nClaim Name: [" + n + "] Claim Value: [" + jwt.getClaim(n) + "]");
             });
         }
         return helloReply.toString();
     }
-
-    @GET
-    @Path("/me")   // <5>
-    @RolesAllowed("user")
-    @Produces(MediaType.APPLICATION_JSON)
-    @NoCache
-    public User me() {
-        return new User(keycloakSecurityContext);
-    }
-
-    @GET
-    @Path("/admin")  // <6>
-    @RolesAllowed("admin")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String admin() {
-        return "granted";
-    }
-
-    
-    @GET
-    @Path("/confidential")  // <7>
-    @Produces(MediaType.TEXT_PLAIN)
-    public String confidential() {
-        return "confidential";
-    }
-
-    public class User {  // <8>
-
-        private final String userName;
-
-        User(KeycloakSecurityContext securityContext) {
-            this.userName = securityContext.getToken().getPreferredUsername();
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-    }
 }
 ----
 <1> Adds a `@RequestScoped` as Quarkus uses a default scoping of `ApplicationScoped` and this will produce undesirable behavior since JWT claims are naturally request scoped.
-<2> The `KeycloakSecurityContext` is an object produced by the Keycloak extension that you can use to obtain information from tokens sent to your application. 
-<3> `@JsonWebToken` provides access to the claims associated with the current authenticated JWT token.
-<4> When using JWT Authentication, claims encoded in tokens can be `@Inject` ed into your class for convenient access.
-<5> The `/me` and `/me/jwt` endpoints demonstrate how to access the security context for Quarkus apps secured with JWT or Keycloak. In the first one we are using a `@RolesAllowed` annotation to make sure that only users granted with the `user` role (i.e. are logged in) can access the endpoint. The `/me/jwt` shows how to access claims.
-<6> For the `/secured/admin` we only want administrators (those granted the `admin` role in our identity management system) to be able to access
-<7> For the `/api/confidential` there is no explicit access control defined to this endpoint. The Keycloak extension will enforce access to this endpoint based on the policies defined in the Keycloak Server. For now, don’t worry about how the extension enforces access to `/api/confidential`. Just keep in mind that there is some configuration that we need to define to make this happen.
-<8> Simple POJO to encapsulate the data model of a Keycloak user.
+<2> `JsonWebToken` provides access to the claims associated with the incoming authenticated JWT token.
+<3> When using JWT Authentication, claims encoded in tokens can be `@Inject` ed into your class for convenient access.
+<4> The `/me` and `/me/jwt` endpoints demonstrate how to access the security context for Quarkus apps secured with JWT. Here we are using a `@RolesAllowed` annotation to make sure that only users granted a specific role can access the endpoint.
+<5> Use of injected JWT Claim to print the all the claims
 
 ## Rebuild and redeploy app
 
@@ -180,7 +123,33 @@ oc rollout status -w dc/people
 
 ## Test endpoints
 
-The application is using _bearer token authorization_ and the first thing to do to test any endpoint is obtain an access token from the Keycloak Server in order to access the application resources.
+The first thing to do to test any endpoint is obtain an access token from your authentication server in order to access the application resources. We've pre-created a few users in Keycloak for you to use:
+
+* `alice` is an ordinary user (will have the `user` role) whose password is `alice`
+* `admin` is an Administrator (has the `admin` and `user` role) and their password is `admin`
+* `jdoe` is an ordinary user (has the `user` role) but has also been granted access to `confidential` endpoints in Keycloak, and their password is `jdoe`
+
+Try to access the endpoint as an anonymous unauthenticated user:
+
+[source,sh,role="copypaste"]
+----
+curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me
+----
+
+It should fail with:
+
+[source,none]
+----
+HTTP/1.1 401 Unauthorized
+Connection: keep-alive
+Content-Type: text/html;charset=UTF-8
+Content-Length: 14
+Date: Tue, 16 Jul 2019 00:40:07 GMT
+
+Not authorized
+----
+
+Let's try with an authenticated user next.
 
 ### Test Alice
 
@@ -198,14 +167,11 @@ export ALICE_TOKEN=$(\
 ----
 This issues a `curl` command to Keycloak (using `backend-service` credentials which is a special user that is allowed acess to the Keycloak REST API), and fetches a token for Alice using their credentials. 
 
-Any user is allowed to access the `/secured/me` endpoint which basically returns a JSON payload with personal details about the user that's part of the `KeycloakSecurityContext` object. 
-
-Try out the Keycloak-secured API as Alice:
+Try out the JWT-secured API as Alice:
 
 [source,sh,role="copypaste"]
 ----
-curl -X GET \
-  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me \
+curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me \
   -H "Authorization: Bearer $ALICE_TOKEN"
 ----
 
@@ -213,35 +179,41 @@ You should see:
 
 [source,json]
 ----
-{"userName":"alice"}
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 63
+Date: Tue, 16 Jul 2019 00:40:44 GMT
+
+hello alice, isSecure: false, authScheme: MP-JWT, hasJWT: true
 ----
 
-[NOTE]
-====
-There are other APIs you can use if you try to auto-complete the method name using Che, e.g. `getBirthDate()` or `getPicture()`. Place the cursor just after `securityContext.getToken().get` and press CTRL-SPACE to see them:
-
-image::secapis.png[apis, 800]
-====
-
-### Test Admin
-
-The `/secured/admin` endpoint can only be accessed by users with the `admin` role. If you try to access this endpoint with the previously issued access token, you should get a 403 response from the server. Try it:
+Now try to access the `/me/admin` endpoint as `alice`:
 
 [source,sh,role="copypaste"]
 ----
-curl -X GET \
-  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/admin \
+curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me/admin \
   -H "Authorization: Bearer $ALICE_TOKEN"
 ----
 
-You should see:
+You'll get:
 
 [source,none]
 ----
+HTTP/1.1 403 Forbidden
+Connection: keep-alive
+Content-Type: text/html;charset=UTF-8
+Content-Length: 34
+Date: Tue, 16 Jul 2019 00:41:37 GMT
+
 Access forbidden: role not allowed
 ----
 
-Failed as expected! Obtain an Admin token:
+Alice is not an admin. Let's try with admin!
+
+### Test Admin
+
+Obtain an Admin token:
 
 [source,sh,role="copypaste"]
 ----
@@ -257,8 +229,7 @@ And try again with your new token:
 
 [source,sh,role="copypaste"]
 ----
-curl -X GET \
-  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/admin \
+curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me/admin \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ----
 
@@ -266,10 +237,93 @@ You should see:
 
 [source,none]
 ----
-granted
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 2272
+Date: Tue, 16 Jul 2019 00:14:54 GMT
+
+hello admin, isSecure: false, authScheme: MP-JWT, hasJWT: true
+Injected issuer: ["{{KEYCLOAK_URL}}/auth/realms/quarkus"]
+
+Claim Name: [sub] Claim Value: [af134cab-f41c-4675-b141-205f975db679]
+Claim Name: [groups] Claim Value: [[admin, user]]
+Claim Name: [typ] Claim Value: ["Bearer"]
+Claim Name: [preferred_username] Claim Value: [admin]
+... <more claims>
 ----
 
-Success!
+Success! We dump all of the claims from the JWT token for inspection.
+
+## Using Keycloak Authentication
+
+Keycloak provides similar features as other OAuth/Open ID Connect servers, but can also do implicit authentication without you as a developer needing to explicitly declare protection on endpoints.
+
+First, you'll need to enable the Keycloak extension:
+
+[source,sh,role="copypaste"]
+----
+mvn quarkus:add-extension -Dextensions="keycloak"
+----
+
+### Configuring Keycloak
+
+Next, add these to your `application.properties` for Keycloak:
+
+[source,none,role="copypaste"]
+----
+quarkus.keycloak.realm=quarkus
+quarkus.keycloak.auth-server-url={{ KEYCLOAK_URL }}/auth
+quarkus.keycloak.resource=backend-service
+quarkus.keycloak.bearer-only=true
+quarkus.keycloak.credentials.secret=secret
+quarkus.keycloak.policy-enforcer.enable=true
+quarkus.keycloak.policy-enforcer.enforcement-mode=PERMISSIVE
+----
+
+This configures the extension with the necessary configuration ( https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[read more] about what these do).
+
+### Create Keycloak endpoints
+
+Create a new class called `KeycloakResource` in the `org.acme.people.rest` package with the following code:
+
+[source,java,role=copypaste]
+----
+package org.acme.people.rest;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.keycloak.KeycloakSecurityContext;
+
+@Path("/secured")
+public class KeycloakResource {
+
+    @Inject
+    KeycloakSecurityContext keycloakSecurityContext;  // <1>
+
+    @GET
+    @Path("/confidential")  // <2>
+    @Produces(MediaType.TEXT_PLAIN)
+    public String confidential() {
+        return ("confidential access for: " + keycloakSecurityContext.getToken().getPreferredUsername() +
+          " from issuer:" + keycloakSecurityContext.getToken().getIssuer());
+    }
+}
+----
+<1> The `KeycloakSecurityContext` is an object produced by the Keycloak extension that you can use to obtain information from tokens sent to your application. 
+<2> Note that we do not use any `@RolesAllowed` or any other instrumentation on the endpoint. It looks like an ordinary endpoint.
+
+[NOTE]
+====
+There are other APIs you can use if you try to auto-complete the method name using Che, e.g. `getBirthDate()` or `getPicture()`. Place the cursor just after `keycloakSecurityContext.getToken().get` and press CTRL-SPACE to see them:
+
+image::secapis.png[apis, 800]
+====
 
 ### Test confidential
 
@@ -288,10 +342,10 @@ You should see in the returned HTTP headers:
 
 [source,none]
 ----
-< HTTP/1.1 403 Forbidden
-< Content-Length: 0
-< Date: Mon, 15 Jul 2019 14:13:27 GMT
-< Set-Cookie: 199a0e26f45fa42c8974157b896962e3=d0ea1fac5248f71f70eee9941b4902f1; path=/; HttpOnly
+HTTP/1.1 403 Forbidden
+Connection: keep-alive
+Content-Length: 0
+Date: Tue, 16 Jul 2019 00:59:56 GMT
 ----
 
 Failed as expected!
@@ -321,52 +375,18 @@ You should see:
 
 [source,none]
 ----
-confidential
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 142
+Date: Tue, 16 Jul 2019 00:50:49 GMT
+
+confidential access for: jdoe from issuer:{{KEYCLOAK_URL}}/auth/realms/quarkus
 ----
 
-Success! Even though our code did not explicitly protect the `/secured/confidential` endpoint, we can protect arbitrary URLs in Quarkus apps when using Keycloak and MicroProfile JWT.
-
-### Test JWT Authentication
-
-Use Alice's token to access the JWT endpoint:
-
-[source,sh,role="copypaste"]
-----
-curl -X GET \
-  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me/jwt \
-  -H "Authorization: Bearer $ALICE_TOKEN"
-----
-
-You should see:
-
-[source,none]
-----
-hello alice, isSecure: false, authScheme: MP-JWT, hasJWT: true
-Injected issuer: ["{{KEYCLOAK_URL}}/auth/realms/quarkus"]
-
-Claim Name: [sub] Claim Value: [eb4123a3-b722-4798-9af5-8957f823657a]
-Claim Name: [email_verified] Claim Value: [false]
-Claim Name: [raw_token] Claim Value: [omitted][
-Claim Name: [iss] Claim Value: [{{KEYCLOAK_URL}}auth/realms/quarkus]
-Claim Name: [groups] Claim Value: [[]]
-Claim Name: [typ] Claim Value: ["Bearer"]
-Claim Name: [preferred_username] Claim Value: [alice]
-Claim Name: [acr] Claim Value: [1]
-Claim Name: [nbf] Claim Value: [0]
-Claim Name: [realm_access] Claim Value: [{"roles":["user"]}]
-Claim Name: [azp] Claim Value: [backend-service]
-Claim Name: [auth_time] Claim Value: [0]
-Claim Name: [scope] Claim Value: ["email profile"]
-Claim Name: [exp] Claim Value: [1563210121]
-Claim Name: [session_state] Claim Value: ["816e22c9-5dcb-4b8a-b90f-005b25e145e1"]
-Claim Name: [iat] Claim Value: [1563209821]
-Claim Name: [jti] Claim Value: [5010b2eb-bb49-4f25-94e4-309d87a041b4]
-----
-
-As you can see, the JSON Web Token (generated via Keycloak) was used to authenticate Alice, and show all of the various claims encoded in the JWT Token. You are also able to access claims using standard `@Inject` fields which are populated with claims when a request comes in (it can be seen above in the `Injected issuer` line near the beginning).
-
-You can try it again using other users' tokens (just run the same `curl` again and replace `ALICE_TOKEN` with `JDOE_TOKEN` or `ADMIN_TOKEN` which you set up earlier).
+Success! Even though our code did not explicitly protect the `/secured/confidential` endpoint, we can protect arbitrary URLs in Quarkus apps when using Keycloak.
 
 ## Congratulations!
 
 This exercise demonstrated how your Quarkus application can use MicroProfile JWT in conjunction with Keycloak to protect your JAX-RS applications using JWT claims and bearer token authorization.
+
