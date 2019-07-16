@@ -33,7 +33,11 @@ The project has
 * A landing page that is accessible on `http://localhost:8080` after starting the application
 * The application configuration file
 
-Double-click on `pom.xml` in the project browser to open it in the editor. You will find the import of the Quarkus BOM, allowing to omit the version on the different Quarkus dependencies. In addition, you can see the `quarkus-maven-plugin` responsible of the packaging of the application and also providing the development mode.
+To save screen space, you can hide the Git Repository window on the right:
+
+image::che-realestate2.png[githide,800]
+
+Next, double-click on `pom.xml` in the project browser to open it in the editor. You will find the import of the Quarkus BOM, allowing to omit the version on the different Quarkus dependencies. In addition, you can see the `quarkus-maven-plugin` responsible of the packaging of the application and also providing the development mode.
 
 [source,xml]
 ----

@@ -9,17 +9,7 @@ Throughout this lab you'll discover how Quarkus can make your development of clo
  
 == Click-to-Copy
 
-You will see various code and command blocks throughout these exercises. Some of
-the command blocks can be copy/pasted directly. Others will require modification
-of the command before execution, for example to add your unique user ID assigned by the instructor. If you see a command block with a red border
-(see below), the command will require slight modification.
-
-[source,none,role="copypaste copypaste-warning"]
-----
-some command to modify
-----
-
-Others, including source code snippets can by copy/pasted directly, and do not require modification.
+You will see various code and command blocks throughout these exercises which can be copy/pasted directly by clicking on the block of text:
 
 [source,java,role="copypaste"]
 ----
@@ -37,17 +27,24 @@ text to make for easier copying.
 
 ## Access Your Development Environment
 
-You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che,window=_blank]. To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and log in using the username and password you've been assigned (e.g. `userNN/passNN`):
+You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che,window=_blank].
 
-image::che-login.png[login,600]
+To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and log in using the username and password you've been assigned (e.g. `userNN/passNN`):
 
-Once you log in, you'll be placed on your personal dashboard allowing you to spawn new workspaces to work on code in a traditional IDE environment. Click on the **Add Workspace** tab on the left, and select the _Quarkus Java_ stack, and click **Create & Open** to start the workspace:
+image::che-login.png[login,400]
 
-image::che-createworkspace.png[create,800]
+Once you log in, you'll be placed on your personal dashboard. We've pre-created workspaces for you to use. Click on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number):
+
+image::che-precreated.png[precreated,800]
 
 After a minute or two, you'll be placed in the workspace:
 
 image::che-workspace.png[workspace,800]
 
 Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
+
+To gain extra screen space, click on the yellow arrow to hide the left menu (you won't need it):
+
+image::che-realestate.png[screen,600]
+
 
