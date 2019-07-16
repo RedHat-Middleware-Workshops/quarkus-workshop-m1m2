@@ -1,8 +1,9 @@
-## Debugging in Dev Mode
+= Debugging in Dev Mode
+:experimental:
 
 Debugging is an art of finding errors (bugs) and eradicating (debug) them from a piece of code written in any programming language. Quarkus apps are no different in this regard and you can use the raw Java command line debugger (`jdb`) or, if your IDE supports it, graphical debugging. Most IDEs have integration with Java debuggers, including Eclipse Che, so let's exercise it.
 
-## Write some bad code
+== Write some bad code
 
 Let's introduce a subtle off-by-one bug in our application and use the debugger to debug it.
 
@@ -22,7 +23,7 @@ Open up the `GreetingResource.java` class again, and add another RESTful interfa
 
 A a bug has been reported where the last letter is not working. You can probably spot the bug right away but let's see how you could find this with the debugger, and more importantly fix it and re-test very quickly.
 
-## Run the app in debug mode
+== Run the app in debug mode
 
 Before you can debug the app, you need to run it in _debug mode_. Typically this means adding a lot of JVM command line switches, and Quarkus has simplified this for you.
 
@@ -33,7 +34,7 @@ image::debugcmd.png[test, 600]
 
 You will see the tell-tale Java log statment showing that debugging is enabled: `Listening for transport dt_socket at address: 5005`. Quarkus will wait until you attach a debugger before continuing.
 
-## Attach debugger
+== Attach debugger
 
 To connect to it, use the _Run > Edit Debug Configurations_ menu command. In the dialog, Click the `+` button next to `JAVA` to create a new Java debug configuration. You can name it whatever you want, but keep the `localhost` field as-is and select port `5005` in the port selection field:
 
@@ -101,6 +102,8 @@ We need to pass an offset that is one _before_ the end, to get the last letter.
 
 Click the **Resume** button to let the method continue and return the value (your `curl` command has probably timed out by now).
 
+== Fix the bug
+
 Fix the code by changing the line that calls `substring()` to read:
 
 [source, java, role="copypaste"]
@@ -123,6 +126,10 @@ Click **End Debug Session** button to quit the debugging session.
 
 Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there.
 
-## Cleanup
+== Cleanup
 
 Go back to your Terminals and stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
+
+== Congratulations!
+
+Debugging Quarkus apps is the same as any other Java app. Combined with Live Reload, it makes development quick and (relatively) painless!

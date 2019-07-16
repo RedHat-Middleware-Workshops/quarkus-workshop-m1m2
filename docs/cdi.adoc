@@ -1,8 +1,9 @@
-## Dependency Injection
+= Dependency Injection
+:experimental:
 
 In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification,target=_blank]. However, it is not a full CDI implementation verified by the TCK. Only a subset of the CDI features is implemented - see also the https://quarkus.io/guides/cdi-reference#supported_features[list of supported features, target=_blank] and the https://quarkus.io/guides/cdi-reference#limitations[list of limitations, target=_blank].
 
-## Add Custom Bean
+== Add Custom Bean
 
 Let’s modify the application and add a companion bean. In CodeReady, right-click on the `org.acme.people.service` package in the project browser and select _New_ --> _Java Class_. Name the class `GreetingService`.
 
@@ -59,11 +60,11 @@ Use the _Assistant_ > _Organize Imports_ menu option to fix this and import the 
 If you do not get red squigglies, or you can't make them disappear, try to close the file and re-open it, or reload your web browser. This is a known issue with Che on recent versions of Kubernetes.
 ====
 
-## Run the app
+== Run the app
 
 Once again, run the app in _dev_ mode by using the command palette and selecting **Build and Run Locally**.
 
-## Inspect the results
+== Inspect the results
 
 Check that it works as expected by loading the new endpoint using the Preview URL and adding the `/hello/greeting/quarkus` to the end of the URL, just as you did before.
 
@@ -74,6 +75,6 @@ Note we are exercising our new bean using the `/hello/greeting/quarkus` endpoint
 In this case, the hostname is the hostname from the pod the app is running on within Kubernetes and will change later on.
 ====
 
-## Congratulations!
+== Congratulations!
 
 It's a familiar CDI-based environment for you Enterprise Java developers out there, with powerful mechanisms to reload your code _as you type_ (or very close to realtime). In the next step, we'll create some tests for our app, which should also be familiar to _all_ developers.

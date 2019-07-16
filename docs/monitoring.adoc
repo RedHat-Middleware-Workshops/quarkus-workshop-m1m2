@@ -1,4 +1,5 @@
-## Monitoring Quarkus Apps using MicroProfile Metrics
+= Monitoring Quarkus Apps using MicroProfile Metrics
+:experimental:
 
 This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics] specification through the SmallRye Metrics extension.
 
@@ -6,7 +7,7 @@ MicroProfile Metrics allows applications to gather various metrics and statistic
 
 The metrics can be read remotely using JSON format or the https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format[OpenMetrics text format], so that they can be processed by additional tools such as Prometheus, and stored for analysis and visualisation. You can then use tools like http://prometheus.io[Prometheus] and http://grafana.com[Grafana] to collect and display metrics for your Quarkus apps.
 
-### Install Prometheus
+== Install Prometheus
 
 First, let's install Prometheus. Prometheus is an open-source systems monitoring and alerting toolkit featuring:
 
@@ -62,7 +63,7 @@ oc rollout status -w dc/prometheus
 
 You should see `replication controller "prometheus-2" successfully rolled out`.
 
-## Add Metrics to Quarkus
+== Add Metrics to Quarkus
 
 Like other exercises, we'll need another extension to enable metrics. Install it with:
 
@@ -73,11 +74,11 @@ mvn quarkus:add-extension -Dextensions="metrics"
 
 This will add the necessary entries in your `pom.xml` to bring in the Metrics capability. It will import the `smallrye-metrics` extension which is an implementation of the MicroProfile Metrics specification used in Quarkus.
 
-## Start the app
+== Start the app
 
 Next, Run the app once more by using the command palette and select **Build and Run Locally** to start the app up in dev local mode.
 
-## Test Metrics endpoint
+== Test Metrics endpoint
 
 You will be able to immediately see the raw metrics generated from Quarkus apps. Run this in the Terminal:
 
@@ -100,7 +101,7 @@ base:gc_ps_mark_sweep_count 2.0
 
 This is what Prometheus will use to access and index the metrics from our app when we deploy it to the cluster.
 
-## Add additional metrics
+== Add additional metrics
 
 Out of the box, you get a lot of basic JVM metrics which are useful, but what if you wanted to provide metrics for your app? Let's add a few using the MicroProfile Metrics APIs.
 
@@ -148,7 +149,7 @@ The comments in the metrics output starting with `#` are part of the format and 
 In the OpenMicroProfile Metrics names are prefixed with things like `vendor:` or `application:` or `base:`. These _scopes_ can be selectively accessed by adding the name to the accessed endpoint, e.g. `curl http://localhost:8080/metrics/application` or `curl http://localhost:8080/metrics/base`.
 ====
 
-## Add a few more
+== Add a few more
 
 Let's add a few more metrics for our Kafka stream we setup in the previous exercise. Open the `NameConverter` class (in the `org.acme.people.stream` package), and add these metrics annotations to the `process()` method:
 
@@ -160,11 +161,11 @@ Let's add a few more metrics for our Kafka stream we setup in the previous exerc
 
 Don't forget to import the correct classes as before.
 
-## Rebuild Executable JAR
+== Rebuild Executable JAR
 
 Now we are ready to run our application on the cluster. Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
-## Deploy
+== Deploy
 
 Let's deploy our app to the cluster and see if Prometheus picks up our metrics! To do this, start the container build using our executable JAR:
 
@@ -173,7 +174,7 @@ Let's deploy our app to the cluster and see if Prometheus picks up our metrics! 
 oc start-build people --from-file target/*-runner.jar --follow
 ----
 
-## Confirm deployment
+== Confirm deployment
 
 Run and wait for the app to complete its rollout:
 
@@ -182,7 +183,7 @@ Run and wait for the app to complete its rollout:
 oc rollout status -w dc/people
 ----
 
-## Test
+== Test
 
 You'll need to trigger the methods that we've instrumented, so first run this command to get the URL to the word cloud page we previously created, and then open it in your browser, which will start producing names (and generating metrics):
 
@@ -222,21 +223,21 @@ image:promg2.png[names,800]
 
 Of course Quarkus apps use very little memory, even for apps stuffed with all sorts of extensions and code.
 
-## Beyond Prometheus
+== Beyond Prometheus
 
 Prometheus offers a powerful way to capture metrics, a rich query language and alerting of unusual or unexpected conditions. Another open source project, https://grafana.com/[Grafana] is commonly used as a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards]:
 
 image::https://grafana.com/api/dashboards/3308/images/2099/image[Grafana dashboard,800]
 
-### Extra Credit after this workshop
+== Extra Credit after this workshop
 
 If you have time after completing this workshop, try running grafana and hooking it up to your Prometheus instance you've created. Hint: `oc new-app grafana/grafana && oc expose svc/grafana` and then access Grafana at the URL emitted by this command: `echo http://$(oc get route grafana -o=go-template --template='{{ .spec.host }}')`, add Prometheus as a data source at `http://prometheus:9090`, and create a custom dashboard showing some of your application metrics, or import an existing dashboard from the Grafana community.
 
-## Cleanup
+== Cleanup
 
 Go to the first Terminal tab and press kbd:[CTRL+C] to stop our locally running app (or close the Terminal window).
 
-## Congratulations!
+== Congratulations!
 
 This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics] specification through the SmallRye Metrics extension.
 

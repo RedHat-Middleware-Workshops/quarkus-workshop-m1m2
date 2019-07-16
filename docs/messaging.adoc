@@ -1,4 +1,5 @@
-## Asynchronous messaging between beans
+= Asynchronous messaging between beans
+:experimental:
 
 Quarkus allows different beans to interact using asynchronous messages, enforcing loose-coupling. The messages are sent to _virtual_ addresses. It offers 3 types of delivery mechanism:
 
@@ -15,7 +16,7 @@ All these delivery mechanism are non-blocking, and provide one of the fundamenta
 The asynchronous message passing feature in Quarkus allows _replying_ to messages -- which is not supported by Reactive Messaging. However, it is limited to single-event behavior (no stream) and to local messages.
 ====
 
-## Add extension
+== Add extension
 
 This mechanism uses the https://vertx.io/docs/vertx-core/java/#event_bus[Vert.x EventBus], so you need to enable the `vertx` extension to use this feature. Add the extension in the Terminal using this command:
 
@@ -37,11 +38,11 @@ Quarkus provides 3 Vert.x APIs:
 
 We're using the _Axle_ variant here, which provides good support for async operations in HTTP resources.
 
-## Run the app
+== Run the app
 
 Next, Run the app once more by using the command palette and select **Build and Run Locally** to start the app up in dev local mode.
 
-## Create RESTful resource
+== Create RESTful resource
 
 We'll start by creating a new asynchronous endpoint. Open the `PersonResource` class and add a new field which will provide access to the Vert.x event bus which is used to pass messages between components:
 
@@ -86,7 +87,7 @@ The `EventBus` object provides methods to:
 
 With this endpoint we can POST to the `/person/joe` endpoint to create a new user given the name.
 
-### Try it, and fail
+== Try it, and fail
 
 With our endpoint, confirm it fails using the Terminal to execute:
 
@@ -97,7 +98,7 @@ curl -X POST http://localhost:8080/person/joe
 
 **This will fail** with a hang/timeout - we posted the message to the Vert.x event bus, but there's nothing to receive it!
 
-### Create consumer
+== Create consumer
 
 Create a new class in the `org.acme.people.service` package called `PersonService`. Use the following code to implement our message consumer:
 
@@ -172,10 +173,10 @@ To better understand, let’s detail how the HTTP request/response has been hand
 . This response is sent back using the reply mechanism
 . Once the reply is received by the sender, the content is written to the HTTP response
 
-## Cleanup
+== Cleanup
 
 Stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
 
-## Congratulations!
+== Congratulations!
 
 In this exercise you learned how Quarkus allows different beans to interact using asynchronous messages. We'll take this to the next level in the next exercise.

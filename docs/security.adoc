@@ -1,8 +1,9 @@
-## Securing Quarkus APIs
+= Securing Quarkus APIs
+:experimental:
 
 Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC], https://keyloak.org[Keycloak] and https://en.wikipedia.org/wiki/OAuth[OAuth] to secure your Quarkus applications.
 
-## Add JWT to Quarkus
+== Add JWT to Quarkus
 
 Like other exercises, we'll need another extension to enable the use of MicroProfile JWT. Install it with:
 
@@ -13,7 +14,7 @@ mvn quarkus:add-extension -Dextensions="jwt"
 
 This will add the necessary entries in your `pom.xml` to bring in JWT support.
 
-## Configure Quarkus for MicroProfile JWT
+== Configure Quarkus for MicroProfile JWT
 
 Some configuration of the extension is required. Add this to your `application.properties`:
 
@@ -29,7 +30,7 @@ quarkus.smallrye-jwt.enabled=true
 <2> Issuer URL. This must match the incoming JWT `iss` _claims_ or else authentication fails.
 <3> Sets authentication mechanism name to `MP-JWT`, the MicroProfile JWT RBAC specification standard name for the token based authentication mechanism.
 
-# Create protected endpoints
+== Create protected endpoints
 
 We'll create 2 JWT-protected endpoints. Create a new class `JWTResource` in the `org.acme.people.rest` package with the following code:
 
@@ -103,7 +104,7 @@ public class JWTResource {
 <4> The `/me` and `/me/jwt` endpoints demonstrate how to access the security context for Quarkus apps secured with JWT. Here we are using a `@RolesAllowed` annotation to make sure that only users granted a specific role can access the endpoint.
 <5> Use of injected JWT Claim to print the all the claims
 
-## Rebuild and redeploy app
+== Rebuild and redeploy app
 
 First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
 
@@ -112,7 +113,7 @@ First, re-build the app using the command palette and selecting **Create Executa
 oc start-build people --from-file target/*-runner.jar --follow
 ----
 
-## Confirm deployment
+== Confirm deployment
 
 Run and wait for the app to complete its rollout:
 
@@ -121,7 +122,7 @@ Run and wait for the app to complete its rollout:
 oc rollout status -w dc/people
 ----
 
-## Test endpoints
+== Test endpoints
 
 The first thing to do to test any endpoint is obtain an access token from your authentication server in order to access the application resources. We've pre-created a few users in Keycloak for you to use:
 
@@ -151,7 +152,7 @@ Not authorized
 
 Let's try with an authenticated user next.
 
-### Test Alice
+=== Test Alice
 
 Get a token for user `alice` with this command:
 
@@ -211,7 +212,7 @@ Access forbidden: role not allowed
 
 Alice is not an admin. Let's try with admin!
 
-### Test Admin
+=== Test Admin
 
 Obtain an Admin token:
 
@@ -255,7 +256,7 @@ Claim Name: [preferred_username] Claim Value: [admin]
 
 Success! We dump all of the claims from the JWT token for inspection.
 
-## Using Keycloak Authentication
+== Using Keycloak Authentication
 
 Keycloak provides similar features as other OAuth/Open ID Connect servers, but can also do implicit authentication without you as a developer needing to explicitly declare protection on endpoints.
 
@@ -266,7 +267,7 @@ First, you'll need to enable the Keycloak extension:
 mvn quarkus:add-extension -Dextensions="keycloak"
 ----
 
-### Configuring Keycloak
+=== Configuring Keycloak
 
 Next, add these to your `application.properties` for Keycloak:
 
@@ -283,7 +284,7 @@ quarkus.keycloak.policy-enforcer.enforcement-mode=PERMISSIVE
 
 This configures the extension with the necessary configuration ( https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[read more] about what these do).
 
-### Create Keycloak endpoints
+=== Create Keycloak endpoints
 
 Create a new class called `KeycloakResource` in the `org.acme.people.rest` package with the following code:
 
@@ -325,7 +326,7 @@ There are other APIs you can use if you try to auto-complete the method name usi
 image::secapis.png[apis, 800]
 ====
 
-## Rebuild and redeploy app
+=== Rebuild and redeploy app
 
 First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
 
@@ -334,7 +335,7 @@ First, re-build the app using the command palette and selecting **Create Executa
 oc start-build people --from-file target/*-runner.jar --follow
 ----
 
-## Confirm deployment
+=== Confirm deployment
 
 Run and wait for the app to complete its rollout:
 
@@ -343,7 +344,7 @@ Run and wait for the app to complete its rollout:
 oc rollout status -w dc/people
 ----
 
-### Test confidential
+=== Test confidential
 
 The `/secured/confidential` endpoint is protected with a policy defined in the Keycloak Server. The policy only grants access to the resource if the user is granted with a `confidential` role. The difference here is that the application is delegating the access decision to Keycloak, so no explicit source code instrumentation is required. 
 
@@ -404,7 +405,7 @@ confidential access for: jdoe from issuer:{{KEYCLOAK_URL}}/auth/realms/quarkus
 
 Success! Even though our code did not explicitly protect the `/secured/confidential` endpoint, we can protect arbitrary URLs in Quarkus apps when using Keycloak.
 
-## Congratulations!
+== Congratulations!
 
 This exercise demonstrated how your Quarkus application can use MicroProfile JWT in conjunction with Keycloak to protect your JAX-RS applications using JWT claims and bearer token authorization.
 

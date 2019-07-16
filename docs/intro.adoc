@@ -1,4 +1,5 @@
-## What is Quarkus?
+= What is Quarkus?
+:experimental:
 
 image::logo.png[]
 
@@ -6,7 +7,8 @@ Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot
 
 Throughout this lab you'll discover how Quarkus can make your development of cloud native apps faster and more productive.
  
-## Click-to-Copy
+== Click-to-Copy
+
 You will see various code and command blocks throughout these exercises. Some of
 the command blocks can be copy/pasted directly. Others will require modification
 of the command before execution, for example to add your unique user ID assigned by the instructor. If you see a command block with a red border
@@ -47,5 +49,5 @@ After a minute or two, you'll be placed in the workspace:
 
 image::che-workspace.png[workspace,800]
 
-Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. If things get weird, you can simply reload the browser tab to refresh the view.
+Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
 

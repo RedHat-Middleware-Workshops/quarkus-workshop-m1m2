@@ -1,4 +1,5 @@
-## Documenting APIs in Quarkus
+= Documenting APIs in Quarkus
+:experimental:
 
 Exposing APIs has become an essential part of all modern applications. At the center of this revolution known as the _API Economy_ we find _RESTful_ APIs, which can transform any application into language agnostic services that can be called from anywhere: on-premises, private cloud, public cloud, etc.
 
@@ -12,7 +13,7 @@ The MicroProfile OpenAPI specification requires vendors to produce a valid OpenA
 
 Therefore you as a developer get a _lot_ of functionality out of the box without doing anything. Let's test this out.
 
-## Out of the box APIs
+== Out of the box APIs
 
 If your application is still running from the previous exercise, go back to its terminal and type kbd:[CTRL+C] (or just close the terminal window). We need to add another extension for OpenAPI. Run the following command:
 
@@ -81,7 +82,7 @@ curl -H "Accept: application/json" http://localhost:8080/openapi
 
 So out of the box all your endpoints are fully documented and will be emitted in a programmatic format from the `/openapi` endpoint. CLIs are great, but for quick testing of APIs, wouldn't it be great if that programmatic API was turned into an interactive, forms-based web page for quickly trying out endpoints? That's what _Swagger UI_ does. 
 
-## Access Swagger UI
+== Access Swagger UI
 
 When building APIs, developers want to test them quickly. Swagger UI is a great tool for visualizing and interacting with your APIs. The UI is automatically generated from your OpenAPI specification.
 
@@ -123,9 +124,10 @@ image::swaggeryeartestresult.png[swaggeryeartestresult,600]
 
 Pretty handy way to test out your APIs!
 
-## Documenting your APIs
+== Documenting your APIs
 
 OpenAPI and Swagger are useful tools but they become even more useful to 3rd party consumers of your API if you properly document them. With OpenAPI, you as a developer can add additional annotations right into the code to document them (which is a good practice anyway - when the code changes, the docs can too). 
+
 You as an application developer have a few choices in documenting your APIs:
 
 . Augment your JAX-RS annotations with the OpenAPI https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#annotations[Annotations]. Using annotations means you don’t have to re-write the portions of the OpenAPI document that are already covered by the JAX-RS framework (e.g. the HTTP method of an operation).
@@ -136,9 +138,11 @@ Additionally, a https://github.com/eclipse/microprofile-open-api/blob/master/spe
 
 So let's add a bit more documentation to our `/person/birth/before/{year}` endpoint using the first option (annotations). Open the `PersonResource` class, and find the `getBeforeYear` method -- this method implements our endpoint.
 
+=== Add OpenAPI annotations
+
 Add a few annotations:
 
-1. Add an `@Operation` annotation on the method to provide a brief summary and description. You'll need to _Assistant > Organize Imports_ to complete the import statements after adding the code:
+**1. Add an `@Operation` annotation on the method to provide a brief summary and description. You'll need to _Assistant > Organize Imports_ to complete the import statements after adding the code:**
 
 [source,java,role="copypaste"]
 ----
@@ -146,7 +150,7 @@ Add a few annotations:
            description = "Search the people database and return a list of people born before the specified year")
 ----
 
-2. Add an `@ApiResponses` annotation below the `@Operation` that documents two of the possible HTTP return values ("200" and "500") to the method signature:
+**2. Add an `@ApiResponses` annotation below the `@Operation` that documents two of the possible HTTP return values ("200" and "500") to the method signature:**
 
 [source,java,role="copypaste"]
 ----
@@ -159,7 +163,7 @@ Add a few annotations:
 })
 ----
 
-3. Add an additional bit of documentation before the existing `@PathParam` method parameter:
+**3. Add an additional bit of documentation before the existing `@PathParam` method parameter:**
 
 [source,java,role="copypaste"]
 ----
@@ -172,11 +176,11 @@ Now reload the same Swagger UI webpage. Notice the Swagger documention is more f
 
 image::swaggerparams.png[swaggerparams,600]
 
-## Cleanup
+== Cleanup
 
 Stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
 
-## Congratulations
+== Congratulations
 
 In this exercise you learned more about the MicroProfile OpenAPI specification and how to use it to do in-place documentation of your RESTful microservice APIs.
 

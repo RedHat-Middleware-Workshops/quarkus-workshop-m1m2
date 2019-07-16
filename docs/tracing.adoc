@@ -1,10 +1,11 @@
-## Tracing with MicroProfile OpenTracing
+= Tracing with MicroProfile OpenTracing
+:experimental:
 
 This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing] to provide distributed tracing for interactive web applications.
 
 In a distributed cloud-native application, multiple microservices are collaborating to deliver the expected functionality. If you have hundreds of services, how do you debug an individual request as it travels through a distributed system? For Java enterprise developers, the Eclipse MicroProfile OpenTracing specification makes it easier. Let's find out how.
 
-## Install Jaeger
+== Install Jaeger
 
 https://www.jaegertracing.io/[Jaeger], inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems, including:
 
@@ -34,7 +35,7 @@ oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/m
 
 Jaeger exposes its collector at different ports for different protocols. Most use the HTTP collector at `jaeger-collector:14268` but other protocols like gRPC are also supported on different ports.
 
-## Add Tracing to Quarkus
+== Add Tracing to Quarkus
 
 Like other exercises, we'll need another extension to enable tracing. Install it with:
 
@@ -44,6 +45,8 @@ mvn quarkus:add-extension -Dextensions="opentracing, rest-client"
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and anm HTTP REST Client we'll use pater. 
+
+== Configure Quarkus
 
 Next, open the `application.properties` file (in the `src/main/resources` directory). Add the following lines to it to configure the default Jaeger tracer in Quarkus:
 
@@ -58,7 +61,7 @@ quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces # <3>
 <2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist] to tune the performance.
 <3> This is the default HTTP-based collector exposed by Jaeger
 
-## Test it out
+== Test it out
 
 Like many other Quarkus frameworks, sensible defaults and out of the box functionality means you can get immediate value out of Quarkus without changing any code. By default, all JAX-RS endpoints (like our `/hello` and others) are automatically traced. Let's see that in action by re-deploying our traced app.
 
@@ -69,7 +72,7 @@ First, re-build the app using the command palette and selecting **Create Executa
 oc start-build people --from-file target/*-runner.jar --follow
 ----
 
-## Confirm deployment
+== Confirm deployment
 
 Run and wait for the app to complete its rollout:
 
@@ -78,7 +81,7 @@ Run and wait for the app to complete its rollout:
 oc rollout status -w dc/people
 ----
 
-## Trigger traces
+== Trigger traces
 
 You'll need to trigger some HTTP endpoints to generate traces, so let's re-visit our earlier DataTables-powered app. Run this command to open the table with our people database:
 
@@ -91,7 +94,7 @@ Open that URL in a separate browser tab, and exercise the table a bit by paging 
 
 image::paging.png[paging,600]
 
-## Inspect traces
+== Inspect traces
 
 Use this command to generate the URL to Jaeger:
 
@@ -119,13 +122,13 @@ You can see that this trace (along with the others) shows the incoming HTTP GET 
 Service Mesh technologies like https://istio.io[Istio] can provide even more tracing prowess as the calls across different services are traced at the network level, not requiring _any_ frameworks or developer instrumentation to be enabled for tracing.
 ====
 
-## Tracing external calls
+== Tracing external calls
 
 This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client] with Quarkus in order to trace _external_, outbound requests with very little effort.
 
 We will use the publicly available https://swapi.co[Star Wars API] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
 
-### Create model 
+=== Create model 
 
 Create a new class in the `org.acme.people.model` package called `StarWarsPerson` with the following content:
 
@@ -158,7 +161,7 @@ public class StarWarsPerson {
 
 This contains a subset of the full Star Wars model, just enough to demonstrate tracing.
 
-### Create interface 
+=== Create interface 
 
 Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class in the `org.acme.people.service` package called `StarWarsService` with the following content:
 
@@ -192,7 +195,7 @@ public interface StarWarsService {
 <4> The Star Wars API requires a `User-Agent` header, so with Quarkus we add that with `@ClientHeaderParam`. Other parameters can be added here as needed.
 <5> The `getPerson` method gives our code the ability to query the Star Wars API by `id`. The client will handle all the networking and marshalling leaving our code clean of such technical details.
 
-### Configure endppint
+=== Configure endppint
 
 In order to determine the base URL to which REST calls will be made, the REST Client uses configuration from `application.properties`. To configure it, add this to your `application.properties` (in `src/main/resource`):
 
@@ -207,7 +210,7 @@ Note that `org.acme.people.service.StarWarsService` must match the fully qualifi
 
 Using the configuration above, calling the `getPerson(int)` method of StarWarsService with a value of `1` would result in an HTTP GET request being made to `https://swapi.co/api/people/1/` (you can use `curl https://swapi.co/api/people/1/ | jq` to verify this URL produces a real character)
 
-### Final step: add endpoint
+=== Final step: add endpoint
 
 We need to `@Inject` an instance of our new `StarWarsService` and call it. Open the existing `PersonResource` class and add the following injected field and method:
 
@@ -231,7 +234,7 @@ public List<StarWarsPerson> getCharacters() {
 <3> For each of the integers, call the `StarWarsService::getPerson` method
 <4> Collect the results into a list and return it
 
-## Test it out
+== Test it out
 
 First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
 
@@ -240,7 +243,7 @@ First, re-build the app using the command palette and selecting **Create Executa
 oc start-build people --from-file target/*-runner.jar --follow
 ----
 
-## Confirm deployment
+== Confirm deployment
 
 Run and wait for the app to complete its rollout:
 
@@ -249,7 +252,7 @@ Run and wait for the app to complete its rollout:
 oc rollout status -w dc/people
 ----
 
-## Trigger traces
+== Trigger traces
 
 Try out our new endpoint by running the following command:
 
@@ -286,7 +289,7 @@ You should see:
 ]
 ----
 
-## Inspect traces
+== Inspect traces
 
 Go back to the Jaeger console tab, and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
 
@@ -296,7 +299,7 @@ You can see that this trace (along with the others) shows multiple spans: the in
 
 image::swpeopleext.png[swpeopleext,800]
 
-## Extra credit: Explicit method tracing
+== Extra credit: Explicit method tracing
 
 An annotation is provided to define explicit Span creation. This works on top of the "no-action" setup we did in the previous steps.
 
@@ -304,7 +307,7 @@ The `@Traced` annotation, applies to a class or a method. When applied to a clas
 
 If you have time after this workshop, add a `@Traced` annotation to some of the other methods and test them out.
 
-## Congratulations!
+== Congratulations!
 
 You've seen how to enable automatic tracing for JAX-RS methods as well as create custom tracers for non-JAX-RS methods and external services by using MicroProfile OpenTracing. This specification makes it easy for Quarkus developers to instrument services with distributed tracing for learning, debugging, performance tuning, and general analysis of behavior.
 

@@ -1,8 +1,9 @@
-## Reactive Streams with Quarkus and Kafka
+= Reactive Streams with Quarkus and Kafka
+:experimental:
 
 In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reative Streams Messaging and https://kafka.apache.org[Apache Kafka], a distributed streaming platform. You will also use https://strimzi.io/[Strimzi], which provides an easy way to run an Apache Kafka cluster on Kubernetes using [Operators](https://operatorhub.io/what-is-an-operator).
 
-### What is Apache Kafka?
+== What is Apache Kafka?
 
 Apache Kafka is a distributed streaming platform. A streaming platform has three key capabilities:
 
@@ -15,7 +16,7 @@ Kafka is generally used for two broad classes of applications:
 * Building real-time streaming data pipelines that reliably get data between systems or applications
 * Building real-time streaming applications that transform or react to the streams of data
 
-### What is Strimzi?
+== What is Strimzi?
 
 Strimzi provides a way to run an Apache Kafka cluster on Kubernetes in various deployment configurations.
 
@@ -27,13 +28,13 @@ Strimzi provides three operators:
 * **Topic Operator** - Responsible for managing Kafka topics within a Kafka cluster running within an OpenShift or Kubernetes cluster.
 * **User Operator** - Responsible for managing Kafka users within a Kafka cluster running within an OpenShift or Kubernetes cluster.
 
-## The Goal
+== The Goal
 
 In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using _server-sent events_ and displayed in the browser. It will look like this:
 
 image::names.png[names,800]
 
-## Deploy Kafka via Strimzi
+=== Create Kafka Cluster
 
 The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace. 
 
@@ -47,6 +48,8 @@ image::createkafka.png[createkafka,600]
 
 This will create a new Kafka Kubernetes object in your namespace, triggering the Operator to deploy Kafka.
 After clicking **Create** you will be taken to the list of objects created by the Kafka operator.
+
+== Create Kafka Topic
 
 Next, click on the **Kafka Topic** tab:
 
@@ -81,7 +84,7 @@ oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-sk
 
 Don't worry if they're not all in the _Running_ status, they will eventually complete and we'll use them later on in this exercise.
 
-## Add Quarkus Kafka Extension
+== Add Quarkus Kafka Extension
 
 With Kafka installing, turn your attention back to the app. Like other exercises, we'll need another extension to integrate with Kafka. Install it with:
 
@@ -92,7 +95,7 @@ mvn quarkus:add-extension -Dextensions="kafka"
 
 This will add the necessary entries in your `pom.xml` to bring in the Kafka extension.
 
-## Create name generator
+== Create name generator
 
 To start building the app, create a new Java class in the `org.acme.people.stream` called `NameGenerator`. This class will generate random names and publish them to our Kafka topic for further processing. Use this code:
 
@@ -122,7 +125,7 @@ public class NameGenerator {
 
 The method returns a Reactive Stream. The generated items are sent to the stream named `generated-name`. This stream is mapped to Kafka using the application.properties file that we will create soon.
 
-## Add honorifics
+== Add honorifics
 
 The name converter reads the names from Kafka, and transforms them, adding a random (English) honorific to the beginning of the name.
 
@@ -157,7 +160,7 @@ public class NameConverter {
 
 The process method is called for every Kafka record from the `names` topic (configured in the application configuration). Every result is sent to the my-data-stream in-memory stream.
 
-## Expose to front end
+== Expose to front end
 
 Finally, let’s bind our stream to a JAX-RS resource. Create a new Java class in the same package called `NameResource`. Use this code:
 
@@ -194,7 +197,7 @@ public class NameResource {
 <2> Indicates that the content is sent using _Server Sent Events_
 <3> Returns the stream (Reactive Stream)
 
-## Configure application
+== Configure application
 
 We need to configure the Kafka connector. This is done in the `application.properties` file (in the `src/main/resources` directory). The keys are structured as follows:
 
@@ -228,11 +231,11 @@ More details about this configuration is available on the https://kafka.apache.o
 What about `my-data-stream`? This is an in-memory stream, not connected to a message broker.
 ====
 
-## Rebuild Executable JAR
+== Rebuild Executable JAR
 
 Now we are ready to run our application. Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
-## Deploy
+== Deploy
 
 And now start the build using our executable JAR:
 
@@ -243,7 +246,7 @@ oc start-build people --from-file target/*-runner.jar --follow
 
 The build should take a minute or two to complete.
 
-## Test
+== Test
 
 Our application should be up and running in a few seconds after the build completes and generating names. To see if it's working, run this command in a Terminal to generate the URL to the sample visualization of the stream of names being generated:
 
@@ -258,7 +261,7 @@ image::names.png[names,800]
 
 These are the original names streamed through Kafka, altered to add a random honorific like "Sir" or "Madam", and displayed in a "word cloud" for you to enjoy!
 
-## Congratulations
+== Congratulations!
 
 This guide has shown how you can interact with Kafka using Quarkus. It utilizes MicroProfile Reactive Messaging to build data streaming applications.
 

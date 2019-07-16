@@ -1,4 +1,5 @@
-## Hibernate ORM with Panache
+= Hibernate ORM with Panache
+:experimental:
 
 Hibernate ORM is the de facto JPA implementation and offers you the full breadth of an Object Relational Mapper. It makes complex mappings possible, but many simple and common mappings can also be complex. Hibernate ORM with **Panache** focuses on making your entities trivial and fun to write and use with Quarkus.
 
@@ -14,7 +15,7 @@ With Panache, we took an opinionated approach to make hibernate as easy as possi
 
 That’s all there is to it: with Panache, Hibernate ORM has never looked so trim and neat.
 
-## People
+== People
 
 You may have wondered why we are using `people` in our Java APIs, and now you'll find out; we'll be creating a simple data-driven application that manages a set of people, who have a name, birth date, and eye color. In the previous lab we added the extension for Panache to our project, but we will need a few more for connecting to databases. Add these extensions with the following command:
 
@@ -44,7 +45,7 @@ This causes the `%dev` properties (using H2 database) to be active in developmen
 These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide].
 ====
 
-### Create Entity
+== Create Entity
 
 With our extension installed, we can now define our entity using Panache. 
 
@@ -102,7 +103,7 @@ You will incrementally replace the `// TODO` elements as we go along, so don't d
 
 As you can see we've defined the three fields `name`, `birth`, and `eyes`. We're using the Java Persistence API's `@Enumerated` field type for our eye color.
 
-### Define RESTful endpoint
+== Define RESTful endpoint
 
 Next, we'll create a `PersonResource` class which we will use for our RESTful endpoint. Create a new Java class in the `src/main/java/org/acme/people/rest` directory called `PersonResource` with the following code:
 
@@ -159,7 +160,7 @@ You may see lots of warnings about unused imports. Ignore them, we'll use them l
 
 As you can see we've implemented our first Panache-based query, the `getAll` method, which will return our list of people as a JSON object when we access the `GET /person` endpoint. This is defined using standard JAX-RS `@Path` and `@GET` and `@Produces` annotations.
 
-### Add sample data
+== Add sample data
 
 Let's add some sample data to the database so we can test things out. Create a new file `src/main/resources/import.sql` and add some SQL statements to the file to run on startup:
 
@@ -176,7 +177,7 @@ INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'),
 
 These statements will add some fake people to our database on startup.
 
-### Run the application
+== Run the application
 
 Now we are ready to run our application. Using the command palette, select **Build and Run Locally** (if you had a previous app running, kbd:[CTRL+C] or close the old Terminal before running it again). You should see a bunch of log output that ends with:
 
@@ -235,7 +236,7 @@ Advanced use cases may require a custom ID strategy, which can by done by extend
 public Integer id;
 ----
 
-## Add Basic Queries
+== Add Basic Queries
 
 Let’s modify the application and add some queries. Much like traditional object-oriented programming, Panache and Quarkus recommend you place your custom entity queries as close to the entity definition as possible, in this case in the entity definition itself. Open the `Person` entity class (it's in the `org.acme.person.model` package), and add the following code under the `// TODO: Add more queries` comment:
 
@@ -280,7 +281,7 @@ public List<Person> getBeforeYear(@PathParam(value = "year") int year) {
 }
 ----
 
-### Inspect the results
+== Inspect the results
 
 Since we still have our app running using `mvn quarkus:dev`, when you make these changes and reload the endpoint, Quarkus will notice all of these changes and live reload them.
 
@@ -339,17 +340,17 @@ The `Person` entity's superclass comes with lots of super useful static methods 
 
 In the next step we'll show you how Panache can help to adapt entities to high performance frontends, even in the face of millions of records.
 
-## Add Paging and Filtering
+== Add Paging and Filtering
 
 In the previous step you added a few more custom queries to your entity and the associated RESTful endpoints. In this step we'll build a slightly more complex query including filtering, searching and paging capabilities. 
 
-### Showing data in tables
+=== Showing data in tables
 
 Earlier we used `curl` to access our data, which is very useful for testing, but for real applications you will usually surface the data in other ways, like on web pages using tables, with options for searching, sorting, filtering, paging, etc. Quarkus and Panache make this easy to adapt your application for any display library or framework.
 
 Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables,target=_blank]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is ineffecient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
 
-### Add Datatables endpoint
+=== Add Datatables endpoint
 
 https://www.datatables.net/manual/server-side[DataTables documentation] shows that its frontend will call an endpoint on the backend to retrieve some amount of data. It will pass several query parameters to tell the server what to sort, filter, search, and which data to return based on the page size and current page the user is viewing. For this example, we'll only support a subset:
 
@@ -385,6 +386,8 @@ Here we are using JAX-RS `@QueryParam` values to specify the incoming parameters
 
 We'll fill in the `TODO`s to build this method.
 
+=== Implement `/datatable` endpoint
+
 DataTables requires a specific JSON payload to be returned from this, and we've pre-created a POJO `DataTable` class representing this structure in `src/main/java/org/acme/people/model/DataTable.java`. This simple structure includes these fields:
 
 * `draw` - The async processing record id
@@ -402,6 +405,8 @@ result.setDraw(draw); // <1>
 ----
 <1> We initialize the `DataTable` return object with the value passed in, to ensure DataTables redraws in the correct order in case of async returns.
 
+=== Implement search logic
+
 Next, if the request includes a search parameter, let's take care of that by including a search query, otherwise just collect all records. Add this code below the `// TODO: Filter based on search` marker:
 
 [source,java,role="copypaste"]
@@ -417,6 +422,8 @@ if (searchVal != null && !searchVal.isEmpty()) { // <1>
 ----
 <1> If a search value was passed in, use it to search using the Panache `find` method. Otherwise, use `findAll` to skip filtering.
 
+=== Implement paging logic
+
 And finally, we use the built-in Panache `page` operator to seek to the correct page of records and stream the number of entries desired, set the values into the `result` and return it. Add this code below the `// TODO: Page and return` marker:
 
 [source,java,role="copypaste"]
@@ -430,6 +437,8 @@ result.setRecordsTotal(Person.count());
 
 return result;  
 ----
+
+=== Test the result
 
 Let's test out our new endpoint using `curl` to search for names with `yan` in their name. Execute this in the Terminal:
 
@@ -458,7 +467,7 @@ This should return a single entity (since in our 3-person sample data, only one 
 }
 ----
 
-### Add lifecycle hook
+=== Add lifecycle hook
 
 You often need to execute custom actions when the application starts and clean up everything when the application stops. In this case we'll add an action that will pre-generate a lot of fake data.
 
@@ -485,7 +494,9 @@ void onStart(@Observes StartupEvent ev) {
 
 This code will insert 1,000 fake people with random birthdates, eye colors, and names at startup. Note the use of the `@Transactional` annotation - this is required for methods that make changes to the underlying database (and automatically executes the method in a Transaction for you).
 
-Although this is listening for `StartupEvent`, and our application has already started, in `quarkus:dev` mode Quarkus will still fire this event once. So let's test it out and see if it picks up our new data. We'll search for a single letter `F` and limit the results to `2`:
+=== Access new data
+
+Although our lifecycle code is listening for `StartupEvent`, and our application has already started, in `quarkus:dev` mode Quarkus will still fire this event once. So let's test it out and see if it picks up our new data. We'll search for a single letter `F` and limit the results to `2`:
 
 [source,sh,role="copypaste"]
 ----
@@ -524,11 +535,11 @@ You should get up to 2 records returned, but the total number available should s
 
 Note the values for `recordsFiltered` (the number of records with the letter `F` in the name), and `recordsTotal`. The value you see for `recordsFiltered` may be different than the above value, since the number of records with an `F` in the name may vary since the data is random. But the `recordsTotal` shows our initial 3 values, plus the 1000 additional values we added in the lifecycle hook code.
 
-## Cleanup
+== Cleanup
 
 We're done with development, so go back to the first Terminal tab and press kbd:[CTRL+C] (or just close the running tab) to stop our running application.
 
-## Deploy to OpenShift
+== Deploy Postgres database
 
 In previous steps we deployed our sample application as a native binary. Now let's switch to a JVM-based deployment. Our production environment needs a "real" database so let's deploy a Postgres database. Run the following command to startup a database in our cluster:
 
@@ -541,6 +552,8 @@ oc new-app \
     --name=postgres-database \
     openshift/postgresql
 ----
+
+== Rebuild and redeploy app
 
 With our database running, re-build the application as an executable JAR using the command palette and selecting **Create Executable JAR**.
 
@@ -568,6 +581,8 @@ This will also trigger a re-deployment of our existing app. Verify the app start
 oc rollout status -w dc/people
 ----
 
+== Access deployed app
+
 And now we can access using `curl` once again to find everyone born in or before the year 2000 (there will be many).
 
 [source,sh,role="copypaste"]
@@ -592,6 +607,6 @@ Notice the total number of records reported at the bottom. Type in a single lett
 
 Skip around a few pages, try some different searches, and notice that the data is only loaded when needed. The overall performance is very good even for low-bandwidth connections or huge data sets.
 
-## Congratulations
+== Congratulations
 
 In this exercise you got a glimpse of the power of Quarkus apps when dealing with large amounts of data. There is much more to Quarkus than fast startup times and low resource usage, so keep going! 

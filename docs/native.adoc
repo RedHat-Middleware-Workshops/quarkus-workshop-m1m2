@@ -1,4 +1,5 @@
-== Building Native Images
+= Building Native Images
+:experimental:
 
 Let’s now produce a native executable for our application. It improves the startup time of the application, and produces a minimal disk and memory footprint. The executable would have everything to run the application including the "JVM" (shrunk to be just enough to run the application), and the application. This is accomplished using https://graalvm.org[GraalVM].
 
@@ -13,7 +14,7 @@ GraalVM is already installed for you. Inspect the value of the `GRAALVM_HOME` va
 echo $GRAALVM_HOME
 ----
 
-## Build the image
+== Build the image
 
 Within the `pom.xml`{{open}} is the declaration for the Quarkus Maven plugin which contains a profile for `native-image`:
 
@@ -61,7 +62,7 @@ Since we are on Linux in this environment, and the OS that will eventually run o
 
 In addition to the regular files, the build will produce `target/people-1.0-SNAPSHOT-runner`. This is a native Linux binary. Not a shell script, or a JAR file, but a native binary.
 
-## Run native image
+== Run native image
 
 Since our environment here is Linux, you can _just run it_. In the terminal, run:
 
@@ -118,10 +119,10 @@ hello quarkus from master
 
 Nice!
 
-## Cleanup
+== Cleanup
 
 Go to the first Terminal tab and press kbd:[CTRL+C] to stop our native app (or close the Terminal window).
 
-## Congratulations!
+== Congratulations!
 
 You've now built a Java application as an executable JAR and a Linux native binary. We'll explore the benefits of native binaries later in when we start deploying to Kubernetes.

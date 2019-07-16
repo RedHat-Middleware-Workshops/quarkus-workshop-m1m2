@@ -1,4 +1,5 @@
-## Testing
+= Testing
+:experimental:
 
 In this step we'll show you how to effectively write functional and unit tests for your Quarkus Apps. 
 
@@ -43,7 +44,7 @@ public class GreetingResourceTest {
 When creating new tests, always double-check to be sure you're in the `src/test` directory tree, not `src/main`!
 ====
 
-## Add a new test
+== Add a new test
 
 Add a new test in the `GreetingResourceTest` class that tests the `/hello/greeting` endpoint by copying this code below the existing test:
 
@@ -61,7 +62,7 @@ Add a new test in the `GreetingResourceTest` class that tests the `/hello/greeti
     }
 ----
 
-## Test the app
+== Test the app
 
 Let's test our app. In Che, using the same command palette, double-click on **Run Quarkus Tests**:
 
@@ -80,7 +81,7 @@ Expected: is "hello"
 
 This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and re-run the test and confirm it passes with `BUILD SUCCESS`.
 
-## Controlling the test port
+== Controlling the test port
 
 While Quarkus will listen on port `8080` by default, when running tests it defaults to `8081`. This allows you to run tests while having the application running in parallel (which you just did - your app is still running from the previous exercises).
 
@@ -98,7 +99,7 @@ Now re-run the tests and look for
  INFO  [io.quarkus] (main) Quarkus x.xx.x started in 1.997s. Listening on: http://[::]:8083
 ----
 
-## Injecting a URI
+== Injecting a URI
 
 It is also possible to directly inject the URL into the test which can make is easy to use a different client. This is done via the `@TestHTTPResource` annotation.
 
@@ -146,7 +147,7 @@ The `@TestHTTPResource` annotation allows you to directly inject the URL of the 
 
 Re-run the tests to ensure they're still passing.
 
-## Injection into tests
+== Injection into tests
 
 So far we have only covered integration style tests that test the app via HTTP endpoints, but what if we want to do unit testing and test our beans directly?
 
@@ -226,7 +227,7 @@ public class TestStereotypeTestCase {
 ----
 ====
 
-## Mock support
+== Mock support
 
 Quarkus supports the use of mock objects using the CDI `@Alternative` mechanism. To use this simply override the bean you wish to mock with a class in the `src/test/java` directory, and put the `@Alternative` and `@Priority(1)`` annotations on the bean. Alternatively, a convenient `io.quarkus.test.Mock` stereotype annotation could be used. This built-in stereotype declares `@Alternative`, `@Priority(1)` and `@Dependent`.
 
@@ -276,7 +277,7 @@ Now run the tests again (using the command palette as usual), and watch the outp
 
 This confirms that our `MockGreetingService` is being used instead of the original `GreetingService`.
 
-## Summary
+== Congratulations!
 
 In this section we covered basic testing of Quarkus Apps using the `@QuarkusTest` and supporting annotations. This is an important part of any software engineering project and with Quarkus, testing has never been easier. For more information on testing with Quarkus, be sure to review the https://quarkus.io/guides/getting-started-testing[Quarkus Testing Guide].
 

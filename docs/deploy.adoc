@@ -1,10 +1,11 @@
-== Deploy to OpenShift
+= Deploy to OpenShift
+:experimental:
 
 With our app fully ready for its first cloud native deployment, let's package it up for deployment to our Kubernetes platform as a native image. We'll use some OpenShift tooling to accomplish this.
 
 OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
 
-=== Build native image
+== Build native image
 
 Let's rebuild our native image with all our changes thus far. Using the Command Palette, select **Build Native Quarkus App** and wait 3-4 minutes for it to finish (this runs `mvn clean package -Pnative` under the hood).
 
@@ -12,7 +13,7 @@ As you recall, the output of this process is a native Linux binary. To package i
 
 Now that we have our app built as a container, let's deploy it to our cluster.
 
-=== Login to OpenShift
+== Login to OpenShift
 
 Although your Eclipse Che workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So we'll log in with your workshop user. Open a Terminal and issue the following command.
 
@@ -51,7 +52,7 @@ their content in isolation from other communities. OpenShift _projects_ provide 
 
 For this scenario, a project has been created for you called `userNN-project` (where `NN` is your assigned student number). You will use this project to deploy your developed project in the next step.
 
-=== Deploy to OpenShift
+== Deploy to OpenShift
 
 First, create a new _binary_ build within OpenShift
 [source,sh,role="copypaste"]
@@ -150,7 +151,7 @@ image::route.png[route,600]
 
 You can click on the route link to open up the default Quarkus page that's packaged as part of our workshop application.
 
-# Connect MicroProfile health check
+== Connect MicroProfile health check
 
 Earlier you implemented a series of MicroProfile health checks. To make OpenShift aware of these available health checks and begin using them, run the following two commands:
 
@@ -167,7 +168,6 @@ This configures both a _readiness_ probe (is the app initialized and ready to se
 oc rollout status -w dc/people
 ----
 
-
-## Congratulations!
+== Congratulations!
 
 This step covered the deployment of a native Quarkus application on OpenShift. However, there is much more, and the integration with these cloud native platforms (through health checks, configuration management, and monitoring which we'll cover later) has been tailored to make Quarkus applications execution very smooth.
