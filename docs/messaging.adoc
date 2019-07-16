@@ -174,7 +174,7 @@ To better understand, let’s detail how the HTTP request/response has been hand
 
 ## Cleanup
 
-Stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.
+Stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
 
 ## Congratulations!
 

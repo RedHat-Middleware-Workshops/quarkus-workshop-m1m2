@@ -177,7 +177,7 @@ curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}
 
 You should see:
 
-[source,json]
+[source,none]
 ----
 HTTP/1.1 200 OK
 Connection: keep-alive
@@ -320,10 +320,28 @@ public class KeycloakResource {
 
 [NOTE]
 ====
-There are other APIs you can use if you try to auto-complete the method name using Che, e.g. `getBirthDate()` or `getPicture()`. Place the cursor just after `keycloakSecurityContext.getToken().get` and press CTRL-SPACE to see them:
+There are other APIs you can use if you try to auto-complete the method name using Che, e.g. `getBirthDate()` or `getPicture()`. Place the cursor just after `keycloakSecurityContext.getToken().get` and press kbd:[Ctrl+Space] to see them:
 
 image::secapis.png[apis, 800]
 ====
+
+## Rebuild and redeploy app
+
+First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
+
+[source,sh,role="copypaste"]
+----
+oc start-build people --from-file target/*-runner.jar --follow
+----
+
+## Confirm deployment
+
+Run and wait for the app to complete its rollout:
+
+[source,sh,role="copypaste"]
+----
+oc rollout status -w dc/people
+----
 
 ### Test confidential
 

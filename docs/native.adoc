@@ -120,7 +120,7 @@ Nice!
 
 ## Cleanup
 
-Go to the first Terminal tab and press `CTRL-C` to stop our native app (or close the Terminal window).
+Go to the first Terminal tab and press kbd:[CTRL+C] to stop our native app (or close the Terminal window).
 
 ## Congratulations!
 

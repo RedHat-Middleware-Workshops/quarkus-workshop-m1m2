@@ -125,4 +125,4 @@ Quarkus apps are just like any other Java app, so debugging is straightforward a
 
 ## Cleanup
 
-Go back to your Terminals and stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.
+Go back to your Terminals and stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.

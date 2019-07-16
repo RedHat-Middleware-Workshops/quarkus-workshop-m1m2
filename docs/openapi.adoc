@@ -14,7 +14,7 @@ Therefore you as a developer get a _lot_ of functionality out of the box without
 
 ## Out of the box APIs
 
-If your application is still running from the previous exercise, go back to its terminal and type CTRL-C (or just close the terminal window). We need to add another extension for OpenAPI. Run the following command:
+If your application is still running from the previous exercise, go back to its terminal and type kbd:[CTRL+C] (or just close the terminal window). We need to add another extension for OpenAPI. Run the following command:
 
 [source,sh,role="copypaste"]
 ----
@@ -23,7 +23,7 @@ mvn quarkus:add-extension -Dextensions="openapi"
 
 This will add the extension to our project.
 
-Run the project again, using the command palette and selecting **Build and Run Locally** (if you had a previous app running, CTRL-C or close the old Terminal before running it again). This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
+Run the project again, using the command palette and selecting **Build and Run Locally** (if you had a previous app running, kbd:[CTRL+C] or close the old Terminal before running it again). This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
@@ -174,7 +174,7 @@ image::swaggerparams.png[swaggerparams,600]
 
 ## Cleanup
 
-Stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.
+Stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
 
 ## Congratulations
 

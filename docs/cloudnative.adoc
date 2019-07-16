@@ -404,7 +404,7 @@ curl http://localhost:8080/hello
 
 produces `hello quarkus!`.
 
-Next, CTRL-C it (or close the "Build and Run Locally" Terminal window). We need to re-build the app as an executable JAR so it runs with the `prod` profile.
+Next, kbd:[CTRL+C] it (or close the "Build and Run Locally" Terminal window). We need to re-build the app as an executable JAR so it runs with the `prod` profile.
 
 Build an executable JAR just as before using the command palette and choosing **Create Executable JAR**.
 
@@ -433,7 +433,7 @@ In this example we read configuration properties from `application.properties`. 
 
 ## Cleanup
 
-Stop the app for now by pressing CTRL-C in the terminal or closing the Terminal window in which the app runs.
+Stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
 
 ## Congratulations
 

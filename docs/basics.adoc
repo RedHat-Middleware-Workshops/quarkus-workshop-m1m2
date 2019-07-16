@@ -110,7 +110,7 @@ You should see `hello` in your browser tab, which means its working!
 
 image::hellopage.png[hello,800]
 
-Now, let's exercise the **live reload** capabilities of Quarkus. In Che, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. Press `CTRL-S` (or `CMD-S` on Mac OS) to save the file. Don't recompile or restart anything. Just try to reload the same brower tab that was showing `hello`. It should now show `hola`.
+Now, let's exercise the **live reload** capabilities of Quarkus. In Che, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. Press kbd:[Control+S] (or kbd:[Command+S] on Mac OS) to save the file. Don't recompile or restart anything. Just try to reload the same brower tab that was showing `hello`. It should now show `hola`.
 
 Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started. Leave the app running so we can continue to change it on the fly in the next section.
 
@@ -126,7 +126,7 @@ This will also listen for a debugger on port `5005`. If your want to wait for th
 
 ### Stop the previous application
 
-Let's stop the original application so we can package and re-run it as an executable JAR. In the terminal, press `CTRL-C` to stop the application (some browsers don't support this command - simply close the Terminal using the 'X' button on the tab, which will also kill the running app).
+Let's stop the original application so we can package and re-run it as an executable JAR. In the terminal, press kbd:[CTRL+C] to stop the application (**some browsers don't support this command** - simply close the Terminal using the kbd:[X] button on the tab, which will also kill the running app).
 
 image::kill.png[kill,800]
 
@@ -172,7 +172,7 @@ hola
 
 ## Cleanup
 
-Go back to the terminal in which you ran the app and stop the app by pressing `CTRL-C` (or close the Terminal).
+Go back to the terminal in which you ran the app and stop the app by pressing kbd:[CTRL+C] (or close the Terminal).
 
 ## Congratulations!
 

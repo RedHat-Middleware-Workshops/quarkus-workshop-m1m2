@@ -234,7 +234,7 @@ If you have time after completing this workshop, try running grafana and hooking
 
 ## Cleanup
 
-Go to the first Terminal tab and press `CTRL-C` to stop our locally running app (or close the Terminal window).
+Go to the first Terminal tab and press kbd:[CTRL+C] to stop our locally running app (or close the Terminal window).
 
 ## Congratulations!
 

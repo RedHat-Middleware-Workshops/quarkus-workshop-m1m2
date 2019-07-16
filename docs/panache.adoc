@@ -178,7 +178,7 @@ These statements will add some fake people to our database on startup.
 
 ### Run the application
 
-Now we are ready to run our application. Using the command palette, select **Build and Run Locally** (if you had a previous app running, CTRL-C or close the old Terminal before running it again). You should see a bunch of log output that ends with:
+Now we are ready to run our application. Using the command palette, select **Build and Run Locally** (if you had a previous app running, kbd:[CTRL+C] or close the old Terminal before running it again). You should see a bunch of log output that ends with:
 
 [source, none]
 ----
@@ -526,7 +526,7 @@ Note the values for `recordsFiltered` (the number of records with the letter `F`
 
 ## Cleanup
 
-We're done with development, so go back to the first Terminal tab and press `CTRL-C` (or just close the running tab) to stop our running application.
+We're done with development, so go back to the first Terminal tab and press kbd:[CTRL+C] (or just close the running tab) to stop our running application.
 
 ## Deploy to OpenShift
 
