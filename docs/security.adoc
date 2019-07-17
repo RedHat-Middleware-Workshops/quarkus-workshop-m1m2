@@ -79,7 +79,7 @@ public class JWTResource {
     }
 
     @GET
-    @Path("/me/jwt") 
+    @Path("/me/admin") 
     @RolesAllowed("admin")
     @Produces(MediaType.TEXT_PLAIN)
     public String meJwt(@Context SecurityContext ctx) {   // <4>
@@ -101,7 +101,7 @@ public class JWTResource {
 <1> Adds a `@RequestScoped` as Quarkus uses a default scoping of `ApplicationScoped` and this will produce undesirable behavior since JWT claims are naturally request scoped.
 <2> `JsonWebToken` provides access to the claims associated with the incoming authenticated JWT token.
 <3> When using JWT Authentication, claims encoded in tokens can be `@Inject` ed into your class for convenient access.
-<4> The `/me` and `/me/jwt` endpoints demonstrate how to access the security context for Quarkus apps secured with JWT. Here we are using a `@RolesAllowed` annotation to make sure that only users granted a specific role can access the endpoint.
+<4> The `/me` and `/me/admin` endpoints demonstrate how to access the security context for Quarkus apps secured with JWT. Here we are using a `@RolesAllowed` annotation to make sure that only users granted a specific role can access the endpoint.
 <5> Use of injected JWT Claim to print the all the claims
 
 == Rebuild and redeploy app
@@ -123,6 +123,11 @@ oc rollout status -w dc/people
 ----
 
 == Test endpoints
+
+[NOTE]
+====
+In this exercise we are short-circuiting typical web authentication flows to illustrate the ease of protecting APIs with Quarkus. In a typical web authentication, users are redirected (via their browser) to a login page, after which a negotiation is performed to retrieve _access tokens_ used on behalf of the user to access protected resources. Here we are doing this manually with `curl`.
+====
 
 The first thing to do to test any endpoint is obtain an access token from your authentication server in order to access the application resources. We've pre-created a few users in Keycloak for you to use:
 
@@ -258,7 +263,15 @@ Success! We dump all of the claims from the JWT token for inspection.
 
 == Using Keycloak Authentication
 
-Keycloak provides similar features as other OAuth/Open ID Connect servers, but can also do implicit authentication without you as a developer needing to explicitly declare protection on endpoints.
+Frequently, resource servers only perform authorization decisions based on role-based access control (RBAC), where the roles granted to the user trying to access protected resources are checked against the roles mapped to these same resources. While roles are very useful and used by applications, they also have a few limitations:
+
+* Resources and roles are tightly coupled and changes to roles (such as adding, removing, or changing an access context) can impact multiple resources
+* Changes to your security requirements can imply deep changes to application code to reflect these changes
+* Depending on your application size, role management might become difficult and error-prone
+
+Keycloak's _Authorization Services_ provides fine-grained authorization policies that decouples the authorization policy from your code, so when your policies change, your code doesn't have to. In this exercise we'll use Keycloak's Authorization Services to protect our Quarkus APIs.
+
+== Enable Quarkus Extension
 
 First, you'll need to enable the Keycloak extension:
 
@@ -317,7 +330,7 @@ public class KeycloakResource {
 }
 ----
 <1> The `KeycloakSecurityContext` is an object produced by the Keycloak extension that you can use to obtain information from tokens sent to your application. 
-<2> Note that we do not use any `@RolesAllowed` or any other instrumentation on the endpoint. It looks like an ordinary endpoint.
+<2> Note that we do not use any `@RolesAllowed` or any other instrumentation on the endpoint to specify access policy. It looks like an ordinary endpoint.
 
 [NOTE]
 ====
@@ -347,6 +360,11 @@ oc rollout status -w dc/people
 === Test confidential
 
 The `/secured/confidential` endpoint is protected with a policy defined in the Keycloak Server. The policy only grants access to the resource if the user is granted with a `confidential` role. The difference here is that the application is delegating the access decision to Keycloak, so no explicit source code instrumentation is required. 
+
+[NOTE]
+====
+Keycloak caches the resource paths that it is protecting, so that every access doesn't cause a roundtrip back to the server to check whether the user is authorized to access the resource. The lifespan of these cached entries can be controlled through https://www.keycloak.org/docs/latest/authorization_services/index.html#_enforcer_filter[Policy Enforcer Configuration].
+====
 
 First make sure even `admin` can't access the endpoint:
 
