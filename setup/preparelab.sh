@@ -253,8 +253,8 @@ SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&
   jq  -r '.access_token')
 
 # Import realm 
-curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d ../files/quarkus-realm.json \
-  -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms
+curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @../files/quarkus-realm.json \
+  -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms"
 
 # Create Che users, let them view che namespace
 for i in {1..$USERCOUNT} ; do
@@ -262,7 +262,7 @@ for i in {1..$USERCOUNT} ; do
     USERNAME=user${i}
     FIRSTNAME=User${i}
     LASTNAME=Developer
-    curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d '{"username":"user'${i}'","enabled":true,"emailVerified": true,"firstName": "User'${i}'","lastName": "Developer","email": "user'${i}'@no-reply.com", "credentials":[{"type":"password","value":"pass'${i}'","temporary":false}]}' -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms/codeready/users
+    curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d '{"username":"user'${i}'","enabled":true,"emailVerified": true,"firstName": "User'${i}'","lastName": "Developer","email": "user'${i}'@no-reply.com", "credentials":[{"type":"password","value":"pass'${i}'","temporary":false}]}' -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms/codeready/users"
 done
 
 # Import stack definition

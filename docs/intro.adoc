@@ -33,7 +33,7 @@ To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and log in 
 
 image::che-login.png[login,400]
 
-Once you log in, you'll be placed on your personal dashboard. We've pre-created workspaces for you to use. Click on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number):
+Once you log in, you'll be placed on your personal dashboard. We've pre-created workspaces for you to use. Click on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number). You can also click on the name of the workspace in the center, and then click on the green button that says "OPEN" on the top right hand side of the screen:
 
 image::che-precreated.png[precreated,800]
 
