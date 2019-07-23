@@ -51,18 +51,18 @@ After clicking **Create** you will be taken to the list of objects created by th
 
 == Create Kafka Topic
 
-Next, click on the **Kafka Topic** tab:
+Click _Developer Catalog_ on the left again, and enter `topic` into the search box. Click on the _Kafka Topic_ box, then click **Create**:
 
-image::topictab.png[topictab,600]
+image::createkafkatopic.png[createkafka,800]
 
-and then click **Create Kafka Topic**. We'll need to create a topic for our application to stream to and from, so in the YAML:
+We'll need to create a topic for our application to stream to and from, so in the YAML:
 
 * Change the _metadata > names_ value from `my-topic` to `names`.
 * Change the vale of the `strimzi.io/cluster` label from `my-cluster` to `names-cluster`
 
 Then click **Create**.
 
-image::topiccreate.png[topiccreate,600]
+image::topiccreate.png[topiccreate,800]
 
 This will cause the Operator to provision a new Topic in the Kafka cluster.
 
@@ -71,6 +71,19 @@ Verify that the Kafka and Zookeeper pods are starting up by executing this comma
 [source,sh,role="copypaste"]
 ----
 oc get pods|grep names-cluster
+----
+
+You'll see something like:
+
+[source,none]
+----
+names-cluster-entity-operator-78686cdd4d-rfkwd   3/3     Running   0          6m50s
+names-cluster-kafka-0                            2/2     Running   0          7m41s
+names-cluster-kafka-1                            2/2     Running   0          7m41s
+names-cluster-kafka-2                            2/2     Running   1          7m41s
+names-cluster-zookeeper-0                        2/2     Running   0          8m31s
+names-cluster-zookeeper-1                        2/2     Running   0          8m31s
+names-cluster-zookeeper-2                        2/2     Running   0          8m31s
 ----
 
 [NOTE]
@@ -258,10 +271,10 @@ Our application should be up and running in a few seconds after the build comple
 
 [source,sh,role="copypaste"]
 ----
-clear; echo; echo http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/names.html ; echo
+clear; echo; echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/names.html ; echo
 ----
 
-Open a separate browser tab and go to that URL and you should see a cloud of names updating every 5 seconds:
+Open a separate browser tab and go to that URL and you should see a cloud of names updating every 5 seconds (it may take a few seconds for it to start!):
 
 image::names.png[names,800]
 

@@ -258,7 +258,7 @@ curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/jso
 
 # Create Che users, let them view che namespace
 for i in {1..$USERCOUNT} ; do
-    oc adm policy add-role-to-user view user${i} -n che
+    # oc adm policy add-role-to-user view user${i} -n che
     USERNAME=user${i}
     FIRSTNAME=User${i}
     LASTNAME=Developer
@@ -336,11 +336,11 @@ metadata:
   namespace: openshift-operators
 spec:
   channel: stable
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: strimzi-kafka-operator
   source: installed-community-openshift-operators
   sourceNamespace: openshift-operators
-  startingCSV: strimzi-cluster-operator.v0.11.1
+  startingCSV: strimzi-cluster-operator.v0.12.1
 EOF
 
 # Build stack
