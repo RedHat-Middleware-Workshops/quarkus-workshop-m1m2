@@ -126,12 +126,12 @@ Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it 
 
 [NOTE]
 ====
-This will also listen for a debugger on port `5005`. If your want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`. We'll use this later.
+This will also listen for a debugger on port `5005`. If you want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`. We'll use this later.
 ====
 
 ### Stop the previous application
 
-Let's stop the original application so we can package and re-run it as an executable JAR. In the terminal, press kbd:[CTRL+C] to stop the application (**some browsers don't support this command** - simply close the Terminal using the kbd:[X] button on the tab, which will also kill the running app).
+Let's stop the original application so we can package and re-run it as an executable JAR. In the terminal, press kbd:[CTRL+C] to stop the application (**some browsers don't support this command** - simply close the Terminal using the kbd:[X] button on the tab, which will also kill the running app - remember to click _OK_ to the pop-up dialog about terminating the running process.)
 
 image::kill.png[kill,800]
 

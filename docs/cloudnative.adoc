@@ -57,7 +57,7 @@ This default health check will return success as long as the app is running - if
 
 We can now implement a better Health Check using the MicroProfile APIs. Create a new Java class - `org.acme.people.health.SimpleHealthCheck` (hint: right-click on the `org.acme.people.health` package and select _New > Java Class_ and name it `SimpleHealthCheck`). In this file, implement the health check (you can copy/paste this code):
 
-[source, java, role="copypaste"
+[source, java, role="copypaste"]
 ----
 package org.acme.people.health;
 
