@@ -60,7 +60,7 @@ public enum EyeColor {
 }
 ----
 
-This app will be a database of people, each of which have a name, birthdate, and eye color. We'll need an entity, so open up the `src/main/java/org/acme/people/model/Person.java`{{open}} file, and replace the stub code in the file with the following:
+This app will be a database of people, each of which have a name, birthdate, and eye color. We'll need an entity, so open up the `src/main/java/org/acme/people/model/Person.java` file, and replace the stub code in the file with the following:
 
 [source,java,role="copypaste"]
 ----
@@ -589,7 +589,7 @@ And now we can access using `curl` once again to find everyone born in or before
 
 [source,sh,role="copypaste"]
 ----
-curl $(oc get route people -o=go-template --template='{{ .spec.host }}')/person/birth/before/2000 | jq
+curl $(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/birth/before/2000 | jq
 ----
 
 Now that we have our app running on OpenShift, let's see what we can do.
@@ -598,7 +598,7 @@ Run the following command to output the full URL to our DataTable graphical fron
 
 [source,sh,role="copypaste"]
 ----
-echo; echo "http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/datatable.html" ; echo
+echo; echo "http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/datatable.html" ; echo
 ----
 
 Copy and paste that URL into a new browser tab to access it. It should look like:

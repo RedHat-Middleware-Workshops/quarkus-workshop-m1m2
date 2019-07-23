@@ -87,7 +87,7 @@ You'll need to trigger some HTTP endpoints to generate traces, so let's re-visit
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/datatable.html
+echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/datatable.html
 ----
 
 Open that URL in a separate browser tab, and exercise the table a bit by paging through the entries to force several RESTful calls back to our app:
@@ -100,7 +100,7 @@ Use this command to generate the URL to Jaeger:
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route jaeger-query -o=go-template --template='{{ .spec.host }}')
+echo http://$(oc get route jaeger-query -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})
 ----
 
 Open that URL in a separate tab to arrive at the Jaeger Tracing console (leave the tab open as we'll use it later)
@@ -258,7 +258,7 @@ Try out our new endpoint by running the following command:
 
 [source,sh,role="copypaste"]
 ----
-curl http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/person/swpeople
+curl http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/swpeople
 ----
 
 You should see:

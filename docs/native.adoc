@@ -16,7 +16,7 @@ echo $GRAALVM_HOME
 
 == Build the image
 
-Within the `pom.xml`{{open}} is the declaration for the Quarkus Maven plugin which contains a profile for `native-image`:
+Within the `pom.xml` is the declaration for the Quarkus Maven plugin which contains a profile for `native-image`:
 
 [source,xml]
 ----

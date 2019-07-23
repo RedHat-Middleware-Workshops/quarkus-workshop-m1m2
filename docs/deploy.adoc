@@ -104,7 +104,7 @@ And now we can access using `curl` once again. In the Terminal, run this command
 
 [source,sh,role="copypaste copypaste"]
 ----
-curl $(oc get route people -o=go-template --template='{{ .spec.host }}')/hello/greeting/quarkus-on-openshift
+curl $(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/hello/greeting/quarkus-on-openshift
 ----
 
 [NOTE]

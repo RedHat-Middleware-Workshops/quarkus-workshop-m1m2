@@ -139,7 +139,7 @@ Try to access the endpoint as an anonymous unauthenticated user:
 
 [source,sh,role="copypaste"]
 ----
-curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me
+curl -i http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me
 ----
 
 It should fail with:
@@ -177,7 +177,7 @@ Try out the JWT-secured API as Alice:
 
 [source,sh,role="copypaste"]
 ----
-curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me \
+curl -i http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me \
   -H "Authorization: Bearer $ALICE_TOKEN"
 ----
 
@@ -198,7 +198,7 @@ Now try to access the `/me/admin` endpoint as `alice`:
 
 [source,sh,role="copypaste"]
 ----
-curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me/admin \
+curl -i http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me/admin \
   -H "Authorization: Bearer $ALICE_TOKEN"
 ----
 
@@ -235,7 +235,7 @@ And try again with your new token:
 
 [source,sh,role="copypaste"]
 ----
-curl -i http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/me/admin \
+curl -i http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me/admin \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ----
 
@@ -371,7 +371,7 @@ First make sure even `admin` can't access the endpoint:
 [source,sh,role="copypaste"]
 ----
 curl -v -X GET \
-  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/confidential \
+  http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/confidential \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ----
 
@@ -404,7 +404,7 @@ And access the confidential endpoint with your new token:
 [source,sh,role="copypaste"]
 ----
 curl -X GET \
-  http://$(oc get route people -o=go-template --template='{{ .spec.host }}')/secured/confidential \
+  http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/confidential \
   -H "Authorization: Bearer $JDOE_TOKEN"
 ----
 
