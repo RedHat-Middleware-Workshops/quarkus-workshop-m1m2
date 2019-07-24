@@ -33,7 +33,7 @@ This will add the extension below to your `pom.xml`:
 </dependency>
 ----
 
-Next, Run the app once more by using the command palette and select **Build and Run Locally** to start the app up in dev local mode. With no code, Quarkus still provides a default health check which may be enough for you if all you need is to know the app started. Try to access the `/health` endpoint on the Terminal:
+Next, Run the app once more by using the command palette and select **Start Live Coding** to start the app up in dev local mode. With no code, Quarkus still provides a default health check which may be enough for you if all you need is to know the app started. Try to access the `/health` endpoint on the Terminal:
 
 [source, sh, role="copypaste"]
 ----
@@ -405,7 +405,7 @@ curl http://localhost:8080/hello
 
 produces `hello quarkus!`.
 
-Next, kbd:[CTRL+C] it (or close the "Build and Run Locally" Terminal window). We need to re-build the app as an executable JAR so it runs with the `prod` profile.
+Next, kbd:[CTRL+C] it (or close the "Start Live Coding" Terminal window). We need to re-build the app as an executable JAR so it runs with the `prod` profile.
 
 Build an executable JAR just as before using the command palette and choosing **Create Executable JAR**.
 

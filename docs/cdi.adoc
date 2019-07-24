@@ -1,7 +1,7 @@
 = Dependency Injection
 :experimental:
 
-In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification,target=_blank]. However, it is not a full CDI implementation verified by the TCK. Only a subset of the CDI features is implemented - see also the https://quarkus.io/guides/cdi-reference#supported_features[list of supported features, target=_blank] and the https://quarkus.io/guides/cdi-reference#limitations[list of limitations, target=_blank].
+In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification,target=_blank]. Because of the dynamic nature of some CDI APIs which conflict with native compilation, only a subset of the CDI features are implemented - see also the https://quarkus.io/guides/cdi-reference#supported_features[list of supported features.
 
 == Add Custom Bean
 
@@ -62,7 +62,7 @@ If you do not get red squigglies, or you can't make them disappear, try to close
 
 == Run the app
 
-Once again, run the app in _dev_ mode by using the command palette and selecting **Build and Run Locally**.
+Once again, run the app in _dev_ mode by using the command palette and selecting **Start Live Coding**.
 
 == Inspect the results
 

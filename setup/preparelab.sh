@@ -256,6 +256,10 @@ SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&
 curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @../files/quarkus-realm.json \
   -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms"
 
+## MANUALLY add ProtocolMapper to map User Roles to "groups" prefix for JWT claims
+echo "Keycloak credentials: $KEYCLOAK_USER / $KEYCLOAK_PASSWORD"
+echo "URL: http://keycloak-che.${HOSTNAME_SUFFIX}"
+
 # Create Che users, let them view che namespace
 for i in {1..$USERCOUNT} ; do
     # oc adm policy add-role-to-user view user${i} -n che

@@ -56,7 +56,7 @@
         },
         {
           "commandLine": "mvn clean compile quarkus:dev -f ${current.project.path}",
-          "name": "Build and Run Locally",
+          "name": "Start Live Coding",
           "type": "custom",
           "attributes": {
             "goal": "Run",

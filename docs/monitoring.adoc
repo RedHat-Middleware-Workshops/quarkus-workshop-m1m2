@@ -76,7 +76,7 @@ This will add the necessary entries in your `pom.xml` to bring in the Metrics ca
 
 == Start the app
 
-Next, Run the app once more by using the command palette and select **Build and Run Locally** to start the app up in dev local mode.
+Next, Run the app once more by using the command palette and select **Start Live Coding** to start the app up in dev local mode.
 
 == Test Metrics endpoint
 
@@ -192,18 +192,19 @@ You'll need to trigger the methods that we've instrumented, so first run this co
 echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/names.html
 ----
 
-Within a few seconds, Prometheus should start scraping the metrics. Run this command to output the URL to the Prometheus GUI:
+Within about 15-30 seconds, Prometheus should start scraping the metrics. Run this command to output the URL to the Prometheus GUI:
 
 [source,sh,role="copypaste"]
 ----
 echo http://$(oc get route prometheus -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}')
 ----
 
-Open a separate browser tab and navigate to that URL. You should see:
+Open a separate browser tab and navigate to that URL. This is the Prometheus GUI which lets you issue queries to retrieve metrics Prometheus has gathered. Start typing in the query box to look for 'acme':
 
-::img
-
-This is the Prometheus GUI which lets you issue queries to retrieve metrics Prometheus has gathered. Start typing in the box to look for 'acme':
+[NOTE]
+====
+If you do not see any `acme` metrics when querying, wait 15 seconds, reload the Prometheus page, and try again. They will eventually show up!
+====
 
 image:prom.png[Prometheus,800]
 
@@ -231,7 +232,13 @@ image::https://grafana.com/api/dashboards/3308/images/2099/image[Grafana dashboa
 
 == Extra Credit after this workshop
 
-If you have time after completing this workshop, try running grafana and hooking it up to your Prometheus instance you've created. Hint: `oc new-app grafana/grafana && oc expose svc/grafana` and then access Grafana at the URL emitted by this command: `echo http://$(oc get route grafana -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`, add Prometheus as a data source at `http://prometheus:9090`, and create a custom dashboard showing some of your application metrics, or import an existing dashboard from the Grafana community.
+If you have time after completing this workshop, try running grafana and hooking it up to your Prometheus instance you've created. Here's the cheat sheet:
+
+. `oc new-app grafana/grafana && oc expose svc/grafana`
+. Access Grafana at the URL emitted by this command: `echo http://$(oc get route grafana -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`
+. Login as `admin/admin` (your lab username won't work!)
+. Add Prometheus as a data source at `http://prometheus:9090`
+. Create a custom dashboard showing some of your application metrics, or import an existing dashboard from the Grafana community.
 
 == Cleanup
 

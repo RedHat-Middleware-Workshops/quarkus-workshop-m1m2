@@ -80,7 +80,7 @@ Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Applicat
 
 ## Running the Application
 
-Now we are ready to run our application. In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Build and Run Locally**:
+Now we are ready to run our application. In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Start Live Coding**:
 
 image::runlocally.png[runlocal,800]
 

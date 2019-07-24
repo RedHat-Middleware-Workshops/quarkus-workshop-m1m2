@@ -40,7 +40,7 @@ We're using the _Axle_ variant here, which provides good support for async opera
 
 == Run the app
 
-Next, Run the app once more by using the command palette and select **Build and Run Locally** to start the app up in dev local mode.
+Next, Run the app once more by using the command palette and select **Start Live Coding** to start the app up in dev local mode.
 
 == Create RESTful resource
 

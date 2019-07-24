@@ -7,7 +7,7 @@ Debugging is an art of finding errors (bugs) and eradicating (debug) them from a
 
 Let's introduce a subtle off-by-one bug in our application and use the debugger to debug it.
 
-Open up the `GreetingResource.java` class again, and add another RESTful interface to that returns the last letter in a name:
+Open up the `GreetingResource.java` class again, and add another RESTful endpoint that returns the last letter in a name:
 
 [source, java, role="copypaste"]
 ----

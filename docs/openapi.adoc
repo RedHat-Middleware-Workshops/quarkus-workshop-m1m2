@@ -19,12 +19,12 @@ If your application is still running from the previous exercise, go back to its 
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="openapi"
+mvn quarkus:add-extension -Dextensions="openapi,swagger"
 ----
 
-This will add the extension to our project.
+This will add the necessary extension for using OpenAPI, and a graphical frontend extension called `swagger` which we'll discuss later.
 
-Run the project again, using the command palette and selecting **Build and Run Locally** (if you had a previous app running, kbd:[CTRL+C] or close the old Terminal before running it again). This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
+Run the project again, using the command palette and selecting **Start Live Coding** (if you had a previous app running, kbd:[CTRL+C] or close the old Terminal before running it again). This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
@@ -86,8 +86,6 @@ So out of the box all your endpoints are fully documented and will be emitted in
 
 When building APIs, developers want to test them quickly. Swagger UI is a great tool for visualizing and interacting with your APIs. The UI is automatically generated from your OpenAPI specification.
 
-The Quarkus OpenAPI extension embeds a properly configured Swagger UI page.
-
 [NOTE]
 ====
 By default, Swagger UI is only available when Quarkus is started in _dev_ or _test_ mode.
@@ -106,7 +104,7 @@ quarkus.swagger-ui.path=/my-custom-path
 ----
 ====
 
-Since our app is already running, click on the _Preview URL_ shown at the top of the terminal (on the _Build and Run Locally_ tab). Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
+Since our app is already running, click on the _Preview URL_ shown at the top of the terminal (on the _Start Live Coding_ tab). Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
 
 image::swagger.png[swagger,600]
 
