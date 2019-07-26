@@ -217,6 +217,11 @@ Access forbidden: role not allowed
 
 Alice is not an admin. Let's try with admin!
 
+[WARNING]
+====
+Access Tokens have a defined lifespan that's typically short (e.g. 5 minutes), so if you wait too long, the token will expire and you'll get denied access. In this case, just re-fetch a new token using the same `curl` command used the first time. Full-fledged applications can take advantage of things like https://oauth.net/2/grant-types/refresh-token/[_Refresh Tokens_] to do this automatically to ensure a good user experience even for slow users.
+====
+
 === Test Admin
 
 Obtain an Admin token:
