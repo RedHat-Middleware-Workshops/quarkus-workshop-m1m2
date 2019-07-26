@@ -308,7 +308,7 @@ image::grafgen.png[graf,800]
 
 There is an _Alerts_ tab you can configure to send alerts (email, etc) when conditions are met for this and other queries. We'll skip this for now.
 
-Click the _Save_ icon at the top to save our new dashboard:
+Click the _Save_ icon at the top to save our new dashboard (you can enter a change comment if you want):
 
 image::grafsave.png[graf,800]
 
@@ -337,7 +337,7 @@ image::graftime.png[time,500]
 
 Finally, move the _Converted Names_ Dashboard to the right of the _Converter Performance_ by dragging its title bar to the right, and then expand the memory graph to take up the full width.
 
-Your final Dashboard should look like:
+Click **Save Dashboad** again to save it. Your final Dashboard should look like:
 
 image::graffinal.png[final,500]
 
