@@ -155,15 +155,17 @@ Let's add a few more metrics for our Kafka stream we setup in the previous exerc
 
 [source,java,role="copypaste"]
 ----
-@Counted(name = "convertedNames", monotonic = true, description = "How many names have been converted.")
-@Timed(name = "converter", description = "A measure how long it takes to convert names.", unit = MetricUnits.MILLISECONDS)
+@Counted(name = "convertedNames", monotonic = true, description = "How many names have been converted.") // <1>
+@Timed(name = "converter", description = "A measure how long it takes to convert names.", unit = MetricUnits.MILLISECONDS) // <2>
 ----
+<1> This metric will count the number of times this method is called
+<2> This metric will measure how long it takes the method to run
 
 Don't forget to import the correct classes as before.
 
 == Rebuild Executable JAR
 
-Now we are ready to run our application on the cluster. Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
+Now we are ready to run our application on the cluster and look at the generated metrics. Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
 == Deploy
 
@@ -196,7 +198,7 @@ Within about 15-30 seconds, Prometheus should start scraping the metrics. Run th
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route prometheus -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}')
+echo http://$(oc get route prometheus -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})
 ----
 
 Open a separate browser tab and navigate to that URL. This is the Prometheus GUI which lets you issue queries to retrieve metrics Prometheus has gathered. Start typing in the query box to look for 'acme':
@@ -224,21 +226,122 @@ image:promg2.png[names,800]
 
 Of course Quarkus apps use very little memory, even for apps stuffed with all sorts of extensions and code.
 
-== Beyond Prometheus
+== Visualizing with Grafana
 
-Prometheus offers a powerful way to capture metrics, a rich query language and alerting of unusual or unexpected conditions. Another open source project, https://grafana.com/[Grafana] is commonly used as a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards]:
+https://grafana.com/[Grafana] is commonly used to visualize metrics and provides a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards]:
 
 image::https://grafana.com/api/dashboards/3308/images/2099/image[Grafana dashboard,800]
 
-== Extra Credit after this workshop
+Let's create a Grafana Dashboard for our Quarkus App!
 
-If you have time after completing this workshop, try running grafana and hooking it up to your Prometheus instance you've created. Here's the cheat sheet:
+== Install Grafana
 
-. `oc new-app grafana/grafana && oc expose svc/grafana`
-. Access Grafana at the URL emitted by this command: `echo http://$(oc get route grafana -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})`
-. Login as `admin/admin` (your lab username won't work!)
-. Add Prometheus as a data source at `http://prometheus:9090`
-. Create a custom dashboard showing some of your application metrics, or import an existing dashboard from the Grafana community.
+Run the following command to deploy Grafana to our cluster:
+
+[source,sh,role="copypaste"]
+----
+oc new-app grafana/grafana && oc expose svc/grafana
+----
+
+Verify Grafana is up and running:
+
+[source,sh,role="copypaste"]
+----
+oc rollout status -w dc/grafana
+----
+
+You should see `replication controller "grafana-1" successfully rolled out`.
+
+== Open Grafana Dashboard
+
+Obtain the URL to the Grafana dashboard using this command:
+
+[source,sh,role="copypaste"]
+----
+echo http://$(oc get route grafana -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})
+----
+
+Open that URL in your browser, and login using the default credentails:
+
+* Username: `admin`
+* Password: `admin`
+
+image::graflogin.png[grafana,700]
+
+At the password change prompt, use any password you wish.
+
+== Add Prometheus as a data source
+
+You'll land on the Data Source screen. Click **Add Data Source**, and select **Prometheus** as the _Data Source Type_. In the URL box, type `http://prometheus:9090` (this is the hostname and port of our running Prometheus in our namespace):
+
+image::grafds.png[datasource, 700]
+
+Click **Save and Test**. You should see:
+
+image::grafworking.png[working, 500]
+
+With our data source working, let's make a dashboard.
+
+== Create Dashboard
+
+Hover over the `+` button on the left, and select _Create > Dashboard_:
+
+image::grafcreate.png[create, 600]
+
+This will create a new dashboard with a single Panel. Each Panel can visualize a computed metric (either a single metric, or a more complex query) and display the results in the Panel.
+
+Click **Add Query**. In the Query box, type `acme` to again get an autocompleted list of available metrics from our app:
+
+image::grafquery.png[query,600]
+
+Choose the first one `application:org_acme_people_stream_name_converter_converted_names`. The metrics should immediately begin to show in the graph above:
+
+image::grafgraf.png[graf,800]
+
+Next click on the _Visualization_ tab on the left:
+
+image::grafvis.png[graf,800]
+
+This lets you fine tune the display, along with the type of graph (bar, line, gauge, etc). Leave them for now, and click on the _General_ tab. Change the name of the panel to `Converted Names`.
+
+image::grafgen.png[graf,800]
+
+There is an _Alerts_ tab you can configure to send alerts (email, etc) when conditions are met for this and other queries. We'll skip this for now.
+
+Click the _Save_ icon at the top to save our new dashboard:
+
+image::grafsave.png[graf,800]
+
+Give your new dashboard a name and click **Save**.
+
+== Add more Panels
+
+See if you can add additional Panels. Use the **Add Panel** button to add a new Panel:
+
+image::grafmorepanels.png[graf,800]
+
+Follow the same steps as before to create a few more panels, and **don't forget to Save each panel when you've created it.**
+
+Add Panels for:
+
+* The different quantiles of time it takes to process names `application:org_acme_people_stream_name_converter_converter_seconds` (configure it stack its values on the _Visualization_ tab, and name it "Converter Performance" on the _General_ tab).
+* The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Field Units to `bytes` on the _Visualization_ tab, and the title to `Memory` on the _General_ tab.
+
+image::grafjvm.png[jvm,500]
+
+== Fix layout
+
+After saving, go back to the main dashboard (click on **My Dashboard** at the top and then select it under _Recent Dashboards_). Change the time value to _Last 30 Minutes_ at the top-right:
+
+image::graftime.png[time,500]
+
+Finally, move the _Converted Names_ Dashboard to the right of the _Converter Performance_ by dragging its title bar to the right, and then expand the memory graph to take up the full width.
+
+Your final Dashboard should look like:
+
+image::graffinal.png[final,500]
+
+Beautiful, and useful! You can add many more metrics to monitor and alert for Quarkus apps using these tools.
 
 == Cleanup
 
@@ -246,6 +349,6 @@ Go to the first Terminal tab and press kbd:[CTRL+C] to stop our locally running 
 
 == Congratulations!
 
-This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics] specification through the SmallRye Metrics extension.
+This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics] specification through the SmallRye Metrics extension. You also consumed these metrics using a popular monitoring stack with Prometheus and Grafana.
 
 There are many more possibilities for application metrics, and it's a useful way to not only gather metrics, but act on them through alerting and other features of the monitoring stack you may be using.
