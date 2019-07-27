@@ -42,7 +42,7 @@ This causes the `%dev` properties (using H2 database) to be active in developmen
 
 [NOTE]
 ====
-These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide,target=_blank].
+These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide,window=_blank].
 ====
 
 == Create Entity
@@ -350,11 +350,11 @@ In the previous step you added a few more custom queries to your entity and the 
 
 Earlier we used `curl` to access our data, which is very useful for testing, but for real applications you will usually surface the data in other ways, like on web pages using tables, with options for searching, sorting, filtering, paging, etc. Quarkus and Panache make this easy to adapt your application for any display library or framework.
 
-Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables,target=_blank]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is ineffecient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
+Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables,window=_blank]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is ineffecient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
 
 === Add Datatables endpoint
 
-https://www.datatables.net/manual/server-side[DataTables documentation,target=_blank] shows that its frontend will call an endpoint on the backend to retrieve some amount of data. It will pass several query parameters to tell the server what to sort, filter, search, and which data to return based on the page size and current page the user is viewing. For this example, we'll only support a subset:
+https://www.datatables.net/manual/server-side[DataTables documentation,window=_blank] shows that its frontend will call an endpoint on the backend to retrieve some amount of data. It will pass several query parameters to tell the server what to sort, filter, search, and which data to return based on the page size and current page the user is viewing. For this example, we'll only support a subset:
 
 * `start` - The index of the first element needed
 * `length` - Total number records to return (or less, if there are less records that meet criteria)

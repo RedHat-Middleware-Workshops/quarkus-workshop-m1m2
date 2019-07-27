@@ -3,7 +3,7 @@
 
 With our app fully ready for its first cloud native deployment, let's package it up for deployment to our Kubernetes platform as a native image. We'll use some OpenShift tooling to accomplish this.
 
-OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD,target=_blank], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
+OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD,window=_blank], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
 
 == Build native image
 
@@ -49,7 +49,7 @@ Congratulations, you are now authenticated to the OpenShift server.
 The login session might timeout after long periods of inactivity. If this happens, you'll get messages like `Error from server (Forbidden): xxxxx is forbidden: User "system:anonymous" cannot xxxxx`. Simply re-issue the above login command to re-establish a session.
 ====
 
-https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[Namespaces,target=_blank]
+https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[Namespaces,window=_blank]
 are a top level concept to help you organize your deployments and teams of developers. A
 namespace allows a community of users (or a user) to organize and manage
 their content in isolation from other communities. OpenShift _projects_ provide additional functionality for managing Kubernetes namespaces.
@@ -68,7 +68,7 @@ You should get a `--> Success` message at the end.
 
 [NOTE]
 ====
-This build uses the new https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/getting_started_with_containers/using_red_hat_base_container_images_standard_and_minimal[Red Hat Universal Base Image,target=_blank], providing foundational software needed to run most applications, while staying at a reasonable size.
+This build uses the new https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/getting_started_with_containers/using_red_hat_base_container_images_standard_and_minimal[Red Hat Universal Base Image,window=_blank], providing foundational software needed to run most applications, while staying at a reasonable size.
 ====
 
 And then start and watch the build, which will take about a minute to complete:

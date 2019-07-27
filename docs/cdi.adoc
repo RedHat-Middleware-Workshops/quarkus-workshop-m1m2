@@ -1,7 +1,7 @@
 = Dependency Injection
 :experimental:
 
-In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification,target=_blank]. Because of the dynamic nature of some CDI APIs which conflict with native compilation, only a subset of the CDI features are implemented - see also the https://quarkus.io/guides/cdi-reference#supported_features[list,target=_blank] of supported features.
+In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification,window=_blank]. Because of the dynamic nature of some CDI APIs which conflict with native compilation, only a subset of the CDI features are implemented - see also the https://quarkus.io/guides/cdi-reference#supported_features[list,window=_blank] of supported features.
 
 == Add Custom Bean
 

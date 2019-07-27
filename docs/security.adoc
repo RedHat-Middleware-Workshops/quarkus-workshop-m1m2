@@ -1,7 +1,7 @@
 = Securing Quarkus APIs
 :experimental:
 
-Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak,target=_blank], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC,target=_blank], https://keyloak.org[Keycloak,target=_blank] and https://en.wikipedia.org/wiki/OAuth[OAuth,target=_blank] to secure your Quarkus applications.
+Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak,window=_blank], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC,window=_blank], https://keyloak.org[Keycloak,window=_blank] and https://en.wikipedia.org/wiki/OAuth[OAuth,window=_blank] to secure your Quarkus applications.
 
 == Add JWT to Quarkus
 
@@ -219,7 +219,7 @@ Alice is not an admin. Let's try with admin!
 
 [WARNING]
 ====
-Access Tokens have a defined lifespan that's typically short (e.g. 5 minutes), so if you wait too long, the token will expire and you'll get denied access. In this case, just re-fetch a new token using the same `curl` command used the first time. Full-fledged applications can take advantage of things like https://oauth.net/2/grant-types/refresh-token/[_Refresh Tokens_,target=_blank] to do this automatically to ensure a good user experience even for slow users.
+Access Tokens have a defined lifespan that's typically short (e.g. 5 minutes), so if you wait too long, the token will expire and you'll get denied access. In this case, just re-fetch a new token using the same `curl` command used the first time. Full-fledged applications can take advantage of things like https://oauth.net/2/grant-types/refresh-token/[_Refresh Tokens_,window=_blank] to do this automatically to ensure a good user experience even for slow users.
 ====
 
 === Test Admin
@@ -300,7 +300,7 @@ quarkus.keycloak.policy-enforcer.enable=true
 quarkus.keycloak.policy-enforcer.enforcement-mode=PERMISSIVE
 ----
 
-This configures the extension with the necessary configuration ( https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[read more,target=_blank] about what these do).
+This configures the extension with the necessary configuration ( https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[read more,window=_blank] about what these do).
 
 === Create Keycloak endpoints
 
@@ -368,7 +368,7 @@ The `/secured/confidential` endpoint is protected with a policy defined in the K
 
 [NOTE]
 ====
-Keycloak caches the resource paths that it is protecting, so that every access doesn't cause a roundtrip back to the server to check whether the user is authorized to access the resource. The lifespan of these cached entries can be controlled through https://www.keycloak.org/docs/latest/authorization_services/index.html#_enforcer_filter[Policy Enforcer Configuration,target=_blank].
+Keycloak caches the resource paths that it is protecting, so that every access doesn't cause a roundtrip back to the server to check whether the user is authorized to access the resource. The lifespan of these cached entries can be controlled through https://www.keycloak.org/docs/latest/authorization_services/index.html#_enforcer_filter[Policy Enforcer Configuration,window=_blank].
 ====
 
 First make sure even `admin` can't access the endpoint:
