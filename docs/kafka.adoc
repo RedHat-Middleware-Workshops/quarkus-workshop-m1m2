@@ -216,13 +216,15 @@ public class NameResource {
 <2> Indicates that the content is sent using _Server Sent Events_
 <3> Returns the stream (Reactive Stream)
 
+[NOTE]
+====
 There is a pre-created `names.html` page for you to use (in the `src/main/resources/META-INF/resources` directory) which will make a request to this `/names/stream` endpoint using standard JavaScript running in the browser and draw the resulting names using the https://d3js.org/[D3.js library]. The JavaScript that makes this call looks like this (do not copy this into anything!):
 
 [source,javascript]
 ----
 var source = new EventSource("/names/stream"); // <1>
 
-source.onmessage = function (event) { // </2>
+source.onmessage = function (event) { // <2>
 
     console.log("received new name: " + event.data);
     // process new name in event.data
@@ -235,6 +237,8 @@ source.onmessage = function (event) { // </2>
 <1> Uses your browser's support for the `EventSource` API (part of the W3C SSE standard) to call the endpoint
 <2> Each time a message is received via SSE, _react_ to it by running this function
 <3> Refresh the display using the D3.js library
+
+====
 
 == Configure application
 
