@@ -1,18 +1,18 @@
 = Monitoring Quarkus Apps using MicroProfile Metrics
 :experimental:
 
-This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics] specification through the SmallRye Metrics extension.
+This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics,target=_blank] specification through the SmallRye Metrics extension.
 
 MicroProfile Metrics allows applications to gather various metrics and statistics that provide insights into what is happening inside the application. They ey serve to pinpoint issues, provide long term trend data for capacity planning and pro-active discovery of issues (e.g. disk usage growing without bounds). Metrics can also help those scheduling systems decide when to scale the application to run on more or fewer machines.
 
-The metrics can be read remotely using JSON format or the https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format[OpenMetrics text format], so that they can be processed by additional tools such as Prometheus, and stored for analysis and visualisation. You can then use tools like http://prometheus.io[Prometheus] and http://grafana.com[Grafana] to collect and display metrics for your Quarkus apps.
+The metrics can be read remotely using JSON format or the https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format[OpenMetrics text format,target=_blank], so that they can be processed by additional tools such as Prometheus, and stored for analysis and visualisation. You can then use tools like http://prometheus.io[Prometheus,target=_blank] and http://grafana.com[Grafana,target=_blank] to collect and display metrics for your Quarkus apps.
 
 == Install Prometheus
 
 First, let's install Prometheus. Prometheus is an open-source systems monitoring and alerting toolkit featuring:
 
-* a multi-dimensional https://prometheus.io/docs/concepts/data_model/[data model] with time series data identified by metric name and key/value pairs
-* https://prometheus.io/docs/prometheus/latest/querying/basics/[PromQL], a flexible query language to leverage this dimensionality
+* a multi-dimensional https://prometheus.io/docs/concepts/data_model/[data model,target=_blank] with time series data identified by metric name and key/value pairs
+* https://prometheus.io/docs/prometheus/latest/querying/basics/[PromQL,target=_blank], a flexible query language to leverage this dimensionality
 * time series collection happens via a pull model over HTTP
 
 To install it, first create a Kubernetes ConfigMap that will hold the Prometheus configuration. In the Terminal, run the following:
@@ -228,7 +228,7 @@ Of course Quarkus apps use very little memory, even for apps stuffed with all so
 
 == Visualizing with Grafana
 
-https://grafana.com/[Grafana] is commonly used to visualize metrics and provides a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards]:
+https://grafana.com/[Grafana,target=_blank] is commonly used to visualize metrics and provides a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards,target=_blank]:
 
 image::https://grafana.com/api/dashboards/3308/images/2099/image[Grafana dashboard,800]
 
@@ -349,6 +349,6 @@ Go to the first Terminal tab and press kbd:[CTRL+C] to stop our locally running 
 
 == Congratulations!
 
-This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics] specification through the SmallRye Metrics extension. You also consumed these metrics using a popular monitoring stack with Prometheus and Grafana.
+This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics,target=_blank] specification through the SmallRye Metrics extension. You also consumed these metrics using a popular monitoring stack with Prometheus and Grafana.
 
 There are many more possibilities for application metrics, and it's a useful way to not only gather metrics, but act on them through alerting and other features of the monitoring stack you may be using.

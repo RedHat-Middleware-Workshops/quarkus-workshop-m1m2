@@ -1,13 +1,13 @@
 = Tracing with MicroProfile OpenTracing
 :experimental:
 
-This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing] to provide distributed tracing for interactive web applications.
+This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing,target=_blank] to provide distributed tracing for interactive web applications.
 
 In a distributed cloud-native application, multiple microservices are collaborating to deliver the expected functionality. If you have hundreds of services, how do you debug an individual request as it travels through a distributed system? For Java enterprise developers, the Eclipse MicroProfile OpenTracing specification makes it easier. Let's find out how.
 
 == Install Jaeger
 
-https://www.jaegertracing.io/[Jaeger], inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems, including:
+https://www.jaegertracing.io/[Jaeger,target=_blank], inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems, including:
 
 * Distributed context propagation
 * Distributed transaction monitoring
@@ -58,7 +58,7 @@ quarkus.jaeger.sampler-param=1     # <2>
 quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces # <3>
 ----
 <1> The name of our service from the perspective of Jaeger (useful when multiple apps report to the same Jaeger instance)
-<2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist] to tune the performance.
+<2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist,target=_blank] to tune the performance.
 <3> This is the default HTTP-based collector exposed by Jaeger
 
 == Test it out
@@ -119,14 +119,14 @@ You can see that this trace (along with the others) shows the incoming HTTP GET 
 
 [NOTE]
 ====
-Service Mesh technologies like https://istio.io[Istio] can provide even more tracing prowess as the calls across different services are traced at the network level, not requiring _any_ frameworks or developer instrumentation to be enabled for tracing.
+Service Mesh technologies like https://istio.io[Istio,target=_blank] can provide even more tracing prowess as the calls across different services are traced at the network level, not requiring _any_ frameworks or developer instrumentation to be enabled for tracing.
 ====
 
 == Tracing external calls
 
-This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client] with Quarkus in order to trace _external_, outbound requests with very little effort.
+This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client,target=_blank] with Quarkus in order to trace _external_, outbound requests with very little effort.
 
-We will use the publicly available https://swapi.co[Star Wars API] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
+We will use the publicly available https://swapi.co[Star Wars API,target=_blank] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
 
 === Create model 
 
@@ -163,7 +163,7 @@ This contains a subset of the full Star Wars model, just enough to demonstrate t
 
 === Create interface 
 
-Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class in the `org.acme.people.service` package called `StarWarsService` with the following content:
+Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client,target=_blank] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class in the `org.acme.people.service` package called `StarWarsService` with the following content:
 
 [source,java,role="copypaste"]
 ----

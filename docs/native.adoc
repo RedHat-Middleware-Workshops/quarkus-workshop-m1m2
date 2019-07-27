@@ -1,7 +1,7 @@
 = Building Native Images
 :experimental:
 
-Let’s now produce a native executable for our application. It improves the startup time of the application, and produces a minimal disk and memory footprint. The executable would have everything to run the application including the "JVM" (shrunk to be just enough to run the application), and the application. This is accomplished using https://graalvm.org[GraalVM].
+Let’s now produce a native executable for our application. It improves the startup time of the application, and produces a minimal disk and memory footprint. The executable would have everything to run the application including the "JVM" (shrunk to be just enough to run the application), and the application. This is accomplished using https://graalvm.org[GraalVM,target=_blank].
 
 GraalVM is a universal virtual machine for compiling and running applications written in JavaScript, Python, Ruby, R, JVM-based languages like Java, Scala, Groovy, Kotlin, Clojure, and LLVM-based languages such as C and C++. It includes ahead-of-time compilation, aggressive dead code elimination, and optimal packaging as native binaries that moves a lot of startup logic to _build-time_, thereby reducing startup time and memory resource requirements significantly.
 
@@ -96,7 +96,7 @@ You should see something like:
 ```
 ----
 
-This shows that our process is taking around 13.8 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size], or RSS). Pretty compact!
+This shows that our process is taking around 13.8 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size,target=_blank], or RSS). Pretty compact!
 
 [NOTE]
 ====

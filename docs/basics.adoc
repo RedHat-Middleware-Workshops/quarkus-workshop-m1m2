@@ -103,7 +103,7 @@ You should see:
 2019-02-28 17:05:22,771 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
 ----
 
-Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything). To access applications from your laptop broweser, Che creates an Ingress (referred to as a _Route_ in OpenShift) that is displayed at the top of the Terminal window. Look for _Preview URL_:
+Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything). To access applications from your laptop browser, Che creates an Ingress (referred to as a _Route_ in OpenShift) that is displayed at the top of the Terminal window. Look for _Preview URL_:
 
 image::previewurl.png[preview,900]
 

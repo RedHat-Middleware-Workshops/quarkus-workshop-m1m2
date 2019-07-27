@@ -1,7 +1,7 @@
 = Reactive Streams with Quarkus and Kafka
 :experimental:
 
-In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reative Streams Messaging and https://kafka.apache.org[Apache Kafka], a distributed streaming platform. You will also use https://strimzi.io/[Strimzi], which provides an easy way to run an Apache Kafka cluster on Kubernetes using https://operatorhub.io/what-is-an-operator[Operators].
+In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reative Streams Messaging and https://kafka.apache.org[Apache Kafka,target=_blank], a distributed streaming platform. You will also use https://strimzi.io/[Strimzi,target=_blank], which provides an easy way to run an Apache Kafka cluster on Kubernetes using https://operatorhub.io/what-is-an-operator[Operators,target=_blank].
 
 == What is Apache Kafka?
 
@@ -30,7 +30,7 @@ Strimzi provides three operators:
 
 == The Goal
 
-In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using https://www.w3.org/TR/eventsource/[_server-sent events_] and displayed in the browser. It will look like this:
+In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using https://www.w3.org/TR/eventsource/[_server-sent events_,target=_blank] and displayed in the browser. It will look like this:
 
 image::names.png[names,800]
 
@@ -218,7 +218,7 @@ public class NameResource {
 
 [NOTE]
 ====
-There is a pre-created `names.html` page for you to use (in the `src/main/resources/META-INF/resources` directory) which will make a request to this `/names/stream` endpoint using standard JavaScript running in the browser and draw the resulting names using the https://d3js.org/[D3.js library]. The JavaScript that makes this call looks like this (do not copy this into anything!):
+There is a pre-created `names.html` page for you to use (in the `src/main/resources/META-INF/resources` directory) which will make a request to this `/names/stream` endpoint using standard JavaScript running in the browser and draw the resulting names using the https://d3js.org/[D3.js library,target=_blank]. The JavaScript that makes this call looks like this (do not copy this into anything!):
 
 [source,javascript]
 ----
@@ -267,7 +267,7 @@ Add the following values to the `application.properties`:
 ----
 We have prefixed these with `%prod` to avoid our app trying to connect when in `dev` or `test` mode.
 
-More details about this configuration is available on the https://kafka.apache.org/documentation/#producerconfigs[Producer configuration] and https://kafka.apache.org/documentation/#consumerconfigs[Consumer configuration] section from the Kafka documentation.
+More details about this configuration is available on the https://kafka.apache.org/documentation/#producerconfigs[Producer configuration] and https://kafka.apache.org/documentation/#consumerconfigs[Consumer configuration,target=_blank] section from the Kafka documentation.
 
 [NOTE]
 ====
@@ -308,5 +308,5 @@ These are the original names streamed through Kafka, altered to add a random hon
 
 This guide has shown how you can interact with Kafka using Quarkus. It utilizes MicroProfile Reactive Messaging to build data streaming applications.
 
-If you want to go further check the documentation of https://smallrye.io/smallrye-reactive-messaging[SmallRye Reactive Messaging], the implementation used in Quarkus.
+If you want to go further check the documentation of https://smallrye.io/smallrye-reactive-messaging[SmallRye Reactive Messaging,target=_blank], the implementation used in Quarkus.
 
