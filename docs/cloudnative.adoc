@@ -33,11 +33,11 @@ This will add the extension below to your `pom.xml`:
 </dependency>
 ----
 
-Next, Run the app once more by using the command palette and select **Start Live Coding** to start the app up in dev local mode. With no code, Quarkus still provides a default health check which may be enough for you if all you need is to know the app started. Try to access the `/health` endpoint on the Terminal:
+Next, Run the app once more by using the command palette and select **Start Live Coding** to start the app up in dev local mode. With no code, Quarkus still provides a default health check which may be enough for you if all you need is to know the app started. Try to access the `/health/ready` endpoint on the Terminal:
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/health
+curl http://localhost:8080/health/ready
 ----
 
 You'll see:
@@ -51,7 +51,7 @@ You'll see:
 }
 ----
 
-This default health check will return success as long as the app is running - if it crashes, the health check will fail.
+This default health check will return success as long as the app is running - if it crashes, the health check will of course fail.
 
 === Add a probe
 
@@ -90,11 +90,11 @@ There are two types of probes in Quarkus apps (and Kubernetes):
 Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail.
 ====
 
-As we have started our Quarkus application in dev mode simply open a Terminal window and run:
+THanks to Live Coding mode, simply open a Terminal window and run:
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/health
+curl http://localhost:8080/health/ready
 ----
 
 The new health check procedure is now present in the `checks` array:
@@ -147,13 +147,20 @@ public class DataHealthCheck implements HealthCheck {
 }
 ----
 
-If you rerun the health check procedure again by accessing the `/health` endpoint with `curl` you can see that the new health check Health check with data is present in the `checks` array. This check contains a new attribute called `data` which is a JSON object consisting of the properties we have defined in our health check procedure above.
+Access the liveness health checks:
+
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/health/live
+----
+
+You can see that the new health check with data is present in the `checks` array. This check contains a new attribute called `data` which is a JSON object consisting of the properties we have defined in our health check procedure above.
 
 == Negative Health Checks
 
-In this section we create another health check which simulates a connection to an external service provider such as a database. For simplicity reasons, we only determine whether the database is accessible or not by a configuration property.
+In this section we create another health check which simulates a connection to an external service provider such as a database. For simplicity reasons, we'll use an `application.properties` setting to toggle the health check from `DOWN` to `UP`.
 
-Let’s create our final health check procedure (another Liveness probe). Create another Java class `org.acme.people.health.DatabaseConnectionHealthCheck` with the following code:
+Create another Java class in the same package called `DatabaseConnectionHealthCheck` with the following code:
 
 [source, java, role="copypaste"]
 ----
@@ -199,7 +206,14 @@ public class DatabaseConnectionHealthCheck implements HealthCheck {
 }
 ----
 
-If you now rerun the health check (by running the same `curl` command from before) the overall outcome should be `DOWN` and you should see in the `checks` array the newly added Database connection health check which is down and the error message explaining why it failed:
+Re-run the health check test:
+
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/health/live
+----
+
+The overall outcome should be `DOWN` and you should see in the `checks` array the newly added Database connection health check which is down and the error message explaining why it failed:
 
 [source,json]
 ----
@@ -212,11 +226,11 @@ If you now rerun the health check (by running the same `curl` command from befor
         },
 ----
 
-We shouldn’t leave this application with a health check in DOWN state. Because we are running Quarkus dev mode, add `database.up=true` to the end of the `src/main/resources/application.properties` file and rerun the health check again — it should be up again.
+We shouldn’t leave this application with a health check in DOWN state. Because we are running Quarkus dev mode, add `database.up=true` to the end of the `src/main/resources/application.properties` file and rerun the health check test again — it should be `UP`!
 
 == Accessing liveness and readiness separately
 
-Quarkus apps can access the two different types using two different endpoints. This is useful when configuring Kubernetes with probes which we'll do later, as it can access each separately (and configure each with different timeouts, periods, failure thresholds, etc). For example, You may want your Readiness probe to wait 30 seconds before starting, but Liveness should wait 2 minutes and only wait 10 seconds between retries.
+Quarkus apps can access the two different types using two different endpoints (`/health/live` and `/health/ready`). This is useful when configuring Kubernetes with probes which we'll do later, as it can access each separately (and configure each with different timeouts, periods, failure thresholds, etc). For example, You may want your Readiness probe to wait 30 seconds before starting, but Liveness should wait 2 minutes and only wait 10 seconds between retries.
 
 Access the two endpoints. Each endpoint will only report on its specific type of probe:
 

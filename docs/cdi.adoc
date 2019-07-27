@@ -51,7 +51,7 @@ This will cause our new `GreetingResource` class to be instantiated and injected
 
 You will get red error squigglies when you paste this code due to missing import statements:
 
-image::importerror.png[error,500]
+image::importerror.png[error,800]
 
 Use the _Assistant_ > _Organize Imports_ menu option to fix this and import the right classes. You may need to choose from multiple matches, e.g. make sure you choose to import `javax.ws.rs.PathParam` when fixing the missing `PathParam` import. In general, look for `javax` or other well-known names to import. If you get it wrong you'll find out soon enough.
 

@@ -9,9 +9,7 @@ OpenShift is a commercially supported distribution of Kubernetes from Red Hat. T
 
 Let's rebuild our native image with all our changes thus far. Using the Command Palette, select **Build Native Quarkus App** and wait 3-4 minutes for it to finish (this runs `mvn clean package -Pnative` under the hood).
 
-As you recall, the output of this process is a native Linux binary. To package it as a Linux container, and store it in OpenShift's internal image registry, run the following command:
-
-Now that we have our app built as a container, let's deploy it to our cluster.
+As you recall, the output of this process is a native Linux binary. Let's deploy it to our cluster.
 
 == Login to OpenShift
 
@@ -45,6 +43,11 @@ Welcome! See 'oc help' to get started.
 ----
 
 Congratulations, you are now authenticated to the OpenShift server.
+
+[WARNING]
+====
+The login session might timeout after long periods of inactivity. If this happens, you'll get messages like `Error from server (Forbidden): xxxxx is forbidden: User "system:anonymous" cannot xxxxx`. Simply re-issue the above login command to re-establish a session.
+====
 
 https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[Namespaces]
 are a top level concept to help you organize your deployments and teams of developers. A

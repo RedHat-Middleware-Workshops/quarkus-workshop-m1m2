@@ -24,7 +24,7 @@ This will tell Che that the project is a Maven-based project, and be able to res
 
 The structure of the project can be seen in the project browser to the left of the code editor:
 
-image::structure.png[structure,800]
+image::structure.png[structure,600]
 
 The project has
 
@@ -78,9 +78,11 @@ It’s a very simple REST endpoint, returning "hello" to requests on `/hello`.
 Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Application` class. It’s supported but not required. In addition, only one instance of the resource is created and not one per request. You can configure this using the different `*Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
 ====
 
-## Running the Application
+## Running the Application in Live Coding Mode
 
-Now we are ready to run our application. In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Start Live Coding**:
+**Live Coding** (also referred to as _dev mode_) allows us to run the app and make changes on the fly. Quarkus will automatically re-compile and reload the app when changes are made. This is a powerful and effecient style of developing that you will use throughout the lab.
+
+In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Start Live Coding**:
 
 image::runlocally.png[runlocal,800]
 
@@ -101,9 +103,9 @@ You should see:
 2019-02-28 17:05:22,771 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
 ----
 
-Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). Che also makes the app accessible from outside the container by creating a Route (ingress) that is displayed at the top of the Terminal window. Look for _Preview URL_:
+Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything). To access applications from your laptop broweser, Che creates an Ingress (referred to as a _Route_ in OpenShift) that is displayed at the top of the Terminal window. Look for _Preview URL_:
 
-image::previewurl.png[preview,800]
+image::previewurl.png[preview,900]
 
 Click on this Preview link to open the link in a new tab, which will access the default Quarkus HTML page included in this app:
 
