@@ -30,7 +30,7 @@ Strimzi provides three operators:
 
 == The Goal
 
-In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using _server-sent events_ and displayed in the browser. It will look like this:
+In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using https://www.w3.org/TR/eventsource/[_server-sent events_] and displayed in the browser. It will look like this:
 
 image::names.png[names,800]
 
@@ -215,6 +215,23 @@ public class NameResource {
 <1> Injects the `my-data-stream` stream using the `@Stream` qualifier
 <2> Indicates that the content is sent using _Server Sent Events_
 <3> Returns the stream (Reactive Stream)
+
+There is a pre-created `names.html` page for you to use (in the `src/main/resources/META-INF/resources` directory) which will make a request to this `/names/stream` endpoint using standard JavaScript running in the browser and draw the resulting names using the https://d3js.org/[D3.js library]. The JavaScript that makes this call looks like this (do not copy this into anything!):
+
+[source,javascript]
+----
+var source = new EventSource("/names/stream");
+
+source.onmessage = function (event) {
+
+    console.log("received new name: " + event.data);
+    // process new name in event.data
+    // ...
+
+    // update the display with the new name
+    update();
+};
+----
 
 == Configure application
 
