@@ -220,18 +220,21 @@ There is a pre-created `names.html` page for you to use (in the `src/main/resour
 
 [source,javascript]
 ----
-var source = new EventSource("/names/stream");
+var source = new EventSource("/names/stream"); // <1>
 
-source.onmessage = function (event) {
+source.onmessage = function (event) { // </2>
 
     console.log("received new name: " + event.data);
     // process new name in event.data
     // ...
 
     // update the display with the new name
-    update();
+    update(); // <3>
 };
 ----
+<1> Uses your browser's support for the `EventSource` API (part of the W3C SSE standard) to call the endpoint
+<2> Each time a message is received via SSE, _react_ to it by running this function
+<3> Refresh the display using the D3.js library
 
 == Configure application
 
