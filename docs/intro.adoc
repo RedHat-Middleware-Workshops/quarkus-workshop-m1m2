@@ -3,13 +3,13 @@
 
 image::logo.png[]
 
-Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot,window=_blank] and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy to your development_.
+Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot,window=_blank] and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy_ to your development.
 
 Throughout this lab you'll discover how Quarkus can make your development of cloud native apps faster and more productive.
  
 == Click-to-Copy
 
-You will see various code and command blocks throughout these exercises which can be copy/pasted directly by clicking on the block of text:
+You will see various code and command blocks throughout these exercises which can be copy/pasted directly by clicking anywhere on the block of text:
 
 [source,java,role="copypaste"]
 ----
@@ -21,9 +21,14 @@ public class CopyMeDirectly {
 }
 ----
 
-Most command blocks support auto highlighting with a click. If you hover over
-the command block above and left-click, it should automatically highlight all the
-text to make for easier copying.
+Simply click once and the whole block is copied to your clipboard, ready to be pasted with kbd:[CTRL+V] (or kbd:[Command+V] on Mac OS).
+
+There are also Linux shell commands that can also be copied and pasted into a Terminal in your Development Environment:
+
+[source,sh,role="copypaste"]
+----
+echo "This is a bash shell command that you can copy/paste by clicking"
+----
 
 ## Access Your Development Environment
 
