@@ -117,7 +117,7 @@ You should see `hello` in your browser tab, which means its working!
 
 image::hellopage.png[hello,800]
 
-Now, let's exercise the **live reload** capabilities of Quarkus. In Che, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. Press kbd:[Control+S] (or kbd:[Command+S] on Mac OS) to save the file. Don't recompile or restart anything. Just try to reload the same brower tab that was showing `hello`. It should now show `hola`.
+Now, let's exercise the **live reload** capabilities of Quarkus. In Che, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. After making this change, reload the same brower tab that was showing `hello`. It should now show `hola`.
 
 Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started. Leave the app running so we can continue to change it on the fly in the next section.
 
