@@ -39,7 +39,7 @@ public class GreetingResourceTest {
     }
 ----
 
-[NOTE]
+[WARNING]
 ====
 When creating new tests, always double-check to be sure you're in the `src/test` directory tree, not `src/main`!
 ====
