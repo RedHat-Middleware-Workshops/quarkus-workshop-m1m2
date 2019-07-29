@@ -16,6 +16,11 @@ https://github.com/RedHatWorkshops/quarkus-workshop-labs
 
 image::import.png[import,800]
 
+[NOTE]
+====
+You may see errors in the _dev machine_ teminal like `Java Model Exception: Java Model Status [people does not exist]`. **These can be safely ignored**.
+====
+
 After a few seconds, you'll get a _Project Configuration_ Dialog. Select **Maven** as the project type, and click **Save**.
 
 image::importmaven.png[maven,800]
@@ -93,6 +98,11 @@ This will compile and run the app using `mvn compile quarkus:dev` in a Terminal 
 The first time you build the app, new dependencies may be downloaded via maven. This should only happen once, after that things will go even faster
 ====
 
+[NOTE]
+====
+You may see WARNINGs like `Unrecognized configuration key` or `Duplicate entry`. These are configuration values that will take effect later on and can be safely ignored for now.
+====
+
 You should see:
 
 [source,none]
@@ -141,9 +151,13 @@ image::kill.png[kill,800]
 
 Quarkus apps can be packaged as an executable JAR file or a native binary. We'll cover native binaries later, so for now, let's package as an executable JAR.
 
-Using the command palette, select **Create Executable JAR**. This runs `mvn package` under the hood, and when done produces 2 jar files in the `target/` directory:
+Using the command palette, select **Create Executable JAR**.
 
-* `people-1.0-SNAPSHOT.jar` - containing just the classes and resources of the projects, it’s the regular artifact produced by the Maven build
+image:createexec.png[create,700]
+
+This runs `mvn package` under the hood, and when done produces an executable jar file in the `target/` directory:
+
+image::jar.png[jar,800]
 
 * `people-1.0-SNAPSHOT-runner.jar` - being an executable jar. Be aware that it’s not an über-jar as the dependencies are copied into the `target/lib` directory.
 
@@ -183,6 +197,6 @@ Go back to the terminal in which you ran the app and stop the app by pressing kb
 
 ## Congratulations!
 
-You've seen how to build a basic app, package it as an executable JAR and start it up very quickly. We'll leave the app running and rely on hot reload for the next steps.
+You've seen how to build a basic app, package it as an executable JAR and start it up very quickly. The JAR file can be used like any other executable JAR file (e.g. running it as-is, packaging as a Linux container, etc.)
 
 In the next step we'll inject a custom bean to showcase Quarkus' CDI capabilities. 

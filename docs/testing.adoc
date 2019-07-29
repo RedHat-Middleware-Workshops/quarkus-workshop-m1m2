@@ -46,7 +46,7 @@ When creating new tests, always double-check to be sure you're in the `src/test`
 
 == Add a new test
 
-Add a new test in the `GreetingResourceTest` class that tests the `/hello/greeting` endpoint by copying this code below the existing test:
+Add a new test in the existing `GreetingResourceTest` class that tests the `/hello/greeting` endpoint by copying this code below the existing test:
 
 [source, java, role="copypaste"]
 ----

@@ -358,7 +358,14 @@ mvn quarkus:generate-config
 
 This will create a `src/main/resources/application.properties.example` file that contains all the config options exposed via the extensions you currently have installed. These options are commented out, and have their default value when applicable.
 
-=== Overriding properties at runtime
+[NOTE]
+====
+If the `application.properties.example` file does not appear in the project tree, right-click on the `resources` folder and select _Refresh 'resources'_.
+====
+
+[NOTE]
+====
+**Overriding properties at runtime**
 
 As you have seen, in _dev_ mode, properties can be changed at will and reflected in the running app, however once you are ready to package your app for deployment, you'll not be running in _dev_ mode anymore, but rather building and packaging (e.g. into fat JAR or native executable.) Quarkus will do much of its configuration and bootstrap at build time. Most properties will then be read and set during the _build time_ step. To change them, you have to stop the application, re-package it, and restart. 
 
@@ -374,16 +381,14 @@ You can override these runtime properties with the following mechanisms (in decr
 . for a runner jar: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass java -jar target/myapp-runner.jar`
 . for a native executable: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass ./target/myapp-runner`
 
-[NOTE]
-====
 Environment variables names are following the conversion rules of https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources[Eclipse MicroProfile Config sources,window=_blank]
 ====
 
 === Configuration Profiles
 
-Quarkus supports the notion of configuration _profiles_. These allow you to have multiple configuration values in the same file and select between then via a profile name.
+Quarkus supports the notion of configuration _profiles_. These allow you to have multiple configuration values in `application.properties` and select between then via a profile name.
 
-The syntax for this is `%{profile}.config.key=value`. For example if I have the following:
+The syntax for this is `%{profile}.config.key=value`. For example if I have the following: (do not copy this code!):
 
 [source,java]
 ----
@@ -396,7 +401,7 @@ The Quarkus HTTP port will be `9090`, unless the `dev` profile is active, in whi
 By default Quarkus has three profiles, although it is possible to use as many as you like (just use your custom profile names in `application.properties` and when running the app, and things will match up). The default profiles are:
 
 . `dev` - Activated when in development mode (i.e. `mvn quarkus:dev`)
-. `test` - Activated when running tests
+. `test` - Activated when running tests (i.e. `mvn verify`)
 . `prod` - The default profile when not running in `dev` or `test` mode
 
 === Exercise Configuration Profile

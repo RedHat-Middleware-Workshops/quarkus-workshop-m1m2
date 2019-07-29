@@ -21,45 +21,32 @@ Open up the `GreetingResource.java` class again, and add another RESTful endpoin
     }
 ----
 
-A a bug has been reported where the last letter is not working. You can probably spot the bug right away but let's see how you could find this with the debugger, and more importantly fix it and re-test very quickly.
+A a bug has been reported where the last letter is not working. To reproduce the bug, try to retrieve the last letter of the string `Foo` by running this in a Terminal (your app should still be running - if it is not, use _Start Live Coding_ again):
 
-== Run the app in debug mode
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/hello/lastletter/Foo
+----
 
-Before you can debug the app, you need to run it in _debug mode_. Typically this means adding a lot of JVM command line switches, and Quarkus has simplified this for you.
+Due to the bug, nothing is returned. It should have given us back an `o`.
 
-In Che, open up the command palette once again to run our app in Debug mode. Double-click on **Debug Quarkus App** from the menu
-to run the Quarkus app with a debugger. This will invoke `mvn compile quarkus:dev -Ddebug` under the the covers:
-
-image::debugcmd.png[test, 600]
-
-You will see the tell-tale Java log statment showing that debugging is enabled: `Listening for transport dt_socket at address: 5005`. Quarkus will wait until you attach a debugger before continuing.
+You can probably spot the bug right away but let's see how you could find this with the debugger, and more importantly fix it and re-test very quickly.
 
 == Attach debugger
 
-To connect to it, use the _Run > Edit Debug Configurations_ menu command. In the dialog, Click the `+` button next to `JAVA` to create a new Java debug configuration. You can name it whatever you want, but keep the `localhost` field as-is and select port `5005` in the port selection field:
+In _Live Coding_ mode, Quarkus apps also listen for debugger connections on port `5005`.
+
+To connect to the running app, use the _Run > Edit Debug Configurations_ menu command. In the dialog, Click the `+` button next to `JAVA` to create a new Java debug configuration. You can name it whatever you want, but keep the `localhost` field as-is and select port `5005` in the port selection field:
 
 image::debugconfig.png[debugconfig,600]
 
-Click **Save** to save this configuration, and then click **Debug** to attach the debugger to our running Quarkus app. The debugger view will appear at the bottom of the screen with several small buttons used to start/stop execution, step into/over/out of code, and other operations, and the app will begin executing.
+Click **Save** to save this configuration, and then click **Debug** to attach the debugger to our running Quarkus app. The debugger view will appear at the bottom of the screen with several small buttons used to start/stop execution, step into/over/out of code, and other operations.
 
 You can switch between the debug pane and the Terminal panes using the small icons to the left of the debugger window:
 
 image::buttons.png[buttons, 600]
 
-== Test app
-
-Click the Terminal button to go back to your terminal(s), and open a Terminal and run:
-
-[source,sh,role="copypaste"]
-----
-curl http://localhost:8080/hello/lastletter/foo
-----
-
-Although we were expecting `o`, we got nothing. There is something wrong with our code.
-
 == Set a Breakpoint
-
-Click Debugger button to go back to the debugger.
 
 To debug the app, let's step through our function that has the bug. In the left gutter of the code, where the line numbers are shown, click once on the line number next to `int len = name.length();` to set a breakpoint. The line number will be highlighted and the breakpoint will be registered in the debug pane:
 
@@ -120,6 +107,11 @@ curl http://localhost:8080/hello/lastletter/foo
 
 The breakpoint will be hit once again. step over the lines to verify the value of `lastLetter` is correct before the method returns. You've fixed the bug!
 
+[WARNING]
+====
+Occasionally the debugger gets disconnected from the running app. If your breakpoints aren't being hit, try to click the **End Debug Session** button, and then use the _Run > Debug > Debug 'Remote Java'_ menu command to re-connect the debugger, and re-trigger the code.
+====
+
 Remove the breakpoint by clicking on the line number again to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now: You should see `o`.
 
 Click **End Debug Session** button to quit the debugging session.
@@ -128,7 +120,7 @@ Quarkus apps are just like any other Java app, so debugging is straightforward a
 
 == Cleanup
 
-Go back to your Terminals and stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
+Go back to your Terminals, close any unused ones and stop the Live Coding for now by pressing closing the Terminal window in which the app runs.
 
 == Congratulations!
 

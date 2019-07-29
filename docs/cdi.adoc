@@ -3,6 +3,10 @@
 
 In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification,window=_blank]. Because of the dynamic nature of some CDI APIs which conflict with native compilation, only a subset of the CDI features are implemented - see also the https://quarkus.io/guides/cdi-reference#supported_features[list,window=_blank] of supported features.
 
+== Start Live Coding
+
+Once again, run the app in _dev_ mode by using the command palette and selecting **Start Live Coding**. We'll leave it running for a while as we make changes.
+
 == Add Custom Bean
 
 Let’s modify the application and add a companion bean. In CodeReady, right-click on the `org.acme.people.service` package in the project browser and select _New_ --> _Java Class_. Name the class `GreetingService`.
@@ -10,7 +14,7 @@ Let’s modify the application and add a companion bean. In CodeReady, right-cli
 image::newclass.png[newclass,600]
 image::classname.png[classname,400]
 
-Next, copy the below code into the class:
+Next, copy the below code into the class (remove the existing content before pasting in this code):
 
 [source,java,role="copypaste"]
 ----
@@ -66,10 +70,6 @@ image::importselect.png[select,800]
 If you do not get red squigglies, or you can't make them disappear, try to close the file and re-open it, or reload your web browser. This is a known issue with Che on recent versions of Kubernetes.
 ====
 
-== Run the app
-
-Once again, run the app in _dev_ mode by using the command palette and selecting **Start Live Coding**.
-
 == Inspect the results
 
 Check that it works as expected by loading the new endpoint using the Preview URL and adding the `/hello/greeting/quarkus` to the end of the URL, just as you did before.
@@ -84,3 +84,5 @@ In this case, the hostname is the hostname from the pod the app is running on wi
 == Congratulations!
 
 It's a familiar CDI-based environment for you Enterprise Java developers out there, with powerful mechanisms to reload your code _as you type_ (or very close to realtime). In the next step, we'll create some tests for our app, which should also be familiar to _all_ developers.
+
+Keep the Live Coding mode on (if you've stopped the app, just run **Start Live Coding** again from the command palette). 

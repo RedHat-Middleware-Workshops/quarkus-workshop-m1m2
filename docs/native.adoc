@@ -89,14 +89,13 @@ ps -o pid,rss,command -p $(pgrep -f runner)
 ----
 You should see something like:
 
-[source,none,role="copypaste"]
+[source,none]
 ----
-  PID   RSS  COMMAND
- 4831 14184 target/getting-started-1.0-SNAPSHOT-runner
-```
+   PID   RSS COMMAND
+ 16017 53816 target/people-1.0-SNAPSHOT-runner
 ----
 
-This shows that our process is taking around 13.8 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size,window=_blank], or RSS). Pretty compact!
+This shows that our process is taking around 50 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size,window=_blank], or RSS). Pretty compact!
 
 [NOTE]
 ====
@@ -112,9 +111,9 @@ curl http://localhost:8080/hello/greeting/quarkus
 
 You should see:
 
-[source,none,role="copypaste"]
+[source,none]
 ----
-hello quarkus from master
+hello quarkus from <your-hostname>
 ----
 
 Nice!
