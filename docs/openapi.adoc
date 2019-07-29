@@ -165,7 +165,7 @@ Add a few annotations:
 
 [source,java,role="copypaste"]
 ----
-@Parameter(description = "Cutoff year for searching for people", required = true)
+@Parameter(description = "Cutoff year for searching for people", required = true, name="year")
 ----
 
 Again, _Assistant > Organize Imports_ (and make sure to import the right `Parameter` class: `org.eclipse.microprofile.openapi.annotations.parameters.Parameter`)
@@ -187,7 +187,7 @@ The final method should look like:
 @Path("/birth/before/{year}")
 @Produces(MediaType.APPLICATION_JSON)
 public List<Person> getBeforeYear(
-    @Parameter(description = "Cutoff year for searching for people", required = true)
+    @Parameter(description = "Cutoff year for searching for people", required = true, name="year")
     @PathParam(value = "year") int year) {
     
     return Person.getBeforeYear(year);

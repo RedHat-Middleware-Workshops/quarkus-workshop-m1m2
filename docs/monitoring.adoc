@@ -191,14 +191,14 @@ You'll need to trigger the methods that we've instrumented, so first run this co
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/names.html
+echo; echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/names.html ; echo
 ----
 
 Within about 15-30 seconds, Prometheus should start scraping the metrics. Run this command to output the URL to the Prometheus GUI:
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route prometheus -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})
+echo; echo http://$(oc get route prometheus -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}) ; echo
 ----
 
 Open a separate browser tab and navigate to that URL. This is the Prometheus GUI which lets you issue queries to retrieve metrics Prometheus has gathered. Start typing in the query box to look for 'acme':
@@ -258,7 +258,7 @@ Obtain the URL to the Grafana dashboard using this command:
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route grafana -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})
+echo; echo http://$(oc get route grafana -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}) ; echo
 ----
 
 Open that URL in your browser, and login using the default credentails:

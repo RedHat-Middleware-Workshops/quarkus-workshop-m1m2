@@ -23,7 +23,7 @@ Some configuration of the extension is required. Add this to your `application.p
 mp.jwt.verify.publickey.location={{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/certs  # <1>
 mp.jwt.verify.issuer={{KEYCLOAK_URL}}/auth/realms/quarkus   # <2>
 quarkus.smallrye-jwt.auth-mechanism=MP-JWT   # <3>
-quarkus.smallrye-jwt.realmName=quarkus
+quarkus.smallrye-jwt.realm-name=quarkus
 quarkus.smallrye-jwt.enabled=true
 ----
 <1> Sets public key location for JWT authentication. Keycloak exports this for you at the URL.
@@ -164,12 +164,11 @@ Get a token for user `alice` with this command:
 [source,sh,role="copypaste"]
 ----
 export ALICE_TOKEN=$(\
-    curl -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    curl -s -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=alice&password=alice&grant_type=password' | jq --raw-output '.access_token' \
- )
- echo $ALICE_TOKEN
+ ) && echo $ALICE_TOKEN
 ----
 This issues a `curl` command to Keycloak (using `backend-service` credentials which is a special user that is allowed acess to the Keycloak REST API), and fetches a token for Alice using their credentials. 
 
@@ -229,11 +228,11 @@ Obtain an Admin token:
 [source,sh,role="copypaste"]
 ----
 export ADMIN_TOKEN=$(\
-    curl -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    curl -s -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=admin&password=admin&grant_type=password' | jq --raw-output '.access_token' \
- )
+ ) && echo $ADMIN_TOKEN
 ----
 
 And try again with your new token:
@@ -310,7 +309,6 @@ Create a new class called `KeycloakResource` in the `org.acme.people.rest` packa
 ----
 package org.acme.people.rest;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -397,18 +395,18 @@ To access the confidential endpoint, you should obtain an access token for user 
 [source,sh,role="copypaste"]
 ----
 export JDOE_TOKEN=$(\
-    curl -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    curl -s -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=jdoe&password=jdoe&grant_type=password' | jq --raw-output '.access_token' \
- )
+ ) && echo $JDOE_TOKEN
 ----
 
 And access the confidential endpoint with your new token:
 
 [source,sh,role="copypaste"]
 ----
-curl -X GET \
+curl -i -X GET \
   http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/confidential \
   -H "Authorization: Bearer $JDOE_TOKEN"
 ----

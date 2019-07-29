@@ -127,7 +127,7 @@ hello quarkus-on-openshift from people-1-9sgsm
 Your hostname (the Kubernetes _pod_ in which your app runs) name will be different from the above.
 ====
 
-So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,target="_blank"]. Login with your assigned username and password (e.g. `user4/pass4`):
+So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,window=_blank]. Login with your assigned username and password (e.g. `user4/pass4`):
 
 image::ocplogin.png[login,600]
 
@@ -157,12 +157,11 @@ You can click on the route link to open up the default Quarkus page that's packa
 
 == Connect MicroProfile health check
 
-Earlier you implemented a series of MicroProfile health checks. To make OpenShift aware of these available health checks and begin using them, run the following two commands:
+Earlier you implemented a series of MicroProfile health checks. To make OpenShift aware of these available health checks and begin using them, run the following commands:
 
 [source,sh,role="copypaste"]
 ----
-oc set probe dc/people --readiness --initial-delay-seconds=30 --get-url=http://:8080/health/ready
-oc set probe dc/people --liveness --initial-delay-seconds=30 --get-url=http://:8080/health/live
+oc set probe dc/people --readiness --initial-delay-seconds=30 --get-url=http://:8080/health/ready && oc set probe dc/people --liveness --initial-delay-seconds=30 --get-url=http://:8080/health/live
 ----
 
 This configures both a _readiness_ probe (is the app initialized and ready to serve requests?) and a _liveness_ probe (is the app still up and ready to serve requests) with default timeouts. OpenShift will not route any traffic to pods that don't respond successfully to these probes. By editing these, it will trigger a new deployment so make sure the app comes up with its new probes in place:
@@ -171,6 +170,8 @@ This configures both a _readiness_ probe (is the app initialized and ready to se
 ----
 oc rollout status -w dc/people
 ----
+
+At this point, the probes will be accessed periodically to ensure the app is healthy.
 
 == Congratulations!
 

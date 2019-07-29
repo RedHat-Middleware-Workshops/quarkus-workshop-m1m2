@@ -96,7 +96,14 @@ With our endpoint, confirm it fails using the Terminal to execute:
 curl -X POST http://localhost:8080/person/joe
 ----
 
-**This will fail** with a hang/timeout - we posted the message to the Vert.x event bus, but there's nothing to receive it!
+**This will fail** with an `Internal Server Error`. If you look at the Live Coding terminal, you'll also see the reason:
+
+[source,none]
+----
+ERROR [org.jbo.res.res.i18n] (executor-thread-1) RESTEASY002020: Unhandled asynchronous exception, sending back 500: (NO_HANDLERS,-1) No handlers for address add-person
+----
+
+We posted the message to the Vert.x event bus at the `add-person` address, but there's nothing to receive it!
 
 == Create consumer
 
@@ -150,7 +157,7 @@ You should get back the name you put in (`joe`). Now let's confirm Joe is presen
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/person/name/joe | jq
+curl -s http://localhost:8080/person/name/joe | jq
 ----
 
 You should get back Joe!

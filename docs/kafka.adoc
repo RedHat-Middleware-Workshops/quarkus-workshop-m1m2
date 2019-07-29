@@ -295,10 +295,15 @@ Our application should be up and running in a few seconds after the build comple
 
 [source,sh,role="copypaste"]
 ----
-clear; echo; echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/names.html ; echo
+echo; echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/names.html ; echo
 ----
 
 Open a separate browser tab and go to that URL and you should see a cloud of names updating every 5 seconds (it may take a few seconds for it to start!):
+
+[NOTE]
+====
+It takes a few seconds to establish the connection to Kafka. If you don't see new names generated every 5 seconds, reload the browser page to re-initialize the SSE stream.
+====
 
 image::names.png[names,800]
 

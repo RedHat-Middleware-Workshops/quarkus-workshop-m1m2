@@ -87,7 +87,7 @@ You'll need to trigger some HTTP endpoints to generate traces, so let's re-visit
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/datatable.html
+echo ; echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/datatable.html ; echo
 ----
 
 Open that URL in a separate browser tab, and exercise the table a bit by paging through the entries to force several RESTful calls back to our app:
@@ -100,7 +100,7 @@ Use this command to generate the URL to Jaeger:
 
 [source,sh,role="copypaste"]
 ----
-echo http://$(oc get route jaeger-query -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})
+echo; echo http://$(oc get route jaeger-query -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}) ; echo
 ----
 
 Open that URL in a separate tab to arrive at the Jaeger Tracing console (leave the tab open as we'll use it later)
@@ -208,7 +208,31 @@ Having this configuration means that all requests performed using our code will 
 
 Note that `org.acme.people.service.StarWarsService` must match the fully qualified name of the StarWarsService interface we created in the previous section.
 
-Using the configuration above, calling the `getPerson(int)` method of StarWarsService with a value of `1` would result in an HTTP GET request being made to `https://swapi.co/api/people/1/` (you can use `curl https://swapi.co/api/people/1/ | jq` to verify this URL produces a real character)
+Using the configuration above, calling the `getPerson(int)` method of StarWarsService with a value of `1` would result in an HTTP GET request being made to `https://swapi.co/api/people/1/`. Confirm you can access the Star Wars API using curl:
+
+[source,sh,role="copypaste"]
+----
+curl -s https://swapi.co/api/people/1/ | jq
+----
+
+You should get Luke Skywalker back:
+
+[source,json]
+----
+{
+  "name": "Luke Skywalker",
+  "height": "172",
+  "mass": "77",
+  "hair_color": "blond",
+  "skin_color": "fair",
+  "eye_color": "blue",
+  "birth_year": "19BBY",
+  "gender": "male",
+  "homeworld": "https://swapi.co/api/planets/1/",
+  ....<more here>....
+}
+----
+
 
 === Final step: add endpoint
 
@@ -234,6 +258,8 @@ public List<StarWarsPerson> getCharacters() {
 <3> For each of the integers, call the `StarWarsService::getPerson` method
 <4> Collect the results into a list and return it
 
+Don't forget to _Assistant > Organize Imports_ to import the new classes.
+
 == Test it out
 
 First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
@@ -258,7 +284,7 @@ Try out our new endpoint by running the following command:
 
 [source,sh,role="copypaste"]
 ----
-curl http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/swpeople
+curl -s http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/swpeople | jq
 ----
 
 You should see:

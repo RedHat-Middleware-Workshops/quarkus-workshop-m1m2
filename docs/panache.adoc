@@ -193,7 +193,7 @@ With the app running, let's try out our first RESTful endpoint to retrieve all t
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/person | jq
+curl -s http://localhost:8080/person | jq
 ----
 
 We call the endpoint with `curl` then send the output through `jq` to make the output prettier. You should see:
@@ -224,6 +224,8 @@ We call the endpoint with `curl` then send the output through `jq` to make the o
 
 It's working! We'll leave it running and use Quarkus' Live Reload feature to automatically update our app as we make changes. Note that the `id` and `persistent` fields were added to our entity, but never appear in our query APIs and can be safely ignored most of the time. 
 
+[NOTE]
+====
 Advanced use cases may require a custom ID strategy, which can by done by extending `PanacheEntityBase` instead of `PanacheEntity`, and declaring a public `id` field with the necessary policy. For example (do not copy this code into your app):
 
 [source,java]
@@ -237,6 +239,7 @@ Advanced use cases may require a custom ID strategy, which can by done by extend
 @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personSequence")
 public Integer id;
 ----
+====
 
 == Add Basic Queries
 
@@ -291,7 +294,7 @@ Check that it works as expected by testing the new endpoints. Let's find all the
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/person/eyes/BLUE | jq
+curl -s http://localhost:8080/person/eyes/BLUE | jq
 ----
 
 You should only see **one** person with BLUE eyes:
@@ -313,7 +316,7 @@ And let's find people born in 1990 or earlier:
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/person/birth/before/1990 | jq
+curl -s http://localhost:8080/person/birth/before/1990 | jq
 ----
 
 You should see **two** people born in 1990 or earlier:
@@ -386,7 +389,7 @@ Open the `PersonResource` resource class and add the following code below the `/
 
 Here we are using JAX-RS `@QueryParam` values to specify the incoming parameters and be able to use them when the frontend calls the `GET /person/datatable` endpoint.
 
-We'll fill in the `TODO`s to build this method.
+We'll fill in the `TODO` comments to build this method.
 
 === Implement `/datatable` endpoint
 
@@ -446,7 +449,7 @@ Let's test out our new endpoint using `curl` to search for names with `yan` in t
 
 [source,sh,role="copypaste"]
 ----
-curl "http://localhost:8080/person/datatable?draw=1&start=0&length=10&search\[value\]=yan" | jq
+curl -s "http://localhost:8080/person/datatable?draw=1&start=0&length=10&search\[value\]=yan" | jq
 ----
 
 This should return a single entity (since in our 3-person sample data, only one has `yan` in their name), embedded in the return object that DataTable is expecting (with the `draw`, `recordsFiltered`, `recordsTotal` etc):
@@ -468,6 +471,9 @@ This should return a single entity (since in our 3-person sample data, only one 
   "recordsTotal": 3
 }
 ----
+
+The `data`, `draw`, `recordsFiltered` and `recordsTotal` values are what the DataTables frontend will be expecting when it calls this endpoint.
+
 
 === Add lifecycle hook
 
@@ -502,7 +508,7 @@ Although our lifecycle code is listening for `StartupEvent`, and our application
 
 [source,sh,role="copypaste"]
 ----
-curl "http://localhost:8080/person/datatable?draw=1&start=0&length=2&search\[value\]=F" | jq
+curl -s "http://localhost:8080/person/datatable?draw=1&start=0&length=2&search\[value\]=F" | jq
 ----
 
 [NOTE]
@@ -539,11 +545,11 @@ Note the values for `recordsFiltered` (the number of records with the letter `F`
 
 == Cleanup
 
-We're done with development, so go back to the first Terminal tab and press kbd:[CTRL+C] (or just close the running tab) to stop our running application.
+We're done with development, so go back to the Live Coding tab and press kbd:[CTRL+C] (or just close the tab) to stop our running application.
 
 == Deploy Postgres database
 
-In previous steps we deployed our sample application as a native binary. Now let's switch to a JVM-based deployment. Our production environment needs a "real" database so let's deploy a Postgres database. Run the following command to startup a database in our cluster:
+Our production environment needs a "real" database so let's deploy a Postgres database. Run the following command to startup a database in our cluster:
 
 [source,sh,role="copypaste"]
 ----
@@ -555,16 +561,19 @@ oc new-app \
     openshift/postgresql
 ----
 
+You should get a `--> Success` message.
+
 == Rebuild and redeploy app
 
-With our database running, re-build the application as an executable JAR using the command palette and selecting **Create Executable JAR**.
+In previous steps we deployed our sample application as a native binary. Now let's switch to a JVM-based deployment from here on out.
+
+Re-build the application as an executable JAR using the command palette and selecting **Create Executable JAR**.
 
 Next, re-define the container build to use the OpenJDK image using these commands:
 
 [source,sh,role="copypaste"]
 ----
-oc delete bc/people 
-oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.5 --binary --name=people
+oc delete bc/people && oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.5 --binary --name=people
 ----
 
 And now start the build using our executable JAR:
@@ -589,7 +598,7 @@ And now we can access using `curl` once again to find everyone born in or before
 
 [source,sh,role="copypaste"]
 ----
-curl $(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/birth/before/2000 | jq
+curl -s $(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/birth/before/2000 | jq
 ----
 
 Now that we have our app running on OpenShift, let's see what we can do.

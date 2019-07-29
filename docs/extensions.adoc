@@ -45,7 +45,7 @@ The result of this command is a new `<dependency>` added to our `pom.xml` which 
 
 [source,sh,role="copypaste"]
 ----
-git diff pom.xml
+git --no-pager diff pom.xml
 ----
 
 [source, none]
