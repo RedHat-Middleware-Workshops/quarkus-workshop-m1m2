@@ -297,9 +297,20 @@ quarkus.keycloak.bearer-only=true
 quarkus.keycloak.credentials.secret=secret
 quarkus.keycloak.policy-enforcer.enable=true
 quarkus.keycloak.policy-enforcer.enforcement-mode=PERMISSIVE
+quarkus.keycloak.policy-enforcer.paths.ready.name=Readiness
+quarkus.keycloak.policy-enforcer.paths.ready.path=/health/ready
+quarkus.keycloak.policy-enforcer.paths.ready.enforcement-mode=DISABLED
+quarkus.keycloak.policy-enforcer.paths.live.name=Liveness
+quarkus.keycloak.policy-enforcer.paths.live.path=/health/live
+quarkus.keycloak.policy-enforcer.paths.live.enforcement-mode=DISABLED
 ----
 
 This configures the extension with the necessary configuration ( https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[read more,window=_blank] about what these do).
+
+[NOTE]
+====
+We explicitly disable authorization checks for the `/health/*` endpoints so that the container platform can access them. To support secured health checks, https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/[different health check mechanisms] like TCP or `exec` methods can be used.
+====
 
 === Create Keycloak endpoints
 
