@@ -1,0 +1,157 @@
+{
+  "name": "Cloud Native Roadshow - Dev Track",
+  "description": "Cloud Native Java Stack, Quarkus, ODO on CentOS",
+  "scope": "general",
+  "workspaceConfig": {
+    "environments": {
+      "default": {
+        "recipe": {
+          "type": "dockerimage",
+          "content": "image-registry.openshift-image-registry.svc:5000/openshift/quarkus-stack:1.0"
+        },
+        "machines": {
+          "dev-machine": {
+            "env": {
+              "MAVEN_OPTS" : "-Xmx512m",
+              "MAVEN_MIRROR_URL": "http://nexus:8081/repository/maven-all-public"
+            },
+            "servers": {
+              "8080/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "8080"
+              },
+              "8000/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "8000"
+              },
+              "9000/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "9000"
+              },
+              "9001/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "9001"
+              }
+            },
+            "volumes": {},
+            "installers": [
+              "org.eclipse.che.exec",
+              "org.eclipse.che.terminal",
+              "org.eclipse.che.ws-agent",
+              "org.eclipse.che.ls.java"
+
+            ],
+            "attributes": {
+              "memoryLimitBytes": "5368709120"
+            }
+          }
+        }
+      }
+    },
+    "commands": [
+      {
+        "commandLine": "mvn package -f ${current.project.path}",
+        "name": "build",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Build",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn clean package -f ${current.project.path}",
+        "name": "clean build",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Build",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn verify -f ${current.project.path}",
+        "name": "test",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Test",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn clean compile quarkus:dev -f ${current.project.path}",
+        "name": "Build and Run Locally",
+        "type": "custom",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.8080/tcp}"
+        }
+      },
+      {
+        "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative ; oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5 --insecure-skip-tls-verify=true",
+        "name": "Build Native Quarkus App",
+        "type": "custom",
+        "attributes": {
+          "goal": "Package",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -DskipTests; odo login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5  --insecure-skip-tls-verify=true",
+        "name": "Package for OpenShift",
+        "type": "custom",
+        "attributes": {
+          "goal": "Package",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn spring-boot:run -f ${current.project.path}",
+        "name": "run spring-boot",
+        "type": "mvn",
+        "attributes": {
+            "goal": "Run",
+            "previewUrl": "${server.9000/tcp}"
+        }
+      }
+    ],
+    "projects": [],
+    "defaultEnv": "default",
+    "name": "default",
+    "links": []
+  },
+  "components": [
+    {
+      "version": "---",
+      "name": "CentOS"
+    },
+    {
+      "version": "1.8.0_45",
+      "name": "JDK"
+    },
+    {
+      "version": "3.6.0",
+      "name": "Maven"
+    },
+    {
+      "version": "2.4",
+      "name": "Ansible"
+    },
+    {
+      "version": "4.1.0",
+      "name": "OpenShift CLI"
+    }
+  ],
+  "creator": "ide",
+  "tags": [
+    "Java",
+    "JDK",
+    "Maven",
+    "Ansible",
+    "CentOS",
+    "Git"
+  ],
+  "id": "cloud-native-roadshow-dev-track"
+}
