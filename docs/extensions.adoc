@@ -48,6 +48,8 @@ The result of this command is a new `<dependency>` added to our `pom.xml` which 
 git --no-pager diff pom.xml
 ----
 
+You will see all the changes to `pom.xml` since you started:
+
 [source, none]
 ----
 +    <dependency>

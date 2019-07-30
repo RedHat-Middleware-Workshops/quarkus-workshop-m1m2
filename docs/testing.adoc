@@ -194,7 +194,7 @@ As mentioned above Quarkus tests are actually full CDI beans, and as such you ca
 
 In addition to this you can also create your own test stereotypes. Stereotypes can be particularly useful in large applications where you have a number of beans that perform similar functions, as it allows you to do something akin to multiple inheritance (multiple annotations) without having to repeat yourself over and over.
 
-For example we could create a `@TransactionalQuarkusTest` if we needed to write a large number of tests that required transactional support with particular configuration. It would look like:
+For example we could create a `@TransactionalQuarkusTest` if we needed to write a large number of tests that required transactional support with particular configuration. It would look like (do not copy this code anywhere!)
 
 [source, java]
 ----
