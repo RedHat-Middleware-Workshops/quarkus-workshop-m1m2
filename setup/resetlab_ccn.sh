@@ -12,12 +12,11 @@ if [ ! "$(oc get clusterrolebindings)" ] ; then
   exit 1
 fi
 
-oc delete project che
-oc delete project guides
-oc delete project app-monitoring
+oc delete project labs-infra
+oc delete template coolstore-monolith-binary-build coolstore-monolith-pipeline-build ccn-sso72 -n openshift
 
 # delete user projects
-for proj in $(oc get projects -l quarkus-workshop=true -o name|cut -d/ -f2) ; do
+for proj in $(oc get projects -o name | grep 'user*' | cut -d/ -f2) ; do
   oc delete project $proj
 done
 
