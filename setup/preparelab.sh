@@ -253,7 +253,7 @@ SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&
   jq  -r '.access_token')
 
 # Import realm 
-curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @../files/quarkus-realm.json \
+curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${MYDIR}../files/quarkus-realm.json \
   -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms"
 
 ## MANUALLY add ProtocolMapper to map User Roles to "groups" prefix for JWT claims
