@@ -14,6 +14,23 @@ This workshop focuses on https://quarkus.io[Quarkus], supersonic, subatomic cont
 * Monitoring with Prometheus and Grafana
 * Tracing Quarkus Apps with Jaeger and MicroProfile Tracing
 
+If you want to just see what the rendered instructions look like, execute this docker command:
+
+[source, sh]
+----
+docker run -it -p 8080:8080 \
+  -e MASTER_URL=http://your.master.com:1111 \
+  -e CONSOLE_URL=http://your.console.url.com:2222 \
+  -e CHE_URL=http://codeready.url.com:3333 \
+  -e KEYCLOAK_URL=http://keycloak.url.com:4444 \
+  -e ROUTE_SUBDOMAIN=apps.yoursubdomain.com \
+  -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/" \
+  -e WORKSHOPS_URLS="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/_workshop.yml" \
+  -e LOG_TO_STDOUT=true \
+    quay.io/osevg/workshopper
+----
+
+Then go to `localhost:8080` in your browser. Note that the URLs above are "fake" (except for `CONTENT_URL_PREFIX` and `WORKSHOP_URLS`). If you actually try to follow the instructions you'll need to replace the above values manually (either in the command above, or when running through the labs).
 
 == Prerequisites
 
