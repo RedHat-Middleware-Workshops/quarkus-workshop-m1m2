@@ -33,7 +33,7 @@ scrape_configs:
 
   - job_name: 'people_app' # <2>
     static_configs:
-    - targets: ['people:8080'] 
+    - targets: ['people:8080']
 ----
 <1> Configures Prometheus to scrape metrics from itself
 <2> COnfigures Prometheus to scrape metrics from Kubernetes service `people` on port `8080` with HTTP, at the default metrics endpoint of `/metrics`
@@ -109,7 +109,7 @@ Open the `GreetingService` class (in the `org.acme.people.service` package). Let
 
 [source,java,role="copypaste"]
 ----
-@Counted(name = "greetings", monotonic = true, description = "How many greetings we've given.")
+@Counted(name = "greetings", description = "How many greetings we've given.")
 ----
 
 (You'll need to import the new `Counted` class using _Assistant > Organize Imports_).
@@ -155,7 +155,7 @@ Let's add a few more metrics for our Kafka stream we setup in the previous exerc
 
 [source,java,role="copypaste"]
 ----
-@Counted(name = "convertedNames", monotonic = true, description = "How many names have been converted.") // <1>
+@Counted(name = "convertedNames", description = "How many names have been converted.") // <1>
 @Timed(name = "converter", description = "A measure how long it takes to convert names.", unit = MetricUnits.MILLISECONDS) // <2>
 ----
 <1> This metric will count the number of times this method is called

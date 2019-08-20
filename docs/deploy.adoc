@@ -22,12 +22,12 @@ oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-sk
 
 Enter your username and password assigned to you:
 
-* Username: **userNN**
-* Password: **passNN**
+* Username: **`{{ USER_NAME }}`**
+* Password: **`{{ USER_PASSWORD }}`**
 
 [WARNING]
 ====
-Replace the `NN` with the student number you were assigned by the instructor (e.g. `user1/pass1`, or `user12/pass12`).
+Use the username and password you were assigned by the instructor.
 ====
 
 You should see:
@@ -36,9 +36,9 @@ You should see:
 ----
 Login successful.
 
-You have one project on this server: "userNN-project"
+You have one project on this server: "{{ USER_NAME }}-project"
 
-Using project "userNN-project".
+Using project "{{ USER_NAME }}-project".
 Welcome! See 'oc help' to get started.
 ----
 
@@ -54,7 +54,7 @@ are a top level concept to help you organize your deployments and teams of devel
 namespace allows a community of users (or a user) to organize and manage
 their content in isolation from other communities. OpenShift _projects_ provide additional functionality for managing Kubernetes namespaces.
 
-For this scenario, a project has been created for you called `userNN-project` (where `NN` is your assigned student number). You will use this project to deploy your developed project in the next step.
+For this scenario, a project has been created for you called `{{ USER_NAME }}-project`. You will use this project to deploy your developed project in the next step.
 
 == Deploy to OpenShift
 
@@ -119,7 +119,7 @@ You should see:
 
 [source,none]
 ----
-hello quarkus-on-openshift from people-1-9sgsm 
+hello quarkus-on-openshift from people-1-9sgsm
 ----
 
 [NOTE]
@@ -127,11 +127,11 @@ hello quarkus-on-openshift from people-1-9sgsm
 Your hostname (the Kubernetes _pod_ in which your app runs) name will be different from the above.
 ====
 
-So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,window=_blank]. Login with your assigned username and password (e.g. `user4/pass4`):
+So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,window=_blank]. Login with your assigned username and password (e.g. `{{ USER_NAME }}/{{ USER_PASSWORD }}`):
 
 image::ocplogin.png[login,600]
 
-Once logged in, click on the name of your project (_userNN-project_):
+Once logged in, click on the name of your project ({{ USER_NAME }}-project_):
 
 image::ocpproj.png[project,600]
 

@@ -36,9 +36,9 @@ image::names.png[names,800]
 
 === Create Kafka Cluster
 
-The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace. 
+The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace.
 
-First, open the {{CONSOLE_URL}}[OpenShift Console], log in using your username/password if needed (e.g. `user12`/`pass12`) and navigate to your project (`userNN-project`). Once there, on the left menu click on _Catalog > Developer Catalog_ and type in `kafka` in the keyword filter box:
+First, open the {{CONSOLE_URL}}[OpenShift Console], log in using your username/password if needed (e.g. `{{ USER_NAME }}`/`{{ USER_PASSWORD }}`) and navigate to your project (`{{ USER_NAME }}-project`). Once there, on the left menu click on _Catalog > Developer Catalog_ and type in `kafka` in the keyword filter box:
 
 image::kafkacatalog.png[kafkacatalog,800]
 
@@ -131,8 +131,8 @@ import java.util.concurrent.TimeUnit;
 @ApplicationScoped
 public class NameGenerator {
 
-    @Outgoing("generated-name")           // <1>                 
-    public Flowable<String> generate() {  // <2>             
+    @Outgoing("generated-name")           // <1>
+    public Flowable<String> generate() {  // <2>
         return Flowable.interval(5, TimeUnit.SECONDS)
                 .map(tick -> CuteNameGenerator.generate());
     }
@@ -164,9 +164,9 @@ public class NameConverter {
 
     private static final String[] honorifics = {"Mr.", "Mrs.", "Sir", "Madam", "Lord", "Lady", "Dr.", "Professor", "Vice-Chancellor", "Regent", "Provost", "Prefect"};
 
-    @Incoming("names")               // <1>                  
-    @Outgoing("my-data-stream")      // <2>             
-    @Broadcast                       // <3>                   
+    @Incoming("names")               // <1>
+    @Outgoing("my-data-stream")      // <2>
+    @Broadcast                       // <3>
     public String process(String name) {
         String honorific = honorifics[(int)Math.floor(Math.random() * honorifics.length)];
         return honorific + " " + name;

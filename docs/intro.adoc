@@ -6,7 +6,7 @@ image::logo.png[]
 Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot,window=_blank] and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy_ to your development.
 
 Throughout this lab you'll discover how Quarkus can make your development of cloud native apps faster and more productive.
- 
+
 == Click-to-Copy
 
 You will see various code and command blocks throughout these exercises which can be copy/pasted directly by clicking anywhere on the block of text:
@@ -34,7 +34,7 @@ echo "This is a bash shell command that you can copy/paste by clicking"
 
 You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che,window=_blank]. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
 
-To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and log in using the username and password you've been assigned (e.g. `userNN/passNN`):
+To get started, {{ CHE_URL }}[access the Che instance,window=_blank] and log in using the username and password you've been assigned (e.g. `{{ USER_NAME }}/{{ USER_PASSWORD }}`):
 
 image::che-login.png[login,400]
 

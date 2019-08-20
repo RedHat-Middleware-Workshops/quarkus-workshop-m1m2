@@ -109,7 +109,9 @@ oc new-app quay.io/osevg/workshopper --name=web \
       -e ROUTE_SUBDOMAIN=${HOSTNAME_SUFFIX} \
       -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/" \
       -e WORKSHOPS_URLS="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/_workshop.yml" \
-      -e LOG_TO_STDOUT=true 
+      -e USER_NAME=userNN \
+      -e USER_PASSWORD=passNN \
+      -e LOG_TO_STDOUT=true
 oc expose svc/web
 
 # Install Che
@@ -158,7 +160,6 @@ spec:
   name: codeready-workspaces
   source: installed-redhat-che
   sourceNamespace: che
-  startingCSV: crwoperator.v1.2.0
 EOF
 
 # Wait for checluster to be a thing
@@ -252,7 +253,7 @@ SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&
   -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/master/protocol/openid-connect/token | \
   jq  -r '.access_token')
 
-# Import realm 
+# Import realm
 curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${MYDIR}../files/quarkus-realm.json \
   -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms"
 
@@ -340,11 +341,10 @@ metadata:
   namespace: openshift-operators
 spec:
   channel: stable
-  installPlanApproval: Manual
+  installPlanApproval: Automatic
   name: strimzi-kafka-operator
   source: installed-community-openshift-operators
   sourceNamespace: openshift-operators
-  startingCSV: strimzi-cluster-operator.v0.12.1
 EOF
 
 # Build stack
