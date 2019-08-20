@@ -84,10 +84,10 @@ As you can see health check procedures are defined as implementations of the `He
 ====
 There are two types of probes in Quarkus apps (and Kubernetes):
 
-* Readiness Probe - This probe indicates when an application is ready to start serving requests at the beginning of its life. New application containers will not get any traffic routed to it until its Liveness probes indicate it's ready.
-* Liveness Probe - Sometimes, applications are temporarily unable to serve traffic. For example, an application might need to load large data or configuration files during startup, or depend on external services after startup. In such cases, you don’t want to kill the application, but you don’t want to send it requests either, until its _Liveness_ probes indicate its ready.
+* Liveness Probe - Many applications running for long periods of time eventually transition to broken states, and cannot recover except by being restarted. Kubernetes provides liveness probes to detect and remedy such situations. Restarting a container in such a state can help to make the application more available despite bugs.
+* Readiness Probe - Sometimes, applications are temporarily unable to serve traffic. For example, an application might need to load large data or configuration files during startup, or depend on external services after startup. In such cases, you don’t want to kill the application, but you don’t want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.
 
-Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail.
+Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail. There are various https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/[Configuration Paramters, window=_blank] you can set, such as the timeout period, frequency, and other parameters that can be tuned to expected application behavior.
 ====
 
 THanks to Live Coding mode, simply open a Terminal window and run:
@@ -273,14 +273,14 @@ In the `org.acme.people.rest.GreetingResource` class, add the following fields t
 
 [source, java, role="copypaste"]
 ----
-@ConfigProperty(name = "greeting.message") 
+@ConfigProperty(name = "greeting.message")
 String message;
 
-@ConfigProperty(name = "greeting.suffix", defaultValue="!") 
+@ConfigProperty(name = "greeting.suffix", defaultValue="!")
 String suffix;
 
 @ConfigProperty(name = "greeting.name")
-Optional<String> name; 
+Optional<String> name;
 ----
 
 Remember to _Assistant > Organize Imports_ to import the `org.eclipse.microprofile.config.inject.ConfigProperty`.
@@ -320,7 +320,7 @@ Open up a Terminal window and run a `curl` command to test the changes:
 curl http://localhost:8080/hello
 ----
 
-You should get `hello quarkus!`. 
+You should get `hello quarkus!`.
 
 [NOTE]
 ====
@@ -367,7 +367,7 @@ If the `application.properties.example` file does not appear in the project tree
 ====
 **Overriding properties at runtime**
 
-As you have seen, in _dev_ mode, properties can be changed at will and reflected in the running app, however once you are ready to package your app for deployment, you'll not be running in _dev_ mode anymore, but rather building and packaging (e.g. into fat JAR or native executable.) Quarkus will do much of its configuration and bootstrap at build time. Most properties will then be read and set during the _build time_ step. To change them, you have to stop the application, re-package it, and restart. 
+As you have seen, in _dev_ mode, properties can be changed at will and reflected in the running app, however once you are ready to package your app for deployment, you'll not be running in _dev_ mode anymore, but rather building and packaging (e.g. into fat JAR or native executable.) Quarkus will do much of its configuration and bootstrap at build time. Most properties will then be read and set during the _build time_ step. To change them, you have to stop the application, re-package it, and restart.
 
 Extensions _do_ define some properties as overridable at runtime. A canonical example is the database URL, username and password which is only known specifically in your target environment. **This is a tradeoff** as the more runtime properties are available, the less build time pre-work Quarkus can do. The list of runtime properties is therefore lean.
 
@@ -435,7 +435,7 @@ Next, open a new Terminal window and run the the app:
 java -jar target/*-runner.jar
 ----
 
-Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`. 
+Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`.
 
 While the app is running, open a separate Terminal window and test it by running:
 
