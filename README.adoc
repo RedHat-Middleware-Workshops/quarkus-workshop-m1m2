@@ -8,9 +8,9 @@ This workshop focuses on https://quarkus.io[Quarkus], supersonic, subatomic cont
 * Building Native Quarkus Apps
 * Developing Cloud Native with Quarkus
 * Using Quarkus extensions
-* Hibernate ORM with Panache 
+* Hibernate ORM with Panache
 * Event-driven Messaging
-* Streaming Data with Quarkus and Kafka 
+* Streaming Data with Quarkus and Kafka
 * Monitoring with Prometheus and Grafana
 * Tracing Quarkus Apps with Jaeger and MicroProfile Tracing
 
@@ -26,6 +26,8 @@ docker run -it -p 8080:8080 \
   -e ROUTE_SUBDOMAIN=apps.yoursubdomain.com \
   -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/" \
   -e WORKSHOPS_URLS="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/_workshop.yml" \
+  -e USER_NAME=userNN \
+  -e USER_PASSWORD=passNN \
   -e LOG_TO_STDOUT=true \
     quay.io/osevg/workshopper
 ----
