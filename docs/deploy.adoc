@@ -22,8 +22,8 @@ oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-sk
 
 Enter your username and password assigned to you:
 
-* Username: **`{{ USER_NAME }}`**
-* Password: **`{{ USER_PASSWORD }}`**
+* Username: **`{{ OPENSHIFT_USER_NAME }}`**
+* Password: **`{{ OPENSHIFT_USER_PASSWORD }}`**
 
 [WARNING]
 ====
@@ -36,9 +36,9 @@ You should see:
 ----
 Login successful.
 
-You have one project on this server: "{{ USER_NAME }}-project"
+You have one project on this server: "{{ OPENSHIFT_USER_NAME }}-project"
 
-Using project "{{ USER_NAME }}-project".
+Using project "{{ OPENSHIFT_USER_NAME }}-project".
 Welcome! See 'oc help' to get started.
 ----
 
@@ -54,7 +54,7 @@ are a top level concept to help you organize your deployments and teams of devel
 namespace allows a community of users (or a user) to organize and manage
 their content in isolation from other communities. OpenShift _projects_ provide additional functionality for managing Kubernetes namespaces.
 
-For this scenario, a project has been created for you called `{{ USER_NAME }}-project`. You will use this project to deploy your developed project in the next step.
+For this scenario, a project has been created for you called `{{ OPENSHIFT_USER_NAME }}-project`. You will use this project to deploy your developed project in the next step.
 
 == Deploy to OpenShift
 
@@ -127,11 +127,11 @@ hello quarkus-on-openshift from people-1-9sgsm
 Your hostname (the Kubernetes _pod_ in which your app runs) name will be different from the above.
 ====
 
-So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,window=_blank]. Login with your assigned username and password (e.g. `{{ USER_NAME }}/{{ USER_PASSWORD }}`):
+So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,window=_blank]. Login with your assigned username and password (e.g. `{{ OPENSHIFT_USER_NAME }}/{{ OPENSHIFT_USER_PASSWORD }}`):
 
 image::ocplogin.png[login,600]
 
-Once logged in, click on the name of your project ({{ USER_NAME }}-project_):
+Once logged in, click on the name of your project ({{ OPENSHIFT_USER_NAME }}-project_):
 
 image::ocpproj.png[project,600]
 

@@ -8,8 +8,10 @@ vars:
   CONSOLE_URL:
   CHE_URL:
   KEYCLOAK_URL:
-  USER_NAME: userNN
-  USER_PASSWORD: passNN
+  CHE_USER_NAME: userNN
+  CHE_USER_PASSWORD: passNN
+  OPENSHIFT_USER_NAME: userNN
+  OPENSHIFT_USER_PASSWORD: passNN
 
 modules:
   activate:

@@ -109,8 +109,10 @@ oc new-app quay.io/osevg/workshopper --name=web \
       -e ROUTE_SUBDOMAIN=${HOSTNAME_SUFFIX} \
       -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/" \
       -e WORKSHOPS_URLS="https://raw.githubusercontent.com/RedHatWorkshops/quarkus-workshop/master/docs/_workshop.yml" \
-      -e USER_NAME=userNN \
-      -e USER_PASSWORD=passNN \
+      -e CHE_USER_NAME=userNN \
+      -e CHE_USER_PASSWORD=passNN \
+      -e OPENSHIFT_USER_NAME=userNN \
+      -e OPENSHIFT_USER_PASSWORD=passNN \
       -e LOG_TO_STDOUT=true
 oc expose svc/web
 

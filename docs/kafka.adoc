@@ -38,7 +38,7 @@ image::names.png[names,800]
 
 The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace.
 
-First, open the {{CONSOLE_URL}}[OpenShift Console], log in using your username/password if needed (e.g. `{{ USER_NAME }}`/`{{ USER_PASSWORD }}`) and navigate to your project (`{{ USER_NAME }}-project`). Once there, on the left menu click on _Catalog > Developer Catalog_ and type in `kafka` in the keyword filter box:
+First, open the {{CONSOLE_URL}}[OpenShift Console], log in using your username/password if needed (e.g. `{{ OPENSHIFT_USER_NAME }}`/`{{ OPENSHIFT_USER_PASSWORD }}`) and navigate to your project (`{{ OPENSHIFT_USER_NAME }}-project`). Once there, on the left menu click on _Catalog > Developer Catalog_ and type in `kafka` in the keyword filter box:
 
 image::kafkacatalog.png[kafkacatalog,800]
 
