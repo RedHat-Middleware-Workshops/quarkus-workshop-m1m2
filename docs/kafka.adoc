@@ -246,9 +246,10 @@ We need to configure the Kafka connector. This is done in the `application.prope
 
 `mp.messaging.[outgoing|incoming].{channel-name}.property=value`
 
-* The `channel-name` segment must match the value set in the @`Incoming` and `@Outgoing` annotation:
-* `generated-price` → sink in which we write the prices
-* `prices` → source in which we read the prices
+The `channel-name` segment must match the value set in the `@Incoming` and `@Outgoing` annotation:
+
+* `generated-name` → sink to which we write the names
+* `names` → source from which we read the names
 
 Add the following values to the `application.properties`:
 
