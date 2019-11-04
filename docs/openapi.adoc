@@ -13,18 +13,18 @@ The MicroProfile OpenAPI specification requires vendors to produce a valid OpenA
 
 Therefore you as a developer get a _lot_ of functionality out of the box without doing anything. Let's test this out.
 
-== Out of the box APIs
+== Add Extension
 
-If your application is still running from the previous exercise, go back to its terminal and type kbd:[CTRL+C] (or just close the terminal window). We need to add another extension for OpenAPI. Run the following command:
+We need to add another extension for OpenAPI. Run the following command:
 
 [source,sh,role="copypaste"]
 ----
 mvn quarkus:add-extension -Dextensions="openapi,swagger"
 ----
 
-This will add the necessary extension for using OpenAPI, and a graphical frontend extension called `swagger` which we'll discuss later.
+This will add the necessary extension for using OpenAPI, and a graphical frontend extension called `swagger` which we'll discuss later. It also enables a new RESTful endpoint in the app accessible at `/openapi`.
 
-Run the project again, using the command palette and selecting **Start Live Coding** (if you had a previous app running, kbd:[CTRL+C] or close the old Terminal before running it again). This will again run our app. Once it's up and running, access the new `openapi` endpoint using the following command in a Terminal:
+Access the new endpoint using the following command in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
@@ -65,13 +65,6 @@ paths:
 
 [NOTE]
 ====
-If you do not like the default endpoint location /openapi, you can change it by adding the following configuration to your application.properties:
-
-[source,none]
-----
-quarkus.smallrye-openapi.path=/myapi
-----
-
 If you want JSON instead of YAML, use
 
 [source,sh]
@@ -80,7 +73,7 @@ curl -H "Accept: application/json" http://localhost:8080/openapi
 ----
 ====
 
-So out of the box all your endpoints are fully documented and will be emitted in a programmatic format from the `/openapi` endpoint. CLIs are great, but for quick testing of APIs, wouldn't it be great if that programmatic API was turned into an interactive, forms-based web page for quickly trying out endpoints? That's what _Swagger UI_ does. 
+So out of the box all your endpoints are fully documented and will be emitted in a programmatic format from the `/openapi` endpoint. CLIs are great, but for quick testing of APIs, wouldn't it be great if that programmatic API was turned into an interactive, forms-based web page for quickly trying out endpoints? That's what _Swagger UI_ does.
 
 == Access Swagger UI
 
@@ -95,16 +88,9 @@ If you want to make it available in production too, you can include the followin
 ----
 quarkus.swagger-ui.always-include=true
 ----
-
-By default, Swagger UI is accessible at `/swagger-ui`. You can update this path by setting the `quarkus.swagger-ui.path` property in your `application.properties`:
-
-[source]
-----
-quarkus.swagger-ui.path=/my-custom-path
-----
 ====
 
-Since our app is already running, click on the _Preview URL_ shown at the top of the terminal (on the _Start Live Coding_ tab). Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
+Since our app is still running, click on the _Preview URL_ shown at the top of the terminal (on the _Start Live Coding_ tab). Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
 
 image::swagger.png[swagger,600]
 
@@ -124,7 +110,7 @@ Pretty handy way to test out your APIs!
 
 == Documenting your APIs
 
-OpenAPI and Swagger are useful tools but they become even more useful to 3rd party consumers of your API if you properly document them. With OpenAPI, you as a developer can add additional annotations right into the code to document them (which is a good practice anyway - when the code changes, the docs can too). 
+OpenAPI and Swagger are useful tools but they become even more useful to 3rd party consumers of your API if you properly document them. With OpenAPI, you as a developer can add additional annotations right into the code to document them (which is a good practice anyway - when the code changes, the docs can too).
 
 You as an application developer have a few choices in documenting your APIs:
 
@@ -189,7 +175,7 @@ The final method should look like:
 public List<Person> getBeforeYear(
     @Parameter(description = "Cutoff year for searching for people", required = true, name="year")
     @PathParam(value = "year") int year) {
-    
+
     return Person.getBeforeYear(year);
 }
 ----
@@ -197,10 +183,6 @@ public List<Person> getBeforeYear(
 Now reload the same Swagger UI webpage (and expand the `/person/birth/before/{year}` section). Notice the Swagger documention is more filled out for the endpoint to which we added extra OpenAPI documentation:
 
 image::swaggerparams.png[swaggerparams,600]
-
-== Cleanup
-
-Stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
 
 == Congratulations
 

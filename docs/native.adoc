@@ -46,18 +46,13 @@ Within the `pom.xml` is the declaration for the Quarkus Maven plugin which conta
 
 We use a profile because, you will see very soon, packaging the native image takes a few seconds. However, this compilation time is only incurred _once_, as opposed to _every_ time the application starts, which is the case with other approaches for building and executing JARs.
 
-Create a native executable by once again opening the command palette and choose **Build Native Quarkus App**. This will execute `mvn clean package -Pnative` behind the scenes. The `-Pnative` argument selects the `native` maven profile which invokes the Graal compiler.
+Create a native executable by once again opening the command palette and choose **Build Native Quarkus App**. This will execute `mvn package -Pnative` behind the scenes. The `-Pnative` argument selects the `native` maven profile which invokes the Graal compiler.
 
 **This will take about 3-4 minutes to finish. Wait for it!**
 
 [NOTE]
 ====
-You can safely ignore any warnings like `Warning: RecomputeFieldValue.FieldOffset automatic substitution failed.` These are harmless and will be removed in future releases of Quarkus.
-====
-
-[NOTE]
-====
-Since we are on Linux in this environment, and the OS that will eventually run our application is also Linux, we can use our local OS to build the native Quarkus app. If you need to build native Linux binaries when on other OS's like Windows or Mac OS X, you'll need to have Docker installed and then use `mvn clean package -Pnative -Dnative-image.docker-build=true -DskipTests=true`.
+Since we are on Linux in this environment, and the OS that will eventually run our application is also Linux, we can use our local OS to build the native Quarkus app. If you need to build native Linux binaries when on other OS's like Windows or Mac OS X, you can use `-Dquarkus.native.container-runtime=[podman | docker]`. You'll need either Docker or https://podman.io[Podman,target=_blank] installed depending on which runtime you want to use!
 ====
 
 In addition to the regular files, the build will produce `target/people-1.0-SNAPSHOT-runner`. This is a native Linux binary. Not a shell script, or a JAR file, but a native binary.
@@ -68,14 +63,14 @@ Since our environment here is Linux, you can _just run it_. In the terminal, run
 
 [source,sh,role="copypaste"]
 ----
-target/people-1.0-SNAPSHOT-runner
+target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
 ----
 
 Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
 ----
-2019-07-10 04:04:11,817 INFO  [io.quarkus] (main) Quarkus 0.18.0 started in 0.015s. Listening on: http://[::]:8080
+2019-07-10 04:04:11,817 INFO  [io.quarkus] (main) Quarkus 0.18.0 started in 0.015s. Listening on: http://[::]:8081
 2019-07-10 04:04:11,818 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, jdbc-h2, narayana-jta, resteasy]
 ----
 
@@ -106,7 +101,7 @@ Make sure the app is still working as expected (we'll use `curl` this time to ac
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/hello/greeting/quarkus
+curl http://localhost:8081/hello/greeting/quarkus
 ----
 
 You should see:
@@ -120,7 +115,7 @@ Nice!
 
 == Cleanup
 
-Go to the first Terminal tab and press kbd:[CTRL+C] to stop our native app (or close the Terminal window).
+Go to the Terminal in which you ran the native app and press kbd:[CTRL+C] to stop our native app (or close the Terminal window with the `X` button next to its title).
 
 == Congratulations!
 

@@ -74,10 +74,6 @@ mvn quarkus:add-extension -Dextensions="metrics"
 
 This will add the necessary entries in your `pom.xml` to bring in the Metrics capability. It will import the `smallrye-metrics` extension which is an implementation of the MicroProfile Metrics specification used in Quarkus.
 
-== Start the app
-
-Next, Run the app once more by using the command palette and select **Start Live Coding** to start the app up in dev local mode.
-
 == Test Metrics endpoint
 
 You will be able to immediately see the raw metrics generated from Quarkus apps. Run this in the Terminal:
@@ -167,7 +163,7 @@ Don't forget to import the correct classes as before.
 
 Now we are ready to run our application on the cluster and look at the generated metrics. Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
-== Deploy
+== Deploy to OpenShift
 
 Let's deploy our app to the cluster and see if Prometheus picks up our metrics! To do this, start the container build using our executable JAR:
 
@@ -194,7 +190,7 @@ You'll need to trigger the methods that we've instrumented, so first run this co
 echo; echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/names.html ; echo
 ----
 
-Within about 15-30 seconds, Prometheus should start scraping the metrics. Run this command to output the URL to the Prometheus GUI:
+Open that link in your browser. Within about 15-30 seconds, Prometheus should start scraping the metrics. Run this command to output the URL to the Prometheus GUI:
 
 [source,sh,role="copypaste"]
 ----
@@ -342,10 +338,6 @@ Click **Save Dashboad** again to save it. Your final Dashboard should look like:
 image::graffinal.png[final,500]
 
 Beautiful, and useful! You can add many more metrics to monitor and alert for Quarkus apps using these tools.
-
-== Cleanup
-
-Go to the first Terminal tab and press kbd:[CTRL+C] to stop our locally running app (or close the Terminal window).
 
 == Congratulations!
 

@@ -38,7 +38,7 @@ image::names.png[names,800]
 
 The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace.
 
-First, open the {{CONSOLE_URL}}[OpenShift Console], log in using your username/password if needed (e.g. `{{ OPENSHIFT_USER_NAME }}`/`{{ OPENSHIFT_USER_PASSWORD }}`) and navigate to your project (`{{ OPENSHIFT_USER_NAME }}-project`). Once there, on the left menu click on _Catalog > Developer Catalog_ and type in `kafka` in the keyword filter box:
+First, open the {{CONSOLE_URL}}[OpenShift Console,window=_blank], log in using your username/password if needed (e.g. `{{ OPENSHIFT_USER_NAME }}`/`{{ OPENSHIFT_USER_PASSWORD }}`) and navigate to your project (`{{ OPENSHIFT_USER_NAME }}-project`). Once there, on the left menu click on _Catalog > Developer Catalog_ and type in `kafka` in the keyword filter box:
 
 image::kafkacatalog.png[kafkacatalog,800]
 
@@ -275,11 +275,35 @@ More details about this configuration is available on the https://kafka.apache.o
 What about `my-data-stream`? This is an in-memory stream, not connected to a message broker.
 ====
 
+== Verify Kafka is running
+
+Verify that the Kafka and Zookeeper pods finally started up by running this command:
+
+[source,sh,role="copypaste"]
+----
+oc get pods|grep names-cluster
+----
+
+You'll should see all pods up and `Running`:
+
+[source,none]
+----
+names-cluster-entity-operator-78686cdd4d-rfkwd   3/3     Running   0          6m50s
+names-cluster-kafka-0                            2/2     Running   0          7m41s
+names-cluster-kafka-1                            2/2     Running   0          7m41s
+names-cluster-kafka-2                            2/2     Running   1          7m41s
+names-cluster-zookeeper-0                        2/2     Running   0          8m31s
+names-cluster-zookeeper-1                        2/2     Running   0          8m31s
+names-cluster-zookeeper-2                        2/2     Running   0          8m31s
+----
+
+If some of them are still starting, you'll need to wait for them! Run the `oc get pods | grep names-cluster` command repeatedly until they are running. This should take no more than 1-2 minutes.
+
 == Rebuild Executable JAR
 
-Now we are ready to run our application. Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
+Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
 
-== Deploy
+== Deploy to OpenShift
 
 And now start the build using our executable JAR:
 

@@ -1,7 +1,7 @@
 = Testing
 :experimental:
 
-In this step we'll show you how to effectively write functional and unit tests for your Quarkus Apps. 
+In this step we'll show you how to effectively write functional and unit tests for your Quarkus Apps.
 
 You should already have a completed test written for you, including the correct `pom.xml` setup where you should see 2 test dependencies:
 
@@ -72,7 +72,7 @@ The tests will run, and eventually complete. Did you get any errors? You should 
 
 [source, none]
 ----
-[ERROR] Failures: 
+[ERROR] Failures:
 [ERROR]   GreetingResourceTest.testHelloEndpoint:18 1 expectation failed.
 Response body doesn't match expectation.
 Expected: is "hello"
@@ -92,7 +92,7 @@ You can configure the port used by tests by configuring `quarkus.http.test-port`
 quarkus.http.test-port=8083
 ----
 
-Now re-run the tests and look for 
+Now re-run the tests and look for
 
 [source, none]
 ----
@@ -118,7 +118,7 @@ package org.acme.people;
 @QuarkusTest
 public class StaticContentTest {
 
-    @TestHTTPResource("test.html") 
+    @TestHTTPResource("test.html")
     URL url;
 
     @Test
@@ -174,7 +174,7 @@ public class GreetingServiceTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("GreetingServiceTest");
 
-    @Inject 
+    @Inject
     GreetingService service;
 
     @Test
@@ -230,7 +230,7 @@ public class TestStereotypeTestCase {
 
 Quarkus supports the use of mock objects using the CDI `@Alternative` mechanism. To use this simply override the bean you wish to mock with a class in the `src/test/java` directory, and put the `@Alternative` and `@Priority(1)`` annotations on the bean. Alternatively, a convenient `io.quarkus.test.Mock` stereotype annotation could be used. This built-in stereotype declares `@Alternative`, `@Priority(1)` and `@Dependent`.
 
-Let's mock our existing `GreetingService`. Although our existing service is pretty simple, in the real world the service might have too many dependencies on external systems to be feasible to call directly. 
+Let's mock our existing `GreetingService`. Although our existing service is pretty simple, in the real world the service might have too many dependencies on external systems to be feasible to call directly.
 
 Create a new class in `src/test/java` in the `org.acme.people` package called `MockGreetingService` with the following code:
 
@@ -243,12 +243,12 @@ import org.acme.people.service.GreetingService;
 import io.quarkus.test.Mock;
 
 @Mock
-@ApplicationScoped 
+@ApplicationScoped
 public class MockGreetingService extends GreetingService {
 
     @Override
     public String greeting(String name) {
-        return "hello " + name + " from mock greeting";
+        return "hello " + name + " <<<<<<<<<< from mock greeting >>>>>>>>>>";
     }
 }
 ----
@@ -270,8 +270,7 @@ Now run the tests again (using the command palette as usual), and watch the outp
 
 [source, none]
 ----
-[INFO] Running org.acme.people.GreetingServiceTest
-[INFO]  [GreetingServiceTest] (main) greeting: hello Quarkus from mock greeting
+INFO  [GreetingServiceTest] (main) greeting: hello Quarkus <<<<<<<<<< from mock greeting >>>>>>>>>>
 ----
 
 This confirms that our `MockGreetingService` is being used instead of the original `GreetingService`.

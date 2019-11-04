@@ -33,7 +33,7 @@ This will add the extension below to your `pom.xml`:
 </dependency>
 ----
 
-Next, Run the app once more by using the command palette and select **Start Live Coding** to start the app up in dev local mode. With no code, Quarkus still provides a default health check which may be enough for you if all you need is to know the app started. Try to access the `/health/ready` endpoint on the Terminal:
+With no code, Quarkus still provides a default health check which may be enough for you if all you need is to know the app started. Try to access the `/health/ready` endpoint on the Terminal:
 
 [source, sh, role="copypaste"]
 ----
@@ -210,10 +210,17 @@ Re-run the health check test:
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/health/live
+curl -i http://localhost:8080/health/live
 ----
 
-The overall outcome should be `DOWN` and you should see in the `checks` array the newly added Database connection health check which is down and the error message explaining why it failed:
+You should see at the beginning the HTTP response:
+
+[source,none]
+----
+HTTP/1.1 503 Service Unavailable
+----
+
+And the returned content should begin with `"status": "DOWN"` and you should see in the `checks` array the newly added Database connection health check which is down and the error message explaining why it failed:
 
 [source,json]
 ----
@@ -226,7 +233,15 @@ The overall outcome should be `DOWN` and you should see in the `checks` array th
         },
 ----
 
-We shouldn’t leave this application with a health check in DOWN state. Because we are running Quarkus dev mode, add `database.up=true` to the end of the `src/main/resources/application.properties` file and rerun the health check test again — it should be `UP`!
+== Fix Health Check
+We shouldn’t leave this application with a health check in DOWN state. Because we are running Quarkus dev mode, add this to to the end of the `src/main/resources/application.properties` file:
+
+[source,json]
+----
+database.up=true
+----
+
+And access again using the same `curl` command — it should be `UP`!
 
 == Accessing liveness and readiness separately
 
@@ -424,7 +439,7 @@ curl http://localhost:8080/hello
 
 produces `hello quarkus!`.
 
-Next, kbd:[CTRL+C] it (or close the "Start Live Coding" Terminal window). We need to re-build the app as an executable JAR so it runs with the `prod` profile.
+Next, let's re-build the app as an executable JAR (which will run with the `prod` profile active).
 
 Build an executable JAR just as before using the command palette and choosing **Create Executable JAR**.
 
@@ -432,7 +447,7 @@ Next, open a new Terminal window and run the the app:
 
 [source,sh,role="copypaste"]
 ----
-java -jar target/*-runner.jar
+java -Dquarkus.http.port=8081 -jar target/*-runner.jar
 ----
 
 Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`.
@@ -441,7 +456,7 @@ While the app is running, open a separate Terminal window and test it by running
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/hello
+curl http://localhost:8081/hello
 ----
 
 What did you get? You should get `hello production quarkus!` indicating that the `prod` profile was active by default. In other sections in this workshop we'll use this feature to overrride important variables like database credentials.
@@ -453,7 +468,7 @@ In this example we read configuration properties from `application.properties`. 
 
 == Cleanup
 
-Stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
+Stop the app that you ran with `java -jar` by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs. Make sure to leave the `Start Live Coding` terminal window open!
 
 == Congratulations
 

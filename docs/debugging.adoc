@@ -34,7 +34,7 @@ You can probably spot the bug right away but let's see how you could find this w
 
 == Attach debugger
 
-In _Live Coding_ mode, Quarkus apps also listen for debugger connections on port `5005`.
+In _Live Coding_ mode, Quarkus apps also listen for debugger connections on port `5005`. Your app should still be running.
 
 To connect to the running app, use the _Run > Edit Debug Configurations_ menu command. In the dialog, Click the `+` button next to `JAVA` to create a new Java debug configuration. You can name it whatever you want, but keep the `localhost` field as-is and select port `5005` in the port selection field:
 
@@ -69,7 +69,7 @@ You will see three main sections of the debug view:
 
 * **Breakpoints** - This lists the breakpoints you've set. Each Breakpoint can be further configured, or selectively disabled, by right-clicking on the breakpoint in the breakpoint list.
 
-* **Frames** - This is an ordered list of _stack frames_ showing the path through the code from the beginning of the thread to the current location in our code. 
+* **Frames** - This is an ordered list of _stack frames_ showing the path through the code from the beginning of the thread to the current location in our code.
 
 * **Variables** - Here you can see the value of local variables in the selected stack frame. In our code we have no local variables defined yet, but once we start stepping through the code, newly defined variables (like `len`) will appear here.
 
@@ -105,7 +105,7 @@ With the bug fixed, re-trigger the method by running the `curl` command again in
 curl http://localhost:8080/hello/lastletter/foo
 ----
 
-The breakpoint will be hit once again. step over the lines to verify the value of `lastLetter` is correct before the method returns. You've fixed the bug!
+The breakpoint will be hit once again. Step over the lines to verify the value of `lastLetter` is correct before the method returns. You've fixed the bug!
 
 [WARNING]
 ====
@@ -116,12 +116,6 @@ Remove the breakpoint by clicking on the line number again to de-highlight it.  
 
 Click **End Debug Session** button to quit the debugging session.
 
-Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there.
-
-== Cleanup
-
-Go back to your Terminals, close any unused ones and stop the Live Coding for now by pressing closing the Terminal window in which the app runs.
-
 == Congratulations!
 
-Debugging Quarkus apps is the same as any other Java app. Combined with Live Reload, it makes development quick and (relatively) painless!
+Quarkus apps are just like any other Java app, so debugging is straightforward and supported by many IDEs and CLIs out there. Combined with Live Reload, it makes development quick and (relatively) painless!

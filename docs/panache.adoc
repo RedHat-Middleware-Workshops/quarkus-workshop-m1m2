@@ -21,7 +21,7 @@ You may have wondered why we are using `people` in our Java APIs, and now you'll
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="panache, h2, jdbc-postgresql, resteasy-jsonb"
+mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql, resteasy-jsonb"
 ----
 
 We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-jsonb` is used to encode JSON objects.
@@ -47,7 +47,7 @@ These names are known to Quarkus, and you can introduce your own profiles and us
 
 == Create Entity
 
-With our extension installed, we can now define our entity using Panache. 
+With our extension installed, we can now define our entity using Panache.
 
 We'll first need the definition of eye colors, so let's create an `enum`. Create a new java class in `src/main/java/org/acme/people/model` called `EyeColor`, and add the following enum definition:
 
@@ -83,7 +83,7 @@ import org.acme.people.model.EyeColor;
 public class Person extends PanacheEntity {
     // the person's name
     public String name;
-    
+
     // the person's birthdate
     public LocalDate birth;
 
@@ -145,7 +145,7 @@ public class PersonResource {
     }
 
     // TODO: add basic queries
-    
+
     // TODO: add datatable query
 
     // TODO: Add lifecycle hook
@@ -172,22 +172,14 @@ Add these lines to `import.sql` file you just created:
 
 [source,sql,role="copypaste"]
 ----
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Farid Ulyanov', to_date('1974-08-15', 'YYYY-MM-dd'), 'BLUE')
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Salvador L. Witcher', to_date('1984-05-24', 'YYYY-MM-dd'), 'BROWN')
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Kim Hu', to_date('1999-04-25', 'YYYY-MM-dd'), 'HAZEL')
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Farid Ulyanov', to_date('1974-08-15', 'YYYY-MM-dd'), 'BLUE');
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Salvador L. Witcher', to_date('1984-05-24', 'YYYY-MM-dd'), 'BROWN');
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Kim Hu', to_date('1999-04-25', 'YYYY-MM-dd'), 'HAZEL');
 ----
 
 These statements will add some fake people to our database on startup.
 
-== Run the application
-
-Now we are ready to run our application. Using the command palette, select **Start Live Coding** (if you had a previous app running, kbd:[CTRL+C] or close the old Terminal before running it again). You should see a bunch of log output that ends with:
-
-[source, none]
-----
-12:56:43,106 INFO  [io.quarkus] Quarkus 0.12.0 started in 2.138s. Listening on: http://[::]:8080
-12:56:43,106 INFO  [io.quarkus] Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, narayana-jta, resteasy, resteasy-jsonb]```
-----
+== Test the app
 
 With the app running, let's try out our first RESTful endpoint to retrieve all the sample users. Open up a separate Terminal and issue the following command:
 
@@ -222,7 +214,7 @@ We call the endpoint with `curl` then send the output through `jq` to make the o
 ]
 ----
 
-It's working! We'll leave it running and use Quarkus' Live Reload feature to automatically update our app as we make changes. Note that the `id` and `persistent` fields were added to our entity, but never appear in our query APIs and can be safely ignored most of the time. 
+It's working! Note that the `id` and `persistent` fields were added to our entity, but never appear in our query APIs and can be safely ignored most of the time.
 
 [NOTE]
 ====
@@ -265,7 +257,7 @@ These two queries will find a list of people in our database based on eye color,
 All list methods in Panache-based entities (those that extend from `PanacheEntity`) have equivalent stream versions. So `list` has a `stream` variant, `listAll`-->`streamAll` and so on.
 ====
 
-With our custom entity queries implemented in our `Person` entity class, let's add RESTful endpoints to `PersonResource` to access them. 
+With our custom entity queries implemented in our `Person` entity class, let's add RESTful endpoints to `PersonResource` to access them.
 
 Open the `PersonResource` class and add two news endpoint under the `//TODO: add basic queries` comment:
 
@@ -287,8 +279,6 @@ public List<Person> getBeforeYear(@PathParam(value = "year") int year) {
 ----
 
 == Inspect the results
-
-Since we still have our app running using `mvn quarkus:dev`, when you make these changes and reload the endpoint, Quarkus will notice all of these changes and live reload them.
 
 Check that it works as expected by testing the new endpoints. Let's find all the people with `BLUE` eyes. Execute in your Terminal:
 
@@ -343,11 +333,9 @@ You should see **two** people born in 1990 or earlier:
 
 The `Person` entity's superclass comes with lots of super useful static methods and you can add your own in your entity class. Users can just start using your entity `Person` by typing `Person`, and getting completion for all the operations in a single place.
 
-In the next step we'll show you how Panache can help to adapt entities to high performance frontends, even in the face of millions of records.
-
 == Add Paging and Filtering
 
-In the previous step you added a few more custom queries to your entity and the associated RESTful endpoints. In this step we'll build a slightly more complex query including filtering, searching and paging capabilities. 
+In the previous step you added a few more custom queries to your entity and the associated RESTful endpoints. In this step we'll build a slightly more complex query including filtering, searching and paging capabilities.
 
 === Showing data in tables
 
@@ -363,7 +351,7 @@ https://www.datatables.net/manual/server-side[DataTables documentation,window=_b
 * `length` - Total number records to return (or less, if there are less records that meet criteria)
 * `search[value]` - The value of the search box
 * `draw` - DataTables does asnychronous processing, so this value is sent with each request, expecting it to be returned as-is, so DataTables can piece things back together on the frontend if a user clicks things quickly.
-  
+
 Open the `PersonResource` resource class and add the following code below the `// TODO: add datatable query` comment:
 
 [source,java,role="copypaste"]
@@ -400,7 +388,7 @@ DataTables requires a specific JSON payload to be returned from this, and we've 
 * `recordsFiltered` - Total records that match filtering criteria
 * `data` - The actual array of records
 * `error` - Error string, if any
-  
+
 So, in our `PersonResource` endpoint, we'll start with an empty `result` object using the pre-created `DataTable` model. Add this code below the `// TODO: Begin Result` comment:
 
 [source,java,role="copypaste"]
@@ -417,7 +405,7 @@ Next, if the request includes a search parameter, let's take care of that by inc
 [source,java,role="copypaste"]
 ----
 PanacheQuery<Person> filteredPeople;
-            
+
 if (searchVal != null && !searchVal.isEmpty()) { // <1>
     filteredPeople = Person.<Person>find("name like :search",
         Parameters.with("search", "%" + searchVal + "%"));
@@ -440,7 +428,7 @@ result.setRecordsFiltered(filteredPeople.count());
 result.setData(filteredPeople.list());
 result.setRecordsTotal(Person.count());
 
-return result;  
+return result;
 ----
 
 === Test the result
@@ -480,7 +468,7 @@ The `data`, `draw`, `recordsFiltered` and `recordsTotal` values are what the Dat
 You often need to execute custom actions when the application starts and clean up everything when the application stops. In this case we'll add an action that will pre-generate a lot of fake data.
 
 Managed beans (like our `PersonResource`) can listen for lifecycle events by using the `@Observes` annotation on method signatures, which will be called when the associated event occurs.
-  
+
 Open the `PersonResource` resource class and add the following lifecycle listener at the `// TODO: Add lifecycle hook` marker:
 
 [source,java,role="copypaste"]
@@ -513,7 +501,7 @@ curl -s "http://localhost:8080/person/datatable?draw=1&start=0&length=2&search\[
 
 [NOTE]
 ====
-Adding 1k entries will make startup time artificially high, around 1-2 seconds. 
+Adding 1k entries will make startup time artificially high, around 1-2 seconds.
 ====
 
 You should get up to 2 records returned, but the total number available should show many more indicating our search found many more, and the total number of records should now be `1003` (the 1k we added plus the 3 original values):
@@ -543,13 +531,9 @@ You should get up to 2 records returned, but the total number available should s
 
 Note the values for `recordsFiltered` (the number of records with the letter `F` in the name), and `recordsTotal`. The value you see for `recordsFiltered` may be different than the above value, since the number of records with an `F` in the name may vary since the data is random. But the `recordsTotal` shows our initial 3 values, plus the 1000 additional values we added in the lifecycle hook code.
 
-== Cleanup
+== Deploy to OpenShift
 
-We're done with development, so go back to the Live Coding tab and press kbd:[CTRL+C] (or just close the tab) to stop our running application.
-
-== Deploy Postgres database
-
-Our production environment needs a "real" database so let's deploy a Postgres database. Run the following command to startup a database in our cluster:
+Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Run the following command to startup a database in our cluster:
 
 [source,sh,role="copypaste"]
 ----
@@ -573,7 +557,7 @@ Next, re-define the container build to use the OpenJDK image using these command
 
 [source,sh,role="copypaste"]
 ----
-oc delete bc/people && oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.5 --binary --name=people
+oc delete bc/people && oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.6 --binary --name=people
 ----
 
 And now start the build using our executable JAR:
@@ -620,4 +604,4 @@ Skip around a few pages, try some different searches, and notice that the data i
 
 == Congratulations
 
-In this exercise you got a glimpse of the power of Quarkus apps when dealing with large amounts of data. There is much more to Quarkus than fast startup times and low resource usage, so keep going! 
+In this exercise you got a glimpse of the power of Quarkus apps when dealing with large amounts of data. There is much more to Quarkus than fast startup times and low resource usage, so keep going!

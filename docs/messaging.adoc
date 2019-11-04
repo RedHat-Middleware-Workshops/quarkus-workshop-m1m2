@@ -38,10 +38,6 @@ Quarkus provides 3 Vert.x APIs:
 
 We're using the _Axle_ variant here, which provides good support for async operations in HTTP resources.
 
-== Run the app
-
-Next, Run the app once more by using the command palette and select **Start Live Coding** to start the app up in dev local mode.
-
 == Create RESTful resource
 
 We'll start by creating a new asynchronous endpoint. Open the `PersonResource` class and add a new field which will provide access to the Vert.x event bus which is used to pass messages between components:
@@ -50,7 +46,7 @@ We'll start by creating a new asynchronous endpoint. Open the `PersonResource` c
 ----
     @Inject EventBus bus; // <1>
 ----
-<1> Use _Assistant > Organize Imports_, and be sure to import the correct `EventBus` class - which is `io.vertx.axle.core.eventbus.EventBus`. 
+<1> Use _Assistant > Organize Imports_, and be sure to import the correct `EventBus` class - which is `io.vertx.axle.core.eventbus.EventBus`.
 
 Next, create two new endpoints in the same class which creates new people in our database given a name, and finds people by their name:
 
@@ -136,7 +132,7 @@ public class PersonService {
         p.eyes = color;
         p.name = name;
         Person.persist(p); // <1>
-        return p.name; // <2>        
+        return p.name; // <2>
     }
 
 }
@@ -179,10 +175,6 @@ To better understand, let’s detail how the HTTP request/response has been hand
 . Another bean receives this message and computes the response
 . This response is sent back using the reply mechanism
 . Once the reply is received by the sender, the content is written to the HTTP response
-
-== Cleanup
-
-Stop the app for now by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs.
 
 == Congratulations!
 

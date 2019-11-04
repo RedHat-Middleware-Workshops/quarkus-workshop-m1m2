@@ -1,7 +1,7 @@
 = The Basics
 :experimental:
 
-In this step, you will create a straightforward application serving a `hello` endpoint. To demonstrate dependency injection this endpoint uses a `greeting` bean. 
+In this step, you will create a straightforward application serving a `hello` endpoint. To demonstrate dependency injection this endpoint uses a `greeting` bean.
 
 image::arch.png[arch,800]
 
@@ -91,7 +91,7 @@ In Che, select the _Command Palette_ by clicking on its icon in the upper right,
 
 image::runlocally.png[runlocal,800]
 
-This will compile and run the app using `mvn compile quarkus:dev` in a Terminal window. 
+This will compile and run the app using `mvn compile quarkus:dev` in a Terminal window. Leave this terminal window open throughout the lab! You can complete the entire lab without shutting down Quarkus Live Coding mode. This is very useful for quick expermentation.
 
 [NOTE]
 ====
@@ -133,19 +133,13 @@ Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it 
 
 [NOTE]
 ====
-`quarkus:dev` runs Quarkus in development mode. This enables live reload with background compilation, which means that when you modify your Java files your resource files and refresh your browser these changes will automatically take effect. 
+`quarkus:dev` runs Quarkus in development mode. This enables live reload with background compilation, which means that when you modify your Java files your resource files and refresh your browser these changes will automatically take effect.
 ====
 
 [NOTE]
 ====
 This will also listen for a debugger on port `5005`. If you want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`. We'll use this later.
 ====
-
-### Stop the previous application
-
-Let's stop the original application so we can package and re-run it as an executable JAR. In the terminal, press kbd:[CTRL+C] to stop the application (**some browsers don't support this command** - simply close the Terminal using the kbd:[X] button on the tab, which will also kill the running app - remember to click _OK_ to the pop-up dialog about terminating the running process.)
-
-image::kill.png[kill,800]
 
 ### Package the app
 
@@ -175,14 +169,19 @@ Run the packaged application. In a Terminal, run the following command:
 
 [source, sh, role="copypaste"]
 ----
-java -jar target/*-runner.jar
+java -Dquarkus.http.port=8081 -jar target/*-runner.jar
 ----
+
+[NOTE]
+====
+We use `-Dquarkus.http.port=8081` to avoid conflicting with port `8080` used for Live Coding mode
+====
 
 With the app running, open a separate terminal window, and ensure the app _is_ running by executing a `curl` command:
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/hello
+curl http://localhost:8081/hello
 ----
 
 You should see:
@@ -193,10 +192,10 @@ hola
 
 ## Cleanup
 
-Go back to the terminal in which you ran the app and stop the app by pressing kbd:[CTRL+C] (or close the Terminal).
+Go back to the terminal in which you ran the app with `java -jar` and stop the app by pressing kbd:[CTRL+C] (or close the Terminal). Be sure not to close the "Live Coding" terminal!
 
 ## Congratulations!
 
 You've seen how to build a basic app, package it as an executable JAR and start it up very quickly. The JAR file can be used like any other executable JAR file (e.g. running it as-is, packaging as a Linux container, etc.)
 
-In the next step we'll inject a custom bean to showcase Quarkus' CDI capabilities. 
+In the next step we'll inject a custom bean to showcase Quarkus' CDI capabilities.
