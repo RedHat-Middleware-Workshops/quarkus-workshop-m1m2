@@ -63,8 +63,8 @@ public class JWTResource {
     @Inject
     JsonWebToken jwt;  // <2>
 
-    @Inject 
-    @Claim(standard = Claims.iss) 
+    @Inject
+    @Claim(standard = Claims.iss)
     Optional<JsonString> issuer; // <3>
 
     @GET
@@ -79,7 +79,7 @@ public class JWTResource {
     }
 
     @GET
-    @Path("/me/admin") 
+    @Path("/me/admin")
     @RolesAllowed("admin")
     @Produces(MediaType.TEXT_PLAIN)
     public String meJwt(@Context SecurityContext ctx) {   // <4>
@@ -126,7 +126,7 @@ oc rollout status -w dc/people
 
 [NOTE]
 ====
-In this exercise we are short-circuiting typical web authentication flows to illustrate the ease of protecting APIs with Quarkus. In a typical web authentication, users are redirected (via their browser) to a login page, after which a negotiation is performed to retrieve _access tokens_ used on behalf of the user to access protected resources. Here we are doing this manually with `curl`.
+In this exercise we are **short-circuiting typical web authentication flows** to illustrate the ease of protecting APIs with Quarkus. In a typical web authentication, users are redirected (via their browser) to a login page, after which a negotiation is performed to retrieve _access tokens_ used on behalf of the user to access protected resources. Here we are doing this manually with `curl`.
 ====
 
 The first thing to do to test any endpoint is obtain an access token from your authentication server in order to access the application resources. We've pre-created a few users in Keycloak for you to use:
@@ -170,7 +170,7 @@ export ALICE_TOKEN=$(\
     -d 'username=alice&password=alice&grant_type=password' | jq --raw-output '.access_token' \
  ) && echo $ALICE_TOKEN
 ----
-This issues a `curl` command to Keycloak (using `backend-service` credentials which is a special user that is allowed acess to the Keycloak REST API), and fetches a token for Alice using their credentials. 
+This issues a `curl` command to Keycloak (using `backend-service` credentials which is a special user that is allowed acess to the Keycloak REST API), and fetches a token for Alice using their credentials.
 
 Try out the JWT-secured API as Alice:
 
@@ -281,7 +281,7 @@ First, you'll need to enable the Keycloak extension:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="keycloak"
+mvn quarkus:add-extension -Dextensions="oidc, keycloak-authorization, resteasy-jsonb"
 ----
 
 === Configuring Keycloak
@@ -290,13 +290,13 @@ Next, add these to your `application.properties` for Keycloak:
 
 [source,none,role="copypaste"]
 ----
-quarkus.keycloak.realm=quarkus
-quarkus.keycloak.auth-server-url={{ KEYCLOAK_URL }}/auth
-quarkus.keycloak.resource=backend-service
-quarkus.keycloak.bearer-only=true
-quarkus.keycloak.credentials.secret=secret
+# OIDC config
+quarkus.oidc.auth-server-url={{ KEYCLOAK_URL }}/auth/realms/quarkus
+quarkus.oidc.client-id=backend-service
+quarkus.oidc.credentials.secret=secret
+
+# Enable Policy Enforcement
 quarkus.keycloak.policy-enforcer.enable=true
-quarkus.keycloak.policy-enforcer.enforcement-mode=PERMISSIVE
 quarkus.keycloak.policy-enforcer.paths.ready.name=Readiness
 quarkus.keycloak.policy-enforcer.paths.ready.path=/health/ready
 quarkus.keycloak.policy-enforcer.paths.ready.enforcement-mode=DISABLED
@@ -343,7 +343,7 @@ public class KeycloakResource {
     }
 }
 ----
-<1> The `KeycloakSecurityContext` is an object produced by the Keycloak extension that you can use to obtain information from tokens sent to your application. 
+<1> The `KeycloakSecurityContext` is an object produced by the Keycloak extension that you can use to obtain information from tokens sent to your application.
 <2> Note that we do not use any `@RolesAllowed` or any other instrumentation on the endpoint to specify access policy. It looks like an ordinary endpoint.
 
 [NOTE]
@@ -373,7 +373,7 @@ oc rollout status -w dc/people
 
 === Test confidential
 
-The `/secured/confidential` endpoint is protected with a policy defined in the Keycloak Server. The policy only grants access to the resource if the user is granted with a `confidential` role. The difference here is that the application is delegating the access decision to Keycloak, so no explicit source code instrumentation is required. 
+The `/secured/confidential` endpoint is protected with a policy defined in the Keycloak Server. The policy only grants access to the resource if the user is granted with a `confidential` role. The difference here is that the application is delegating the access decision to Keycloak, so no explicit source code instrumentation is required.
 
 [NOTE]
 ====
@@ -382,9 +382,23 @@ Keycloak caches the resource paths that it is protecting, so that every access d
 
 First make sure even `admin` can't access the endpoint:
 
+Refresh the admin token (it may have expired):
+
 [source,sh,role="copypaste"]
 ----
-curl -v -X GET \
+export ADMIN_TOKEN=$(\
+    curl -s -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    --user backend-service:secret \
+    -H 'content-type: application/x-www-form-urlencoded' \
+    -d 'username=admin&password=admin&grant_type=password' | jq --raw-output '.access_token' \
+ ) && echo $ADMIN_TOKEN
+----
+
+And then try to access with it:
+
+[source,sh,role="copypaste"]
+----
+curl -i -X GET \
   http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/confidential \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ----

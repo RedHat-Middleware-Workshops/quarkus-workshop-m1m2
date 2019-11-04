@@ -355,5 +355,5 @@ EOF
 # RH_PASSWORD=your-password
 #
 # then:
-# DOCKER_BUILDKIT=1 docker build --progress=plain --secret id=rhsm,src=rhsm.secret -t docker.io/username/che-quarkus-odo:latest -f stack.Dockerfile .
-# docker push docker.io/username/che-quarkus-odo:latest
+# DOCKER_BUILDKIT=1 docker build --progress=plain --secret id=rhsm,src=rhsm.secret -t docker.io/username/che-quarkus-workshop:latest -f stack.Dockerfile .
+# docker push docker.io/username/che-quarkus-workshop:0.27.0

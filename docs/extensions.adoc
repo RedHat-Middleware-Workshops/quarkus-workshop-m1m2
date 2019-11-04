@@ -32,14 +32,14 @@ Adding an extension is simiarly easy. With Maven, you can add extensions using `
 
 == Add an extension
 
-Later on in this lab we'll be using Hibernate with Panache, so let's add that extension here. In the Terminal, run the following command to add the _Hibernate ORM with Panache_ extension to your project:
+Later on in this lab we'll be using MicroProfile metrics, so let's add that extension here. In the Terminal, run the following command to add the _MicroProfile Metrics_ extension to your project:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="panache"
+mvn quarkus:add-extension -Dextensions="metrics"
 ----
 
-Notice we are using the "short" name `panache` instead of the fully qualified name `io.quarkus:quarkus-hibernate-orm-panache`. 
+Notice we are using the "short" name `metrics` instead of the fully qualified name `io.quarkus:quarkus-smallrye-metrics`.
 
 The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences using the following command:
 
@@ -58,7 +58,7 @@ You will see all the changes to `pom.xml` since you started:
 +    </dependency>
 +    <dependency>
 +      <groupId>io.quarkus</groupId>
-+      <artifactId>quarkus-hibernate-orm-panache</artifactId>
++      <artifactId>quarkus-smallrye-metrics</artifactId>
 +    </dependency>
 ----
 
@@ -73,7 +73,7 @@ INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-
 
 [NOTE]
 ====
-During development, when you add new extensions you'll need to stop and re-start Quarkus apps, as it will not monitor the state of `pom.xml` and bring in new dependencies during live-reload mode. So be sure to stop and restart whenever you add new extensions!
+In Live Coding mode, Quarkus will monitor the state of `pom.xml` and bring in new dependencies. No need to stop and restart!
 ====
 
 == Writing your own extension
