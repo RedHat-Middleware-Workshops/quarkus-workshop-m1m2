@@ -553,6 +553,8 @@ In previous steps we deployed our sample application as a native binary. Now let
 
 Re-build the application as an executable JAR using the command palette and selecting **Create Executable JAR**.
 
+image:createexec.png[create,600]
+
 Next, re-define the container build to use the OpenJDK image using these commands:
 
 [source,sh,role="copypaste"]

@@ -80,18 +80,11 @@ oc start-build people --from-file target/*-runner --follow
 
 This step will combine the native binary with a base OS image, create a new container image, and push it to an internal image registry.
 
-Once that's done, deploy the new image as an OpenShift application:
+Once that's done, deploy the new image as an OpenShift application and expose its HTTP endpoint to the outside world:
 
 [source,sh,role="copypaste"]
 ----
-oc new-app people
-----
-
-and expose it to the world:
-
-[source,sh,role="copypaste"]
-----
-oc expose svc/people
+oc new-app people && oc expose svc/people
 ----
 
 Finally, make sure it's actually done rolling out:

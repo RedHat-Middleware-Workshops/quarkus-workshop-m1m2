@@ -44,7 +44,7 @@ Like other exercises, we'll need another extension to enable tracing. Install it
 mvn quarkus:add-extension -Dextensions="opentracing, rest-client"
 ----
 
-This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and anm HTTP REST Client we'll use pater. 
+This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and anm HTTP REST Client we'll use pater.
 
 == Configure Quarkus
 
@@ -52,10 +52,10 @@ Next, open the `application.properties` file (in the `src/main/resources` direct
 
 [source,none,role="copypaste"]
 ----
-quarkus.jaeger.service-name=people # <1>
-quarkus.jaeger.sampler-type=const  # <2>
-quarkus.jaeger.sampler-param=1     # <2>
-quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces # <3>
+quarkus.jaeger.service-name=people<1>
+quarkus.jaeger.sampler-type=const<2>
+quarkus.jaeger.sampler-param=1<2>
+quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces<3>
 ----
 <1> The name of our service from the perspective of Jaeger (useful when multiple apps report to the same Jaeger instance)
 <2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist,window=_blank] to tune the performance.
@@ -65,7 +65,11 @@ quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces # <3>
 
 Like many other Quarkus frameworks, sensible defaults and out of the box functionality means you can get immediate value out of Quarkus without changing any code. By default, all JAX-RS endpoints (like our `/hello` and others) are automatically traced. Let's see that in action by re-deploying our traced app.
 
-First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
+First, re-build the app using the command palette and selecting **Create Executable JAR**.
+
+image:createexec.png[create,600]
+
+Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----
@@ -128,7 +132,7 @@ This exercise showa how to use the https://github.com/eclipse/microprofile-rest-
 
 We will use the publicly available https://swapi.co[Star Wars API,window=_blank] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
 
-=== Create model 
+=== Create model
 
 Create a new class in the `org.acme.people.model` package called `StarWarsPerson` with the following content:
 
@@ -161,7 +165,7 @@ public class StarWarsPerson {
 
 This contains a subset of the full Star Wars model, just enough to demonstrate tracing.
 
-=== Create interface 
+=== Create interface
 
 Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client,window=_blank] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class in the `org.acme.people.service` package called `StarWarsService` with the following content:
 
@@ -258,11 +262,15 @@ public List<StarWarsPerson> getCharacters() {
 <3> For each of the integers, call the `StarWarsService::getPerson` method
 <4> Collect the results into a list and return it
 
-Don't forget to _Assistant > Organize Imports_ to import the new classes.
+**Don't forget to _Assistant > Organize Imports_ **to import the new classes.
 
 == Test it out
 
-First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
+First, re-build the app using the command palette and selecting **Create Executable JAR**.
+
+image:createexec.png[create,600]
+
+Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----

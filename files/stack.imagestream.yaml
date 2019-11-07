@@ -13,5 +13,5 @@ spec:
       version: "1.0"
     from:
       kind: DockerImage
-      name: docker.io/schtool/che-quarkus-workshop:0.27.0
+      name: docker.io/schtool/che-quarkus-workshop:1.0.0.CR1
     name: "1.0"
