@@ -356,4 +356,4 @@ EOF
 #
 # then:
 # DOCKER_BUILDKIT=1 docker build --progress=plain --secret id=rhsm,src=rhsm.secret -t docker.io/username/che-quarkus-workshop:latest -f stack.Dockerfile .
-# docker push docker.io/username/che-quarkus-workshop:0.27.0
+# docker push docker.io/username/che-quarkus-workshop:1.0.0.CR1

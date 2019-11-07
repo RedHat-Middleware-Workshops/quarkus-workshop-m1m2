@@ -20,9 +20,9 @@ Some configuration of the extension is required. Add this to your `application.p
 
 [source,properties,role="copypaste"]
 ----
-mp.jwt.verify.publickey.location={{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/certs  # <1>
-mp.jwt.verify.issuer={{KEYCLOAK_URL}}/auth/realms/quarkus   # <2>
-quarkus.smallrye-jwt.auth-mechanism=MP-JWT   # <3>
+mp.jwt.verify.publickey.location={{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/certs<1>
+mp.jwt.verify.issuer={{KEYCLOAK_URL}}/auth/realms/quarkus<2>
+quarkus.smallrye-jwt.auth-mechanism=MP-JWT<3>
 quarkus.smallrye-jwt.realm-name=quarkus
 quarkus.smallrye-jwt.enabled=true
 ----
@@ -106,7 +106,11 @@ public class JWTResource {
 
 == Rebuild and redeploy app
 
-First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
+First, re-build the app using the command palette and selecting **Create Executable JAR**.
+
+image:createexec.png[create,600]
+
+Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----
@@ -326,36 +330,35 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.keycloak.KeycloakSecurityContext;
+import io.quarkus.security.identity.SecurityIdentity;
 
-@Path("/secured")
+@Path("/secured") // <1>
 public class KeycloakResource {
 
     @Inject
-    KeycloakSecurityContext keycloakSecurityContext;  // <1>
+    SecurityIdentity identity; // <2>
+
 
     @GET
-    @Path("/confidential")  // <2>
+    @Path("/confidential") // <1>
     @Produces(MediaType.TEXT_PLAIN)
     public String confidential() {
-        return ("confidential access for: " + keycloakSecurityContext.getToken().getPreferredUsername() +
-          " from issuer:" + keycloakSecurityContext.getToken().getIssuer());
+        return ("confidential access for: " + identity.getPrincipal().getName() +
+          " with attributes:" + identity.getAttributes());
     }
 }
+
 ----
-<1> The `KeycloakSecurityContext` is an object produced by the Keycloak extension that you can use to obtain information from tokens sent to your application.
-<2> Note that we do not use any `@RolesAllowed` or any other instrumentation on the endpoint to specify access policy. It looks like an ordinary endpoint.
-
-[NOTE]
-====
-There are other APIs you can use if you try to auto-complete the method name using Che, e.g. `getBirthDate()` or `getPicture()`. Place the cursor just after `keycloakSecurityContext.getToken().get` and press kbd:[Ctrl+Space] to see them:
-
-image::secapis.png[apis, 800]
-====
+<1> Note that we do not use any `@RolesAllowed` or any other instrumentation on the endpoint to specify access policy. It looks like an ordinary endpoint. Keycloak (the server) is the one enforcing access here, not Quarkus directly.
+<2> The `SecurityIdentity` is a generic object produced by the Keycloak extension that you can use to obtain information about the security principals and attributes embedded in the request.
 
 === Rebuild and redeploy app
 
-First, re-build the app using the command palette and selecting **Create Executable JAR**. Once that's done, run the following command to re-deploy:
+First, re-build the app using the command palette and selecting **Create Executable JAR**.
+
+image:createexec.png[create,600]
+
+Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----

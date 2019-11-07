@@ -161,7 +161,11 @@ Don't forget to import the correct classes as before.
 
 == Rebuild Executable JAR
 
-Now we are ready to run our application on the cluster and look at the generated metrics. Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
+Now we are ready to run our application on the cluster and look at the generated metrics. Using the command palette, select **Create Executable JAR**.
+
+image:createexec.png[create,600]
+
+You should see a bunch of log output that ends with a `SUCCESS` message.
 
 == Deploy to OpenShift
 
@@ -206,9 +210,9 @@ If you do not see any `acme` metrics when querying, wait 15 seconds, reload the 
 
 image:prom.png[Prometheus,800]
 
-These are the metrics exposed by our application, both raw numbers (like number of converted names in the `application:org_acme_people_stream_name_converter_converted_names` metric) along with quantiles of the same data across different time periods (e.g. `application:org_acme_people_stream_name_converter_converter_rate_per_second`).
+These are the metrics exposed by our application, both raw numbers (like number of converted names in the `application_org_acme_people_stream_NameConverter_convertedNames_total` metric) along with quantiles of the same data across different time periods (e.g. `application_org_acme_people_stream_NameConverter_converter_rate_per_second`).
 
-Select `application:org_acme_people_stream_name_converter_converted_names` in the box, and click **Execute**. This will fetch the values from our metric showing the number of converted names:
+Select `application:application_org_acme_people_stream_NameConverter_convertedNames_total` in the box, and click **Execute**. This will fetch the values from our metric showing the number of converted names:
 
 image:promnames.png[names,800]
 
@@ -268,7 +272,13 @@ At the password change prompt, use any password you wish.
 
 == Add Prometheus as a data source
 
-You'll land on the Data Source screen. Click **Add Data Source**, and select **Prometheus** as the _Data Source Type_. In the URL box, type `http://prometheus:9090` (this is the hostname and port of our running Prometheus in our namespace):
+You'll land on the Home screen. Click **Add Data Source**:
+
+image:grafclickds.png[names,600]
+
+and then select **Prometheus** as the _Data Source Type_.
+
+In the URL box, type `http://prometheus:9090` (this is the hostname and port of our running Prometheus in our namespace):
 
 image::grafds.png[datasource, 700]
 
@@ -290,7 +300,11 @@ Click **Add Query**. In the Query box, type `acme` to again get an autocompleted
 
 image::grafquery.png[query,600]
 
-Choose the first one `application:org_acme_people_stream_name_converter_converted_names`. The metrics should immediately begin to show in the graph above:
+Look for the one ending in `convertedNames_total` and select it. Click the **Refresh** button in the upper right:
+
+image::grafrefresh.png[query,400]
+
+The metrics should immediately begin to show in the graph above:
 
 image::grafgraf.png[graf,800]
 
@@ -304,15 +318,15 @@ image::grafgen.png[graf,800]
 
 There is an _Alerts_ tab you can configure to send alerts (email, etc) when conditions are met for this and other queries. We'll skip this for now.
 
-Click the _Save_ icon at the top to save our new dashboard (you can enter a change comment if you want):
+Click the _Save_ icon at the top to save our new dashboard, enter `Quarkus Metrics Dashboard` as its name (you can actually name it any name you want, it will show up in a list of dashboards later on).
 
-image::grafsave.png[graf,800]
+image::grafdashsave.png[graf,800]
 
-Give your new dashboard a name and click **Save**.
+Click **Save**.
 
 == Add more Panels
 
-See if you can add additional Panels. Use the **Add Panel** button to add a new Panel:
+See if you can add additional Panels to your new Dashboard. Use the **Add Panel** button to add a new Panel:
 
 image::grafmorepanels.png[graf,800]
 
@@ -320,7 +334,7 @@ Follow the same steps as before to create a few more panels, and **don't forget 
 
 Add Panels for:
 
-* The different quantiles of time it takes to process names `application:org_acme_people_stream_name_converter_converter_seconds` (configure it to _stack_ its values on the _Visualization_ tab, and name it "Converter Performance" on the _General_ tab).
+* The different quantiles of time it takes to process names `application_org_acme_people_stream_NameConverter_converter_seconds` (configure it to _stack_ its values on the _Visualization_ tab, and name it "Converter Performance" on the _General_ tab).
 * The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Field Units to `bytes` on the _Visualization_ tab, and the title to `Memory` on the _General_ tab.
 
 image::grafjvm.png[jvm,500]

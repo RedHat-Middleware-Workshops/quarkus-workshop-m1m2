@@ -17,6 +17,7 @@ Open up the `GreetingResource.java` class again, and add another RESTful endpoin
     public String lastLetter(@PathParam("name") String name) {
         int len = name.length();
         String lastLetter = name.substring(len);
+        log.info("Got last letter: " + lastLetter);
         return lastLetter;
     }
 ----
@@ -28,7 +29,7 @@ A a bug has been reported where the last letter is not working. To reproduce the
 curl http://localhost:8080/hello/lastletter/Foo
 ----
 
-Due to the bug, nothing is returned. It should have given us back an `o`.
+Due to the bug, nothing is returned. It should have given us back an `o`. You'll also see `Got last letter:` and then no letter.
 
 You can probably spot the bug right away but let's see how you could find this with the debugger, and more importantly fix it and re-test very quickly.
 
@@ -49,6 +50,8 @@ image::buttons.png[buttons, 600]
 == Set a Breakpoint
 
 To debug the app, let's step through our function that has the bug. In the left gutter of the code, where the line numbers are shown, click once on the line number next to `int len = name.length();` to set a breakpoint. The line number will be highlighted and the breakpoint will be registered in the debug pane:
+
+> **NOTE** - your line numbers may be different depending on where you placed this code in the file.
 
 image::break.png[breakpoint,800]
 
@@ -87,7 +90,7 @@ Click **Step Over** again, which executes the line to grab the last letter using
 
 We need to pass an offset that is one _before_ the end, to get the last letter.
 
-Click the **Resume** button to let the method continue and return the value (your `curl` command has probably timed out by now).
+Click the **Resume** button to let the method continue, log the erroneous value to the console, and return the value (your `curl` command has probably timed out by now).
 
 == Fix the bug
 
@@ -105,7 +108,7 @@ With the bug fixed, re-trigger the method by running the `curl` command again in
 curl http://localhost:8080/hello/lastletter/foo
 ----
 
-The breakpoint will be hit once again. Step over the lines to verify the value of `lastLetter` is correct before the method returns. You've fixed the bug!
+The breakpoint will be hit once again. Step over the lines to verify the value of `lastLetter` is correct and you see a proper `Got last letter: o` on the console. before the method returns. You've fixed the bug!
 
 [WARNING]
 ====

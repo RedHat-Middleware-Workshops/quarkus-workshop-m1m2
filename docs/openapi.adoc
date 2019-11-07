@@ -19,10 +19,10 @@ We need to add another extension for OpenAPI. Run the following command:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="openapi,swagger"
+mvn quarkus:add-extension -Dextensions="openapi"
 ----
 
-This will add the necessary extension for using OpenAPI, and a graphical frontend extension called `swagger` which we'll discuss later. It also enables a new RESTful endpoint in the app accessible at `/openapi`.
+This will add the necessary extension for using OpenAPI, and a graphical frontend extension called *Swagger* which we'll discuss later. It also enables a new RESTful endpoint in the app accessible at `/openapi`.
 
 Access the new endpoint using the following command in a Terminal:
 

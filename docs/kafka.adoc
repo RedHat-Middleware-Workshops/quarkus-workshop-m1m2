@@ -57,7 +57,7 @@ image::createkafkatopic.png[createkafka,800]
 
 We'll need to create a topic for our application to stream to and from, so in the YAML:
 
-* Change the _metadata > names_ value from `my-topic` to `names`.
+* Change the _metadata > name_ value from `my-topic` to `names`.
 * Change the vale of the `strimzi.io/cluster` label from `my-cluster` to `names-cluster`
 
 Then click **Create**.
@@ -187,13 +187,14 @@ Finally, let’s bind our stream to a JAX-RS resource. Create a new Java class i
 ----
 package org.acme.people.stream;
 
-import io.smallrye.reactive.messaging.annotations.Stream;
+import io.smallrye.reactive.messaging.annotations.Channel;
 import org.reactivestreams.Publisher;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.jboss.resteasy.annotations.SseElementType;
 
 /**
  * A simple resource retrieving the in-memory "my-data-stream" and sending the items as server-sent events.
@@ -202,19 +203,21 @@ import javax.ws.rs.core.MediaType;
 public class NameResource {
 
     @Inject
-    @Stream("my-data-stream") Publisher<String> names;  // <1>
+    @Channel("my-data-stream") Publisher<String> names; // <1>
 
     @GET
     @Path("/stream")
-    @Produces(MediaType.SERVER_SENT_EVENTS)              // <2>
-    public Publisher<String> stream() {                  // <3>
+    @Produces(MediaType.SERVER_SENT_EVENTS)// <2>
+    @SseElementType("text/plain") // <3>
+    public Publisher<String> stream() { // <4>
         return names;
     }
 }
 ----
-<1> Injects the `my-data-stream` stream using the `@Stream` qualifier
+<1> Injects the `my-data-stream` stream using the `@Channel` qualifier
 <2> Indicates that the content is sent using _Server Sent Events_
-<3> Returns the stream (Reactive Stream)
+<3> Indicates that the data contained within the server sent events is of type `text/plain`
+<4> Returns the stream (Reactive Stream)
 
 [NOTE]
 ====
@@ -256,17 +259,17 @@ Add the following values to the `application.properties`:
 [source,none,role="copypaste"]
 ----
 # Configure the Kafka sink (we write to it)
-%prod.mp.messaging.outgoing.generated-name.bootstrap.servers=names-cluster-kafka-bootstrap:9092
+%prod.mp.messaging.outgoing.generated-name.bootstrap.servers=names-cluster-kafka-bootstrap:9092<1>
 %prod.mp.messaging.outgoing.generated-name.connector=smallrye-kafka
 %prod.mp.messaging.outgoing.generated-name.topic=names
 %prod.mp.messaging.outgoing.generated-name.value.serializer=org.apache.kafka.common.serialization.StringSerializer
 
 # Configure the Kafka source (we read from it)
-%prod.mp.messaging.incoming.names.bootstrap.servers=names-cluster-kafka-bootstrap:9092
+%prod.mp.messaging.incoming.names.bootstrap.servers=names-cluster-kafka-bootstrap:9092<1>
 %prod.mp.messaging.incoming.names.connector=smallrye-kafka
 %prod.mp.messaging.incoming.names.value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 ----
-We have prefixed these with `%prod` to avoid our app trying to connect when in `dev` or `test` mode.
+<1> The hostnames you see here will only make sense (be resolvable via DNS) when this app is run in the same Kubernetes namespace as the Kafka cluster you created earlier. So you'll see this and other config values above prefixed with `%prod` which will not try to initialize Kafka when in `dev` mode.
 
 More details about this configuration is available on the https://kafka.apache.org/documentation/#producerconfigs[Producer configuration] and https://kafka.apache.org/documentation/#consumerconfigs[Consumer configuration,window=_blank] section from the Kafka documentation.
 
@@ -301,7 +304,11 @@ If some of them are still starting, you'll need to wait for them! Run the `oc ge
 
 == Rebuild Executable JAR
 
-Using the command palette, select **Create Executable JAR**. You should see a bunch of log output that ends with a `SUCCESS` message.
+Using the command palette, select **Create Executable JAR**.
+
+image:createexec.png[create,600]
+
+You should see a bunch of log output that ends with a `SUCCESS` message.
 
 == Deploy to OpenShift
 

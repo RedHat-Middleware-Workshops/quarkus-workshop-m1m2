@@ -30,40 +30,6 @@ Apache Tika                                        quarkus-tika
 
 Adding an extension is simiarly easy. With Maven, you can add extensions using `mvn quarkus:add-extension -Dextensions="extension1,extension2,..."`. The extension name can be the maven groupId/artifactId name of the extension: e.g. `io.quarkus:quarkus-agroal`. But you can pass a partial name and Quarkus will do its best to find the right extension. For example, `agroal`, `Agroal` or `agro` will expand to `io.quarkus:quarkus-agroal`. If no extension is found or if more than one extensions match, you will see a warning and a list of possible matches in the command result.
 
-== Add an extension
-
-Later on in this lab we'll be using MicroProfile metrics, so let's add that extension here. In the Terminal, run the following command to add the _MicroProfile Metrics_ extension to your project:
-
-[source,sh,role="copypaste"]
-----
-mvn quarkus:add-extension -Dextensions="metrics"
-----
-
-Notice we are using the "short" name `metrics` instead of the fully qualified name `io.quarkus:quarkus-smallrye-metrics`.
-
-The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences using the following command:
-
-[source,sh,role="copypaste"]
-----
-git --no-pager diff pom.xml
-----
-
-You will see all the changes to `pom.xml` since you started:
-
-[source, none]
-----
-+    <dependency>
-+      <groupId>io.quarkus</groupId>
-+      <artifactId>quarkus-smallrye-health</artifactId>
-+    </dependency>
-+    <dependency>
-+      <groupId>io.quarkus</groupId>
-+      <artifactId>quarkus-smallrye-metrics</artifactId>
-+    </dependency>
-----
-
-The `quarkus-smallrye-health` was added in a previous exercise, and shows up here as well.
-
 When you run Quarkus applications, the list of extensions enabled are shown in the output, such as:
 
 [source, none]
@@ -75,6 +41,34 @@ INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-
 ====
 In Live Coding mode, Quarkus will monitor the state of `pom.xml` and bring in new dependencies. No need to stop and restart!
 ====
+
+
+== Add an extension
+
+Later on in this lab we'll be using MicroProfile metrics, so let's add that extension here. In the Terminal, run the following command to add the _MicroProfile Metrics_ extension to your project:
+
+[source,sh,role="copypaste"]
+----
+mvn quarkus:add-extension -Dextensions="metrics"
+----
+
+Notice we are using the "short" name `metrics` instead of the fully qualified name `io.quarkus:quarkus-smallrye-metrics`.
+
+The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences you've made up till now.
+
+Right-click on your `pom.xml` and select _Git > Compare with latest repository version_:
+
+image::gitdiff.png[login,600]
+
+You'll see all the changes to `pom.xml` since you started:
+
+image::gitdiffcode.png[login,700]
+
+You may see other apparent differences due to whitespace and/or the re-shuffling of XML elements when you ran `mvn quarkus:add-extension`.
+
+There are many other git and GitHub operations like this one that you can perform directly in the IDE for real projects (e.g. committing, branching, merging, push/pull, log viewing, etc).
+
+Close the _diff_ window by clicking **Close**.
 
 == Writing your own extension
 

@@ -89,10 +89,10 @@ With our endpoint, confirm it fails using the Terminal to execute:
 
 [source,sh,role="copypaste"]
 ----
-curl -X POST http://localhost:8080/person/joe
+curl -i -X POST http://localhost:8080/person/joe
 ----
 
-**This will fail** with an `Internal Server Error`. If you look at the Live Coding terminal, you'll also see the reason:
+**This will fail** with an `500 Internal Server Error`. If you look at the Live Coding terminal, you'll also see the reason:
 
 [source,none]
 ----
@@ -122,7 +122,7 @@ import io.quarkus.vertx.ConsumeEvent;
 @ApplicationScoped
 public class PersonService {
 
-    @ConsumeEvent("add-person")
+    @ConsumeEvent(value = "add-person", blocking = true) // <1>
     @Transactional
     public String addPerson(String name) {
         LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 20 * 52 * -1)));
@@ -131,14 +131,15 @@ public class PersonService {
         p.birth = birth;
         p.eyes = color;
         p.name = name;
-        Person.persist(p); // <1>
-        return p.name; // <2>
+        Person.persist(p); // <2>
+        return p.name; // <3>
     }
 
 }
 ----
-<1> A new Person entity is created and persisted
-<2> The return value of a method annotated with `@ConsumeEvent` is used as response to the incoming message.
+<1> By default, the code consuming the event _must_ be non-blocking, as it’s called on the Vert.x event loop. Since our method will block to wait for the transaction, we use `blocking = true` to force this consumer to be run in a _worker thread_.
+<2> A new Person entity is created and persisted
+<3> The return value of a method annotated with `@ConsumeEvent` is used as response to the incoming message.
 
 This bean receives the name, and creates a new `Person` entity and persists it, and then echos back the name (or a well defined failure if things go wrong).
 
@@ -163,10 +164,11 @@ You should get back Joe!
 {
   "id": 1004,
   "birth": "2000-03-15",
-  "eyes": "BROWN",
+  "eyes": "BROWN",<1>
   "name": "joe"
 }
 ----
+<1> The eye color you see here may be difference, since it's randomly generated in the `addPerson()` method you added!
 
 To better understand, let’s detail how the HTTP request/response has been handled:
 

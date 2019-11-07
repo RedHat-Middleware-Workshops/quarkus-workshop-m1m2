@@ -90,7 +90,7 @@ There are two types of probes in Quarkus apps (and Kubernetes):
 Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail. There are various https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/[Configuration Paramters, window=_blank] you can set, such as the timeout period, frequency, and other parameters that can be tuned to expected application behavior.
 ====
 
-THanks to Live Coding mode, simply open a Terminal window and run:
+Thanks to Live Coding mode, simply open a Terminal window and run:
 
 [source, sh, role="copypaste"]
 ----
@@ -442,6 +442,8 @@ produces `hello quarkus!`.
 Next, let's re-build the app as an executable JAR (which will run with the `prod` profile active).
 
 Build an executable JAR just as before using the command palette and choosing **Create Executable JAR**.
+
+image:createexec.png[create,600]
 
 Next, open a new Terminal window and run the the app:
 
