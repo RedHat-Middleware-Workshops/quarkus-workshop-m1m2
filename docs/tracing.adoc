@@ -252,7 +252,7 @@ StarWarsService swService; // <1>
 @Path("/swpeople")
 @Produces(MediaType.APPLICATION_JSON)
 public List<StarWarsPerson> getCharacters() {
-    return Arrays.stream(new int[] {1, 2, 3, 4, 5}) // <2>
+    return IntStream.range(1, 6) // <2>
         .mapToObj(swService::getPerson)  // <3>
         .collect(Collectors.toList());  // <4>
 }
