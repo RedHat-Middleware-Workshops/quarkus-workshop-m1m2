@@ -1,7 +1,7 @@
 = Reactive Streams with Quarkus and Kafka
 :experimental:
 
-In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reative Streams Messaging and https://kafka.apache.org[Apache Kafka,window=_blank], a distributed streaming platform. You will also use https://strimzi.io/[Strimzi,window=_blank], which provides an easy way to run an Apache Kafka cluster on Kubernetes using https://operatorhub.io/what-is-an-operator[Operators,window=_blank].
+In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reactive Streams Messaging and https://kafka.apache.org[Apache Kafka,window=_blank], a distributed streaming platform. You will also use https://strimzi.io/[Strimzi,window=_blank], which provides an easy way to run an Apache Kafka cluster on Kubernetes using https://operatorhub.io/what-is-an-operator[Operators,window=_blank].
 
 == What is Apache Kafka?
 
