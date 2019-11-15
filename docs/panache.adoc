@@ -214,7 +214,7 @@ We call the endpoint with `curl` then send the output through `jq` to make the o
 ]
 ----
 
-It's working! Note that the `id` and `persistent` fields were added to our entity, but never appear in our query APIs and can be safely ignored most of the time.
+It's working! Note that the `id` field was added to our entity, but never appear in our query APIs and can be safely ignored most of the time.
 
 [NOTE]
 ====
@@ -293,7 +293,6 @@ You should only see **one** person with BLUE eyes:
 ----
 [
   {
-    "persistent": true,
     "id": 1,
     "birth": "1974-08-15",
     "eyes": "BLUE",
@@ -315,14 +314,12 @@ You should see **two** people born in 1990 or earlier:
 ----
 [
   {
-    "persistent": true,
     "id": 1,
     "birth": "1974-08-15",
     "eyes": "BLUE",
     "name": "Farid Ulyanov"
   },
   {
-    "persistent": true,
     "id": 2,
     "birth": "1984-05-24",
     "eyes": "BROWN",
@@ -447,7 +444,6 @@ This should return a single entity (since in our 3-person sample data, only one 
 {
   "data": [
     {
-      "persistent": true,
       "id": 1,
       "birth": "1974-08-15",
       "eyes": "BLUE",
