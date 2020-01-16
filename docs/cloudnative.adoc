@@ -267,7 +267,7 @@ Later, when we deploy this to our Kubernetes cluster, we'll configure it to use 
 
 == Externalized Configuration
 
-Hardcoded values in your code is a no go (even if we all did it at some point ;-)). In this step, we learn how to configure your application to externalize configuration.
+Hardcoded values in your code are a no go (even if we all did it at some point ;-)). In this step, we learn how to configure your application to externalize configuration.
 
 Quarkus uses https://microprofile.io/project/eclipse/microprofile-config[MicroProfile Config,window=_blank] to inject the configuration into the application. The injection uses the `@ConfigProperty` annotation, for example:
 
