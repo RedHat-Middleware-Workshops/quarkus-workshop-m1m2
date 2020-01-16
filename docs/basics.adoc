@@ -85,7 +85,7 @@ Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Applicat
 
 ## Running the Application in Live Coding Mode
 
-**Live Coding** (also referred to as _dev mode_) allows us to run the app and make changes on the fly. Quarkus will automatically re-compile and reload the app when changes are made. This is a powerful and effecient style of developing that you will use throughout the lab.
+**Live Coding** (also referred to as _dev mode_) allows us to run the app and make changes on the fly. Quarkus will automatically re-compile and reload the app when changes are made. This is a powerful and efficient style of developing that you will use throughout the lab.
 
 In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Start Live Coding**:
 
