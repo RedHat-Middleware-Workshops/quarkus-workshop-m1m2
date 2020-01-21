@@ -1,0 +1,25 @@
+---
+id: quarkus-lab
+name: Quarkus Hands-on Lab (Lab Version 2020-01-20)
+
+vars:
+  ROUTE_SUBDOMAIN:
+  MASTER_URL:
+  CONSOLE_URL:
+  CHE_URL:
+  KEYCLOAK_URL:
+  CHE_USER_NAME: userNN
+  CHE_USER_PASSWORD: passNN
+  OPENSHIFT_USER_NAME: userNN
+  OPENSHIFT_USER_PASSWORD: passNN
+
+modules:
+  activate:
+  - intro
+  - basics
+  - cdi
+  - testing
+  - debugging
+  - native
+  - cloudnative
+  - deploy
