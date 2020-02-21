@@ -5,27 +5,55 @@ In this step, you will create a straightforward application serving a `hello` en
 
 image::arch.png[arch,800]
 
-## Import new project
+This IDE is based on Eclipse Che (which is in turn based on MicroSoft VS Code editor).
 
-In Che, click on **Import Project...**. In the dialog box, select **GITHUB** as the type of import, and then enter the following URL into the URL field and click **Import**.
+You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to click on them and see what they do:
+
+image::crw-icons.png[cdw, 400]
+
+[NOTE]
+====
+If things get weird or your browser appears, you can simply reload the browser tab to refresh the view.
+====
+
+Many features of CodeReady Workspaces are accessed via *Commands*. You can see a few of the commands listed with links on the home page (e.g. _New File.._, _Git Clone.._, and others).
+
+If you ever need to run commands that you don't see in a menu, you can press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on Mac OS X).
+
+## Import Project
+
+Let's import our project. Click on **Git Clone..** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
+
+image::che-workspace-gitclone.png[cdw, 900]
+
+Step through the prompts, using the following value for **Repository URL**:
 
 [source,none,role="copypaste"]
 ----
 https://github.com/RedHatWorkshops/quarkus-workshop-labs
 ----
 
-image::import.png[import,800]
+image::crw-clone-repo.png[crw,900]
+
+Next, select `/projects` in the drop-down menu for destination directory:
+
+image::crw-clone-dest.png[crw,900]
+
+And click *Select Repository Location*.
+
+Once imported, choose **Add to existing workspace** when prompted.
+
+The project is imported into your workspace and is visible in the project explorer:
+
+image::crw-clone-explorer.png[crw,900]
 
 [NOTE]
 ====
-You may see errors in the _dev machine_ teminal like `Java Model Exception: Java Model Status [people does not exist]`. **These can be safely ignored**.
+The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
+terminal, you can use the **>_ New Terminal** command on the right:
 ====
 
-After a few seconds, you'll get a _Project Configuration_ Dialog. Select **Maven** as the project type, and click **Save**.
-
-image::importmaven.png[maven,800]
-
-This will tell Che that the project is a Maven-based project, and be able to resolve dependencies and do error checking on the `pom.xml` file.
+image::codeready-workspace-terminal.png[codeready-workspace-terminal, 700]
 
 The structure of the project can be seen in the project browser to the left of the code editor:
 
@@ -37,10 +65,6 @@ The project has
 * An `org.acme.people.rest.GreetingResource` resource exposed on `/hello`, along with a simple test
 * A landing page that is accessible on `http://localhost:8080` after starting the application
 * The application configuration file
-
-To save screen space, you can hide the Git Repository window on the right:
-
-image::che-realestate2.png[githide,800]
 
 Next, double-click on `pom.xml` in the project browser to open it in the editor. You will find the import of the Quarkus BOM, allowing to omit the version on the different Quarkus dependencies. In addition, you can see the `quarkus-maven-plugin` responsible of the packaging of the application and also providing the development mode.
 
