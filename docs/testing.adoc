@@ -28,7 +28,6 @@ The basic test is in the `GreetingResourceTest` (in the `src/test/java/org/acme/
 ----
 @QuarkusTest
 public class GreetingResourceTest {
-
     @Test
     public void testHelloEndpoint() {
         given()
@@ -37,16 +36,19 @@ public class GreetingResourceTest {
              .statusCode(200)
              .body(is("hello"));
     }
+}
 ----
 
 [WARNING]
 ====
-When creating new tests, always double-check to be sure you're in the `src/test` directory tree, not `src/main`!
+When creating new tests, always double-check to be sure you are in the `src/test` directory tree, not `src/main`!
+
+image::testshere.png[testshere, 700]
 ====
 
 == Add a new test
 
-Add a new test in the existing `GreetingResourceTest` class that tests the `/hello/greeting` endpoint by copying this code below the existing test:
+Add a new test in the existing `GreetingResourceTest.java` class under the `// add more tests` marker that tests the `/hello/greeting` endpoint by copying this code below the existing test:
 
 [source, java, role="copypaste"]
 ----
@@ -64,22 +66,25 @@ Add a new test in the existing `GreetingResourceTest` class that tests the `/hel
 
 == Test the app
 
-Let's test our app. In Che, using the same command palette, double-click on **Run Quarkus Tests**:
+Let's test our app. Click on the **Run Tests** command:
 
-image::testcmd.png[testcmd,600]
+image::cmd-test.png[livecoding, 700]
 
 The tests will run, and eventually complete. Did you get any errors? You should have! You probably got:
 
 [source, none]
 ----
-[ERROR] Failures:
-[ERROR]   GreetingResourceTest.testHelloEndpoint:18 1 expectation failed.
+[ERROR] testHelloEndpoint  Time elapsed: 1.112 s  <<< FAILURE!
+java.lang.AssertionError:
+1 expectation failed.
 Response body doesn't match expectation.
 Expected: is "hello"
   Actual: hola
 ----
 
-This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and re-run the test and confirm it passes with `BUILD SUCCESS`.
+This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and re-run the test and confirm it passes with `BUILD SUCCESS` using the same command:
+
+image::cmd-test.png[livecoding, 700]
 
 == Controlling the test port
 
@@ -92,33 +97,67 @@ You can configure the port used by tests by configuring `quarkus.http.test-port`
 quarkus.http.test-port=8083
 ----
 
-Now re-run the tests and look for
+Now re-run the tests (click on **Run Tests** again) and look for
 
 [source, none]
 ----
  INFO  [io.quarkus] (main) Quarkus x.xx.x started in 1.997s. Listening on: http://[::]:8083
 ----
 
+Notice the port `8083`.
+
+[NOTE]
+====
+You will also get a pop-up letting you know CodeReady detected the app opened a new port on `8083` and offers a way to open it in a browser. Simply dismiss the popup.
+====
+
 == Injecting a URI
 
 It is also possible to directly inject the URL into the test which can make is easy to use a different client. This is done via the `@TestHTTPResource` annotation.
 
-Let’s write a simple test that shows this off to load some static resources. First create a simple HTML file in `src/main/resources/META-INF/resources/`. Right-click on this directory and select _New -> HTML File_. Name the file `test` in the dialog box (which will cause the final filename to be `test.html`):
+Let’s write a simple test that shows this off to load some static resources. First create a simple HTML file in `src/main/resources/META-INF/resources/`. Right-click on this directory and select _New -> File_. Name the file `test.html` in the dialog box:
 
-image::createhtml.png[html,500]
+image::createhtml.png[html,700]
+image::createhtml2.png[html,500]
 
-Between the `<title></title>` tags, add `Testing with Quarkus`. Our test will verify this string.
+Add this code to the file:
 
-Next, create a new test under `src/test/java` in the `org.acme.people` package called `StaticContentTest`. To do this, right-click on the `org.acme.people` package and select _New -> Java Class_. Name the class `StaticContentTest`. Replace the contents of the file with this code:
+[source,html,role="copypaste"]
+----
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Testing with Quarkus</title>
+</head>
+<body>
+  <p>... it's fun and entertaining!</p>
+</body>
+</html>
+----
+Our test will verify that the `<title>` tags contain the right content.
+
+Next, create a new test under `src/test/java` in the `org.acme.people` package called `StaticContentTest.java`. Add this code to the file:
 
 [source, java, role="copypaste"]
 ----
 package org.acme.people;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.common.http.TestHTTPResource;
+import io.quarkus.test.junit.QuarkusTest;
+
 @QuarkusTest
 public class StaticContentTest {
 
-    @TestHTTPResource("test.html")
+    @TestHTTPResource("test.html") // <1>
     URL url;
 
     @Test
@@ -140,12 +179,9 @@ public class StaticContentTest {
     }
 }
 ----
+<1> The `@TestHTTPResource` annotation allows you to directly inject the URL of the Quarkus instance, the value of the annotation will be the path component of the URL. For now `@TestHTTPResource` allows you to inject URI, URL and String representations of the URL.
 
-You'll need to _Assistant -> Organize Imports_ to import the right classes. In the dialog box, pick the appropriate class to import, clicking _Next >_ until you've eliminated all the ambiguities, and click _Finish_. In particular, be sure to import `java.io.InputStream`, `java.io.ByteArrayOutputStream`, and `java.net.URL`.
-
-The `@TestHTTPResource` annotation allows you to directly inject the URL of the Quarkus instance, the value of the annotation will be the path component of the URL. For now `@TestHTTPResource` allows you to inject URI, URL and String representations of the URL.
-
-Re-run the tests to ensure they're still passing.
+Re-run the tests (with **Run Tests**) to ensure they're still passing:
 
 == Injection into tests
 
@@ -153,7 +189,7 @@ So far we have only covered integration style tests that test the app via HTTP e
 
 Quarkus supports this by allowing you to inject CDI beans into your tests via the `@Inject` annotation (in fact, tests in Quarkus are full CDI beans, so you can use all CDI functionality). Let’s create a simple test that tests the greeting service directly without using HTTP.
 
-Create a new test class in `src/test` in the `org.acme.people` package called `GreetingServiceTest`. Use the following code for the file's contents (note we've included the proper imports for you):
+Create a new test class file in `src/test` in the `org.acme.people` package called `GreetingServiceTest.java`. Use the following code for the file's contents (note we've included the proper imports for you):
 
 [source, java, role="copypaste"]
 ----
@@ -174,7 +210,7 @@ public class GreetingServiceTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("GreetingServiceTest");
 
-    @Inject
+    @Inject // <1>
     GreetingService service;
 
     @Test
@@ -183,10 +219,9 @@ public class GreetingServiceTest {
     }
 }
 ----
+<1> Here we are injecting our `GreetingService` and calling it, just as our RESTful resource endpoint does in the production code.
 
-Here we are injecting our `GreetingService` and calling it, just as our RESTful resource endpoint does in the production code.
-
-Run the tests again to verify the new test passes.
+Run the tests again (with **Run Tests**) to verify the new test passes.
 
 [NOTE]
 ====
@@ -232,7 +267,7 @@ Quarkus supports the use of mock objects using the CDI `@Alternative` mechanism.
 
 Let's mock our existing `GreetingService`. Although our existing service is pretty simple, in the real world the service might have too many dependencies on external systems to be feasible to call directly.
 
-Create a new class in `src/test/java` in the `org.acme.people` package called `MockGreetingService` with the following code:
+Create a new class file in `src/test/java` in the `org.acme.people` package called `MockGreetingService.java` with the following code:
 
 [source, java, role="copypaste"]
 ----
@@ -264,9 +299,9 @@ Now modify our existing `GreetingServiceTest` class to add a log statement showi
     }
 ----
 
-Basically we've added a new `LOGGER.info` line. Don't forget to _Assistant > Organize Imports_ to fix any needed imports (be sure to import `org.slf4j.Logger` and `org.slf4j.LoggerFactory`).
+Basically we've added a new `LOGGER.info` line.
 
-Now run the tests again (using the command palette as usual), and watch the output closely - you will see:
+Now run the tests again (with **Run Tests**) and watch the output closely - you will see:
 
 [source, none]
 ----
@@ -277,6 +312,6 @@ This confirms that our `MockGreetingService` is being used instead of the origin
 
 == Congratulations!
 
-In this section we covered basic testing of Quarkus Apps using the `@QuarkusTest` and supporting annotations. This is an important part of any software engineering project and with Quarkus, testing has never been easier. For more information on testing with Quarkus, be sure to review the https://quarkus.io/guides/getting-started-testing[Quarkus Testing Guide,window=_blank].
+In this section we covered basic testing of Quarkus Apps using the `@QuarkusTest` and supporting annotations. This is an important part of any software engineering project and with Quarkus, testing has never been easier. For more information on testing with Quarkus, be sure to review the https://quarkus.io/guides/getting-started-testing[Quarkus Testing Guide,window=blank].
 
 In the next section we'll talk about how to effectively debug Quarkus applications. On with the show!

@@ -1,7 +1,7 @@
 = Building Native Images
 :experimental:
 
-Let’s now produce a native executable for our application. It improves the startup time of the application, and produces a minimal disk and memory footprint. The executable would have everything to run the application including the "JVM" (shrunk to be just enough to run the application), and the application. This is accomplished using https://graalvm.org[GraalVM,window=_blank].
+Let’s now produce a native executable for our application. It improves the startup time of the application, and produces a minimal disk and memory footprint. The executable would have everything to run the application including the "JVM" (shrunk to be just enough to run the application), and the application. This is accomplished using https://graalvm.org[GraalVM,window=blank].
 
 GraalVM is a universal virtual machine for compiling and running applications written in JavaScript, Python, Ruby, R, JVM-based languages like Java, Scala, Groovy, Kotlin, Clojure, and LLVM-based languages such as C and C++. It includes ahead-of-time compilation, aggressive dead code elimination, and optimal packaging as native binaries that moves a lot of startup logic to _build-time_, thereby reducing startup time and memory resource requirements significantly.
 
@@ -46,9 +46,11 @@ Within the `pom.xml` is the declaration for the Quarkus Maven plugin which conta
 
 We use a profile because, you will see very soon, packaging the native image takes a few seconds. However, this compilation time is only incurred _once_, as opposed to _every_ time the application starts, which is the case with other approaches for building and executing JARs.
 
-Create a native executable by once again opening the command palette and choose **Build Native Quarkus App**. This will execute `mvn package -Pnative` behind the scenes. The `-Pnative` argument selects the `native` maven profile which invokes the Graal compiler.
+Create a native executable by using the **Build Native App** link on the right:
 
-**This will take about 2-3 minutes to finish. Wait for it!**
+image::cmd-native.png[livecoding, 700]
+
+**This will take about 2-3 minutes to finish. Wait for it!**. In the end you should get a **BUILD SUCCESS* message.
 
 [NOTE]
 ====
@@ -63,20 +65,20 @@ Since our environment here is Linux, you can _just run it_. In the terminal, run
 
 [source,sh,role="copypaste"]
 ----
-target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+$CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081 # <1>
 ----
+<1> We use port `8081` here to avoid conflicting with our already-running development mode Quarkus app.
 
 Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
 ----
-2019-07-10 04:04:11,817 INFO  [io.quarkus] (main) Quarkus 0.18.0 started in 0.015s. Listening on: http://[::]:8081
-2019-07-10 04:04:11,818 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, jdbc-h2, narayana-jta, resteasy]
+2019-07-10 04:04:11,817 INFO  [io.quarkus] (main) Quarkus xx.xx.xx started in 0.015s. Listening on: http://[::]:8081
 ----
 
 That's 15 milliseconds to start up.
 
-And extremely low memory usage as reported by the Linux `ps` utility. While the app is running, open another Terminal (click the `+` button on the terminal tabs line) and run:
+And extremely low memory usage as reported by the Linux `ps` utility. While the app is running, open another Terminal and run:
 
 [source,sh,role="copypaste"]
 ----
@@ -90,7 +92,7 @@ You should see something like:
  16017 53816 target/people-1.0-SNAPSHOT-runner
 ----
 
-This shows that our process is taking around 50 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size,window=_blank], or RSS). Pretty compact!
+This shows that our process is taking around 50 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size,window=blank], or RSS). Pretty compact!
 
 [NOTE]
 ====
