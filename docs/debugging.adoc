@@ -95,6 +95,8 @@ We need to pass an offset that is one _before_ the end, to get the last letter.
 
 Click the **Continue** button to let the method continue, log the erroneous value to the console, and return the value (your `curl` command may have timed out).
 
+image::debug-continue.png[buttons, 600]
+
 == Fix the bug
 
 Fix the code by changing the line that calls `substring()` to read:
@@ -123,6 +125,8 @@ Occasionally the debugger gets disconnected from the running app. If your breakp
 Remove the breakpoint by clicking on the red circle to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now: You should see `o`.
 
 Click **Stop** button to quit the debugging session.
+
+image::debug-stop.png[buttons, 600]
 
 == Congratulations!
 

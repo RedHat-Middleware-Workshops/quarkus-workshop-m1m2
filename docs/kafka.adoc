@@ -75,6 +75,8 @@ Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, w
 
 image::kafkaup.png[topiccreate,800]
 
+It may take a few minutes for all of the pods to appear spin up.
+
 == Add Quarkus Kafka Extension
 
 With Kafka installing, turn your attention back to the app. Like other exercises, we'll need another extension to integrate with Kafka. Install it with:

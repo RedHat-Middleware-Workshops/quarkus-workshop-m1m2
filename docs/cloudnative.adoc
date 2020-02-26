@@ -207,7 +207,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class DatabaseConnectionHealthCheck implements HealthCheck {
 
     @ConfigProperty(name = "database.up", defaultValue = "false")
-    private boolean databaseUp;
+    public boolean databaseUp;
 
     @Override
     public HealthCheckResponse call() {
@@ -500,7 +500,7 @@ In this example we read configuration properties from `application.properties`. 
 
 == Cleanup
 
-Stop the app that you ran with `java -jar` by pressing kbd:[CTRL+C] in the terminal or closing the Terminal window in which the app runs. Make sure to leave the original Live Coding app running!
+Stop the app that you ran with `java -jar` by pressing kbd:[CTRL+C] in the terminal in which the app runs. Make sure to leave the original Live Coding app running!
 
 == Congratulations
 

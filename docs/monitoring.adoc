@@ -71,7 +71,7 @@ Verify Prometheus is up and running:
 
 [source,sh,role="copypaste"]
 ----
-oc rollout status -w dc/prometheus
+oc rollout status -w deployment/prometheus
 ----
 
 You should see `replication controller "prometheus-2" successfully rolled out`.
@@ -188,7 +188,23 @@ Let's add a few more metrics for our Kafka stream we setup in the previous exerc
 <1> This metric will count the number of times this method is called
 <2> This metric will measure how long it takes the method to run
 
-Don't forget to import the correct classes as before using _Quick Fix..._.
+Don't forget to import the correct classes as before using _Quick Fix..._ or simply add these to the top of the class:
+
+[source,java,role="copypaste"]
+----
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+----
+
+Access the app once more to confirm you've got it all correct:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/metrics/application
+----
+
+You'll get many more metrics this time which we'll explore soon.
 
 == Rebuild Executable JAR
 
@@ -233,7 +249,7 @@ image:prom.png[Prometheus,800]
 
 These are the metrics exposed by our application, both raw numbers (like number of converted names in the `application_org_acme_people_stream_NameConverter_convertedNames_total` metric) along with quantiles of the same data across different time periods (e.g. `application_org_acme_people_stream_NameConverter_converter_rate_per_second`).
 
-Select `application:application_org_acme_people_stream_NameConverter_convertedNames_total` in the box, and click **Execute**. This will fetch the values from our metric showing the number of converted names:
+Select `application_org_acme_people_stream_NameConverter_convertedNames_total` in the box, and click **Execute**. This will fetch the values from our metric showing the number of converted names:
 
 image:promnames.png[names,800]
 
@@ -257,7 +273,7 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 == Install Grafana
 
-Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=_blank], click on `+Add`, and choose "Container Image", and fill in the fields:
+Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank], click on `+Add`, and choose "Container Image", and fill in the fields:
 
 * *Image Name*: `grafana/grafana` (and then click the magnifying glass)
 * *Application*: `Create Application`

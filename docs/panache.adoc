@@ -531,7 +531,8 @@ image::db-postgres.png[db, 700]
 
 Click on *Instantiate Template* and fill in the following fields, leaving the others as their default values:
 
-* **Namespace**: _choose `{{ USER_ID }}-project` for the first Namespace. Leave the second one as `openshift`_
+* **Namespace** (the first one): _choose `{{ USER_ID }}-project`
+* **Namespace** (the _second_ one): `openshift`
 * **Database Service Name**: `postgres-database`
 * **PostgreSQL Connection Username**: `sa`
 * **PostgreSQL Connection Password**: `sa`
@@ -570,6 +571,11 @@ oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/targe
 This will re-build the image by starting with the OpenJDK base image, adding in our executable JAR, and packaging the result as a container image on the internal registry. Wait for the build to finish.
 
 The rebuild will also trigger a re-deployment of our app. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank] to ensure the new version is rolled out and the old one killed.
+
+[NOTE]
+====
+Remember in our `application.properties` we have pre-defined database connections for the `%prod` profile. When Quarkus runs in production, it will connect to the database you just deployed!
+====
 
 image::database-redeployment.png[inventory_db_deployments, 700]
 

@@ -117,7 +117,7 @@ Nice!
 
 == Cleanup
 
-Go to the Terminal in which you ran the native app and press kbd:[CTRL+C] to stop our native app (or close the Terminal window with the `X` button next to its title). **Be sure to leave your Live Coding Terminal open!**
+Go to the Terminal in which you ran the native app and press kbd:[CTRL+C] to stop our native app. **Be sure to leave your Live Coding Terminal open!**
 
 == Congratulations!
 

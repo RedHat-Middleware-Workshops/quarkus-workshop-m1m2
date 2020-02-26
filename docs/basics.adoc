@@ -52,7 +52,7 @@ image::crw-clone-explorer.png[crw,900]
 The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
 terminal, you can use the **>_ New Terminal** command on the right:
 
-image::cmd-terminal.png[codeready-workspace-terminal, 700]
+image::cmd-terminal.png[codeready-workspace-terminal, 500]
 ====
 
 The project has
@@ -63,7 +63,11 @@ The project has
 * The application configuration file
 * Other source files we'll use later
 
-Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`. This class has a very simple RESTful endpoint definition:
+Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`.
+
+image::initnav.png[codeready-workspace-terminal, 500]
+
+This class has a very simple RESTful endpoint definition:
 
 [source, java]
 ----
@@ -202,7 +206,7 @@ hola
 
 ## Cleanup
 
-Go back to the terminal in which you ran the app with `java -jar` and stop the app by pressing kbd:[CTRL+C] (or close the Terminal). **Be sure not to close the "Live Coding" terminal!**
+Go back to the terminal in which you ran the app with `java -jar` and stop the app by pressing kbd:[CTRL+C]. **Be sure not to close the "Live Coding" terminal!**
 
 ## Congratulations!
 

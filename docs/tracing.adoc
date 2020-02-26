@@ -112,7 +112,7 @@ image::paging.png[paging,600]
 
 == Inspect traces
 
-Open the http://jaeger-query-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI, window=blank]. By default Jaeger uses the same login details as OpenShift, so click the **Login with OpenShift** button, enter your credentials:
+Open the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI, window=blank]. By default Jaeger uses the same login details as OpenShift, so click the **Login with OpenShift** button, enter your credentials:
 
 * **Username**: `{{ USER_ID }}`
 * **Password**: `{{ OPENSHIFT_USER_PASSWORD }}`
@@ -122,6 +122,11 @@ Then, click **Allow Selected Permissions** to allow Jaeger to access your accoun
 image::jaegerui.png[jaeger,600]
 
 Using the menu on the left, select the `people` Service, and click **Find Traces**. Jaeger will show the collected traces on the right:
+
+[WARNING]
+====
+If you do not see `people` in the _Service_ drop-down, ensure your changes to `application.properties` to add Jaeger configuration is correct, and reload the Jaeger UI.
+====
 
 image::find1.png[jaeger,600]
 
@@ -343,7 +348,7 @@ You should see:
 
 == Inspect traces
 
-Reload the http://jaeger-query-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI, window=blank], and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
+Reload the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI, window=blank], and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
 
 image::swpeople.png[swpeople,800]
 
