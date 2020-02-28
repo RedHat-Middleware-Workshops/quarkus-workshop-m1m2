@@ -1,9 +1,9 @@
 = Deploy to OpenShift
 :experimental:
 
-With our app fully ready for its first cloud native deployment, let's package it up for deployment to our Kubernetes platform as a native image. We'll use some OpenShift tooling to accomplish this, as outlined in the https://quarkus.io/guides/kubernetes-guide[Quarkus - Deploying on Kubernetes Guide, window=blank].
+With our app fully ready for its first cloud native deployment, let's package it up for deployment to our Kubernetes platform as a native image. We'll use some OpenShift tooling to accomplish this, as outlined in the https://quarkus.io/guides/kubernetes-guide[Quarkus - Deploying on Kubernetes Guide^].
 
-OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD,window=blank], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
+OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD^], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
 
 == Build native image
 
@@ -46,7 +46,7 @@ Congratulations, you are now authenticated to the OpenShift server via the CLI. 
 The login session might timeout after long periods of inactivity. If this happens, you'll get messages like `Error from server (Forbidden): xxxxx is forbidden: User "system:anonymous" cannot xxxxx`. Simply login again!
 ====
 
-https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[Namespaces,window=blank]
+https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[Namespaces^]
 are a top level concept to help you organize your deployments and teams of developers. A
 namespace allows a community of users (or a user) to organize and manage
 their content in isolation from other communities. OpenShift _projects_ provide additional functionality for managing Kubernetes namespaces.
@@ -66,7 +66,7 @@ You should get a `--> Success` message at the end.
 
 [NOTE]
 ====
-This build uses the new https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/getting_started_with_containers/using_red_hat_base_container_images_standard_and_minimal[Red Hat Universal Base Image,window=blank], providing foundational software needed to run most applications, while staying at a reasonable size.
+This build uses the new https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/getting_started_with_containers/using_red_hat_base_container_images_standard_and_minimal[Red Hat Universal Base Image^], providing foundational software needed to run most applications, while staying at a reasonable size.
 ====
 
 And then start and watch the build, which will take about a minute to complete:
@@ -123,7 +123,7 @@ hello quarkus-on-openshift from people-1-9sgsm
 Your hostname (the Kubernetes _pod_ in which your app runs) name will be different from the above.
 ====
 
-So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console,window=blank]. Login with your assigned username and password (e.g. `{{ USER_ID }}/{{ OPENSHIFT_USER_PASSWORD }}`):
+So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console^]. Login with your assigned username and password (e.g. `{{ USER_ID }}/{{ OPENSHIFT_USER_PASSWORD }}`):
 
 image::ocplogin.png[login,600]
 

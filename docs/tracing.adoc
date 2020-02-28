@@ -1,13 +1,13 @@
 = Tracing with MicroProfile OpenTracing
 :experimental:
 
-This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing,window=blank] to provide distributed tracing for interactive web applications.
+This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing^] to provide distributed tracing for interactive web applications.
 
 In a distributed cloud-native application, multiple microservices are collaborating to deliver the expected functionality. If you have hundreds of services, how do you debug an individual request as it travels through a distributed system? For Java enterprise developers, the Eclipse MicroProfile OpenTracing specification makes it easier. Let's find out how.
 
 == Install Jaeger
 
-https://www.jaegertracing.io/[Jaeger,window=blank] is a distributed tracing system originally created by Uber (the ride sharing company). It is used for monitoring and troubleshooting microservices-based distributed systems, including:
+https://www.jaegertracing.io/[Jaeger^] is a distributed tracing system originally created by Uber (the ride sharing company). It is used for monitoring and troubleshooting microservices-based distributed systems, including:
 
 * Distributed context propagation
 * Distributed transaction monitoring
@@ -28,7 +28,7 @@ Each component (microservice) in a distributed trace will contribute its own spa
 
 Jaeger is installed and managed through its Kubernetes Operator (just like AMQ Streams and Kafka that you used in previous exercises).
 
-First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank], click **+Add** and, then _From Catalog_:
+First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add** and, then _From Catalog_:
 
 image::fromcat.png[names,800]
 
@@ -42,7 +42,7 @@ Change the _metadata > name_ value to `jaeger` as shown, and click **Create**:
 
 image::jaegerdone.png[kafkacatalog,800]
 
-This will create a new `Jaeger` Kubernetes object in your namespace, triggering the Operator to deploy Jaeger. In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank] you'll see Jaeger spin up:
+This will create a new `Jaeger` Kubernetes object in your namespace, triggering the Operator to deploy Jaeger. In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] you'll see Jaeger spin up:
 
 image::jaegerspin.png[spin, 600]
 
@@ -75,7 +75,7 @@ quarkus.jaeger.sampler-param=1<2>
 quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces<3>
 ----
 <1> The name of our service from the perspective of Jaeger (useful when multiple apps report to the same Jaeger instance)
-<2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist,window=blank] to tune the performance.
+<2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist^] to tune the performance.
 <3> This is the default HTTP-based collector exposed by Jaeger
 
 == Test it out
@@ -104,7 +104,7 @@ oc rollout status -w dc/people
 
 == Trigger traces
 
-You'll need to trigger some HTTP endpoints to generate traces. Access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/datatable.html[graphical person browser powered by the DataTables library we created earlier, window=blank].
+You'll need to trigger some HTTP endpoints to generate traces. Access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/datatable.html[graphical person browser powered by the DataTables library we created earlier^].
 
 Exercise the table a bit by paging through the entries and using various search terms to force several RESTful calls back to our app:
 
@@ -112,7 +112,7 @@ image::paging.png[paging,600]
 
 == Inspect traces
 
-Open the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI, window=blank]. By default Jaeger uses the same login details as OpenShift, so click the **Login with OpenShift** button, enter your credentials:
+Open the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^]. By default Jaeger uses the same login details as OpenShift, so click the **Login with OpenShift** button, enter your credentials:
 
 * **Username**: `{{ USER_ID }}`
 * **Password**: `{{ OPENSHIFT_USER_PASSWORD }}`
@@ -138,14 +138,14 @@ You can see that this trace (along with the others) shows the incoming HTTP GET 
 
 [NOTE]
 ====
-Service Mesh technologies like https://istio.io[Istio,window=blank] can provide even more tracing prowess as the calls across different services are traced at the network level, not requiring _any_ frameworks or developer instrumentation to be enabled for tracing.
+Service Mesh technologies like https://istio.io[Istio^] can provide even more tracing prowess as the calls across different services are traced at the network level, not requiring _any_ frameworks or developer instrumentation to be enabled for tracing.
 ====
 
 == Tracing external calls
 
-This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client,window=blank] with Quarkus in order to trace _external_, outbound requests with very little effort.
+This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client^] with Quarkus in order to trace _external_, outbound requests with very little effort.
 
-We will use the publicly available https://swapi.co[Star Wars API,window=blank] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
+We will use the publicly available https://swapi.co[Star Wars API^] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
 
 === Create model
 
@@ -182,7 +182,7 @@ This contains a subset of the full Star Wars model, just enough to demonstrate t
 
 === Create interface
 
-Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client,window=blank] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class file in the `org.acme.people.service` package called `StarWarsService.java` with the following content:
+Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client^] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class file in the `org.acme.people.service` package called `StarWarsService.java` with the following content:
 
 [source,java,role="copypaste"]
 ----
@@ -348,7 +348,7 @@ You should see:
 
 == Inspect traces
 
-Reload the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI, window=blank], and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
+Reload the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^], and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
 
 image::swpeople.png[swpeople,800]
 

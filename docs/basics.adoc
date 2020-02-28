@@ -41,7 +41,7 @@ image::crw-clone-dest.png[crw,900]
 
 And click *Select Repository Location*.
 
-Once imported, choose **Add to existing workspace** when prompted.
+Once imported, choose **Add to workspace** when prompted.
 
 The project is imported into your workspace and is visible in the project explorer (click on the top-most icon for project explorer):
 

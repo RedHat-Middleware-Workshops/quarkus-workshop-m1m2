@@ -14,9 +14,9 @@ There are of course a category of issues that can't be resolved by restarting th
 
 === Add Extension
 
-Let's build a simple REST application endpoint exposes https://microprofile.io[MicroProfile,window=blank] Health checks at the `/health` endpoint according to the specification. It will also provide several other REST endpoints to allow us to dynamically query the health of our Quarkus application.
+Let's build a simple REST application endpoint exposes https://microprofile.io[MicroProfile^] Health checks at the `/health` endpoint according to the specification. It will also provide several other REST endpoints to allow us to dynamically query the health of our Quarkus application.
 
-We'll need to add a https://quarkus.io/extensions[Quarkus Extension,window=blank] to enable this feature in our app. Fortunately, adding a Quarkus extension is super easy. We'll cover extensions in more depth in other sections of this workshop but for now, open a Terminal and execute the following command to add the extension to our project's `pom.xml`:
+We'll need to add a https://quarkus.io/extensions[Quarkus Extension^] to enable this feature in our app. Fortunately, adding a Quarkus extension is super easy. We'll cover extensions in more depth in other sections of this workshop but for now, open a Terminal and execute the following command to add the extension to our project's `pom.xml`:
 
 [source, sh, role="copypaste"]
 ----
@@ -97,7 +97,7 @@ There are two types of probes in Quarkus apps (and Kubernetes):
 * Liveness Probe - Many applications running for long periods of time eventually transition to broken states, and cannot recover except by being restarted. Kubernetes provides liveness probes to detect and remedy such situations. Restarting a container in such a state can help to make the application more available despite bugs.
 * Readiness Probe - Sometimes, applications are temporarily unable to serve traffic. For example, an application might need to load large data or configuration files during startup, or depend on external services after startup. In such cases, you don’t want to kill the application, but you don’t want to send it requests either. Kubernetes provides readiness probes to detect and mitigate these situations. A pod with containers reporting that they are not ready does not receive traffic through Kubernetes Services.
 
-Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail. There are various https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/[Configuration Paramters, window=blank] you can set, such as the timeout period, frequency, and other parameters that can be tuned to expected application behavior.
+Readiness and liveness probes can be used in parallel for the same container. Using both can ensure that traffic does not reach a container that is not ready for it, and that containers are restarted when they fail. There are various https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/[Configuration Paramters^] you can set, such as the timeout period, frequency, and other parameters that can be tuned to expected application behavior.
 ====
 
 Thanks to Live Coding mode, simply open a Terminal window and run:
@@ -297,7 +297,7 @@ Later, when we deploy this to our Kubernetes cluster, we'll configure it to use 
 
 Hardcoded values in your code are a no-no (even if we all did it at some point ;-)). In this step, we learn how to configure your application to externalize configuration.
 
-Quarkus uses https://microprofile.io/project/eclipse/microprofile-config[MicroProfile Config,window=blank] to inject the configuration into the application. The injection uses the `@ConfigProperty` annotation, for example:
+Quarkus uses https://microprofile.io/project/eclipse/microprofile-config[MicroProfile Config^] to inject the configuration into the application. The injection uses the `@ConfigProperty` annotation, for example:
 
 [source, java]
 ----
@@ -307,7 +307,7 @@ String message;
 
 [NOTE]
 ====
-When injecting a configured value, you can use `@Inject @ConfigProperty` or just `@ConfigProperty`. The `@Inject` annotation is not necessary for members annotated with `@ConfigProperty`, a behavior which differs from https://microprofile.io/project/eclipse/microprofile-config[MicroProfile Config,window=blank].
+When injecting a configured value, you can use `@Inject @ConfigProperty` or just `@ConfigProperty`. The `@Inject` annotation is not necessary for members annotated with `@ConfigProperty`, a behavior which differs from https://microprofile.io/project/eclipse/microprofile-config[MicroProfile Config^].
 ====
 
 === Add some external config
@@ -426,7 +426,7 @@ You can override these runtime properties with the following mechanisms (in decr
 . for a runner jar: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass java -jar target/myapp-runner.jar`
 . for a native executable: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass ./target/myapp-runner`
 
-Environment variables names are following the conversion rules of https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources[Eclipse MicroProfile Config sources,window=blank]
+Environment variables names are following the conversion rules of https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources[Eclipse MicroProfile Config sources^]
 ====
 
 === Configuration Profiles
@@ -495,7 +495,7 @@ What did you get? You should get `hello production quarkus!` indicating that the
 
 [NOTE]
 ====
-In this example we read configuration properties from `application.properties`. You can also introduce custom configuration sources in the standard MicroProfile Config manner.  https://microprofile.io/project/eclipse/microprofile-config[More Info,window=blank]. This would be useful, for example, to read directly from **Kubernetes ConfigMap**s.
+In this example we read configuration properties from `application.properties`. You can also introduce custom configuration sources in the standard MicroProfile Config manner.  https://microprofile.io/project/eclipse/microprofile-config[More Info^]. This would be useful, for example, to read directly from **Kubernetes ConfigMap**s.
 ====
 
 == Cleanup

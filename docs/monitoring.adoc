@@ -1,18 +1,18 @@
 = Monitoring Quarkus Apps using MicroProfile Metrics
 :experimental:
 
-This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics,window=blank] specification through the SmallRye Metrics extension.
+This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics^] specification through the SmallRye Metrics extension.
 
 MicroProfile Metrics allows applications to gather various metrics and statistics that provide insights into what is happening inside the application. They ey serve to pinpoint issues, provide long term trend data for capacity planning and pro-active discovery of issues (e.g. disk usage growing without bounds). Metrics can also help those scheduling systems decide when to scale the application to run on more or fewer machines.
 
-The metrics can be read remotely using JSON format or the https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format[OpenMetrics text format,window=blank], so that they can be processed by additional tools such as Prometheus, and stored for analysis and visualisation. You can then use tools like http://prometheus.io[Prometheus,window=blank] and http://grafana.com[Grafana,window=blank] to collect and display metrics for your Quarkus apps.
+The metrics can be read remotely using JSON format or the https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format[OpenMetrics text format^], so that they can be processed by additional tools such as Prometheus, and stored for analysis and visualisation. You can then use tools like http://prometheus.io[Prometheus^] and http://grafana.com[Grafana^] to collect and display metrics for your Quarkus apps.
 
 == Install Prometheus
 
 First, let's install Prometheus. Prometheus is an open-source systems monitoring and alerting toolkit featuring:
 
-* a multi-dimensional https://prometheus.io/docs/concepts/data_model/[data model,window=blank] with time series data identified by metric name and key/value pairs
-* https://prometheus.io/docs/prometheus/latest/querying/basics/[PromQL,window=blank], a flexible query language to leverage this dimensionality
+* a multi-dimensional https://prometheus.io/docs/concepts/data_model/[data model^] with time series data identified by metric name and key/value pairs
+* https://prometheus.io/docs/prometheus/latest/querying/basics/[PromQL^], a flexible query language to leverage this dimensionality
 * time series collection happens via a pull model over HTTP
 
 To install it, first create a Kubernetes ConfigMap that will hold the Prometheus configuration. In the Terminal, run the following:
@@ -40,7 +40,7 @@ scrape_configs:
 
 === Deploy Prometheus from Container Image
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project, window=blank], click on `+Add`, and choose "Container Image"
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^], click on `+Add`, and choose "Container Image"
 
 image::add-to-project.png[Prometheus, 800]
 
@@ -56,7 +56,7 @@ Leave the rest as-is and click *Create*:
 
 image::search-prometheus-image.png[Prometheus, 800]
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project, window=blank], you'll see prometheus spinning up.
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^], you'll see prometheus spinning up.
 
 Finally, mount the ConfigMap into the running container:
 
@@ -225,7 +225,7 @@ oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/targe
 
 == Confirm deployment
 
-Once the build completes, ensure the app completes its redeployment with this command (or watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project, window=blank])
+Once the build completes, ensure the app completes its redeployment with this command (or watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^])
 
 [source,sh,role="copypaste"]
 ----
@@ -234,11 +234,11 @@ oc rollout status -w dc/people
 
 == Test
 
-You'll need to trigger the methods that we've instrumented, so http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/names.html[reopen the name cloud, window=blank], which will start producing names (and generating metrics):
+You'll need to trigger the methods that we've instrumented, so http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/names.html[reopen the name cloud^], which will start producing names (and generating metrics):
 
 image::names.png[names, 400]
 
-Within about 15-30 seconds, Prometheus should start scraping the metrics. Once again, access the http://prometheus-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Prometheus UI, window=blank]. Start typing in the query box to look for 'acme':
+Within about 15-30 seconds, Prometheus should start scraping the metrics. Once again, access the http://prometheus-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Prometheus UI^]. Start typing in the query box to look for 'acme':
 
 [NOTE]
 ====
@@ -265,7 +265,7 @@ Of course Quarkus apps use very little memory, even for apps stuffed with all so
 
 == Visualizing with Grafana
 
-https://grafana.com/[Grafana,window=blank] is commonly used to visualize metrics and provides a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards,window=blank]:
+https://grafana.com/[Grafana^] is commonly used to visualize metrics and provides a flexible, graphical frontend which has support for Prometheus (and many other data sources) and can display https://prometheus.io/docs/visualization/grafana/[customized, realtime dashboards^]:
 
 image::https://grafana.com/api/dashboards/3308/images/2099/image[Grafana dashboard,800]
 
@@ -273,7 +273,7 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 == Install Grafana
 
-Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank], click on `+Add`, and choose "Container Image", and fill in the fields:
+Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
 
 * *Image Name*: `grafana/grafana` (and then click the magnifying glass)
 * *Application*: `Create Application`
@@ -284,7 +284,7 @@ Leave the rest as-is and click *Create*:
 
 image::search-grafana-image.png[Grafana, 700]
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project, window=blank], you'll see Grafana spinning up. Once it completes, click on the arrow to access the Grafana UI:
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^], you'll see Grafana spinning up. Once it completes, click on the arrow to access the Grafana UI:
 
 image::grafana-route.png[Prometheus, 700]
 
@@ -388,6 +388,6 @@ Beautiful, and useful! You can add many more metrics to monitor and alert for Qu
 
 == Congratulations!
 
-This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics,window=blank] specification through the SmallRye Metrics extension. You also consumed these metrics using a popular monitoring stack with Prometheus and Grafana.
+This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics^] specification through the SmallRye Metrics extension. You also consumed these metrics using a popular monitoring stack with Prometheus and Grafana.
 
 There are many more possibilities for application metrics, and it's a useful way to not only gather metrics, but act on them through alerting and other features of the monitoring stack you may be using.

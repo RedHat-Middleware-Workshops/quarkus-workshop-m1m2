@@ -18,7 +18,7 @@ The asynchronous message passing feature in Quarkus allows _replying_ to message
 
 == Add extension
 
-This mechanism uses the https://vertx.io/docs/vertx-core/java/#event_bus[Vert.x EventBus,window=blank], so you need to enable the `vertx` extension to use this feature. Add the extension in the Terminal using this command:
+This mechanism uses the https://vertx.io/docs/vertx-core/java/#event_bus[Vert.x EventBus^], so you need to enable the `vertx` extension to use this feature. Add the extension in the Terminal using this command:
 
 [source,sh,role="copypaste"]
 ----
@@ -27,7 +27,7 @@ mvn quarkus:add-extension -Dextensions="vertx" -f $CHE_PROJECTS_ROOT/quarkus-wor
 
 [NOTE]
 ====
-https://vertx.io/[Eclipse Vert.x,window=blank] is a toolkit for building reactive applications. It is designed to be lightweight and embeddable. Vert.x defines a reactive execution model and provides a large ecosystem. Quarkus integrates Vert.x to implement different reactive features, such as asynchronous message passing (the subject of this exercise), and non-blocking HTTP client. Basically, Quarkus uses Vert.x as its reactive engine. While lots of reactive features from Quarkus don’t show Vert.x, it’s used underneath. But you can also access the managed Vert.x instance and benefit from the Vert.x ecosystem.
+https://vertx.io/[Eclipse Vert.x^] is a toolkit for building reactive applications. It is designed to be lightweight and embeddable. Vert.x defines a reactive execution model and provides a large ecosystem. Quarkus integrates Vert.x to implement different reactive features, such as asynchronous message passing (the subject of this exercise), and non-blocking HTTP client. Basically, Quarkus uses Vert.x as its reactive engine. While lots of reactive features from Quarkus don’t show Vert.x, it’s used underneath. But you can also access the managed Vert.x instance and benefit from the Vert.x ecosystem.
 ====
 
 Quarkus provides 3 Vert.x APIs:
@@ -117,7 +117,7 @@ We posted the message to the Vert.x event bus at the `add-person` address, but t
 
 == Create consumer
 
-Create a new class in the `org.acme.people.service` package called `PersonService`. Use the following code to implement our message consumer:
+Create a new class file in the `org.acme.people.service` package called `PersonService.java`. Use the following code to implement our message consumer:
 
 [source,java,role="copypaste"]
 ----

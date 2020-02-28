@@ -1,7 +1,7 @@
 = Reactive Streams with Quarkus and Kafka
 :experimental:
 
-In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reactive Streams Messaging and https://kafka.apache.org[Apache Kafka,window=blank], a distributed streaming platform. You will also use https://strimzi.io/[Strimzi,window=blank], which provides an easy way to run an Apache Kafka cluster on Kubernetes using https://operatorhub.io/what-is-an-operator[Operators,window=blank].
+In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reactive Streams Messaging and https://kafka.apache.org[Apache Kafka^], a distributed streaming platform. You will also use https://strimzi.io/[Strimzi^], which provides an easy way to run an Apache Kafka cluster on Kubernetes using https://operatorhub.io/what-is-an-operator[Operators^].
 
 == What is Apache Kafka?
 
@@ -30,7 +30,7 @@ Strimzi provides three operators:
 
 == The Goal
 
-In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using https://www.w3.org/TR/eventsource/[_server-sent events_,window=blank] and displayed in the browser. It will look like this:
+In this exercise, we are going to generate (random) names in one component. These names are written in a Kafka topic (`names`). A second component reads from the `names` Kafka topic and applies some magic conversion to the name (adding an honorific). The result is sent to an _in-memory stream_ consumed by a JAX-RS resource. The data is sent to a browser using https://www.w3.org/TR/eventsource/[_server-sent events_^] and displayed in the browser. It will look like this:
 
 image::names.png[names,800]
 
@@ -38,7 +38,7 @@ image::names.png[names,800]
 
 The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace.
 
-First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank], click **+Add** and, then _From Catalog_:
+First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add** and, then _From Catalog_:
 
 image::fromcat.png[names,800]
 
@@ -71,7 +71,7 @@ image::topiccreate.png[topiccreate,800]
 
 This will cause the Operator to provision a new Topic in the Kafka cluster.
 
-Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank], make sure all the Kafka and Zookeeper pods are up and running (with dark blue circles):
+Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], make sure all the Kafka and Zookeeper pods are up and running (with dark blue circles):
 
 image::kafkaup.png[topiccreate,800]
 
@@ -201,7 +201,7 @@ public class NameResource {
 
 [NOTE]
 ====
-There is a pre-created `names.html` page for you to use (in the `src/main/resources/META-INF/resources` directory) which will make a request to this `/names/stream` endpoint using standard JavaScript running in the browser and draw the resulting names using the https://d3js.org/[D3.js library,window=blank]. The JavaScript that makes this call looks like this (do not copy this into anything!):
+There is a pre-created `names.html` page for you to use (in the `src/main/resources/META-INF/resources` directory) which will make a request to this `/names/stream` endpoint using standard JavaScript running in the browser and draw the resulting names using the https://d3js.org/[D3.js library^]. The JavaScript that makes this call looks like this (do not copy this into anything!):
 
 [source,javascript]
 ----
@@ -251,7 +251,7 @@ Add the following values to the app's `src/main/resources/application.properties
 ----
 <1> The hostnames you see here will only make sense (be resolvable via DNS) when this app is run in the same Kubernetes namespace as the Kafka cluster you created earlier. So you'll see this and other config values above prefixed with `%prod` which will not try to initialize Kafka when in `dev` mode.
 
-More details about this configuration is available on the https://kafka.apache.org/documentation/#producerconfigs[Producer configuration] and https://kafka.apache.org/documentation/#consumerconfigs[Consumer configuration,window=blank] section from the Kafka documentation.
+More details about this configuration is available on the https://kafka.apache.org/documentation/#producerconfigs[Producer configuration] and https://kafka.apache.org/documentation/#consumerconfigs[Consumer configuration^] section from the Kafka documentation.
 
 [NOTE]
 ====
@@ -279,7 +279,7 @@ The build should take a minute or two to complete.
 
 == Test
 
-Our application should be up and running in a few seconds after the build completes and generating names. To see if it's working, access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/names.html[graphical name cloud powered by Quarkus, MicroProfile and Kafka, window=blank]. You should see a cloud of names updating every 5 seconds (it may take a few seconds for it to start!):
+Our application should be up and running in a few seconds after the build completes and generating names. To see if it's working, access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/names.html[graphical name cloud powered by Quarkus, MicroProfile and Kafka^]. You should see a cloud of names updating every 5 seconds (it may take a few seconds for it to start!):
 
 [NOTE]
 ====
@@ -294,5 +294,5 @@ These are the original names streamed through Kafka, altered to add a random hon
 
 This guide has shown how you can interact with Kafka using Quarkus. It utilizes MicroProfile Reactive Messaging to build data streaming applications.
 
-If you want to go further check the documentation of https://smallrye.io/smallrye-reactive-messaging[SmallRye Reactive Messaging,window=blank], the implementation used in Quarkus.
+If you want to go further check the documentation of https://smallrye.io/smallrye-reactive-messaging[SmallRye Reactive Messaging^], the implementation used in Quarkus.
 

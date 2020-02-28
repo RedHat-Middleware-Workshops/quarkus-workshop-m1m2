@@ -39,7 +39,7 @@ This causes the `%dev` properties (using H2 database) to be active in developmen
 
 [NOTE]
 ====
-These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide,window=blank].
+These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide^].
 ====
 
 == Create Entity
@@ -331,11 +331,11 @@ In the previous step you added a few more custom queries to your entity and the 
 
 Earlier we used `curl` to access our data, which is very useful for testing, but for real applications you will usually surface the data in other ways, like on web pages using tables, with options for searching, sorting, filtering, paging, etc. Quarkus and Panache make this easy to adapt your application for any display library or framework.
 
-Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables,window=blank]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is inefficient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
+Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables^]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is inefficient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
 
 === Add Datatables endpoint
 
-https://www.datatables.net/manual/server-side[DataTables documentation,window=blank] shows that its frontend will call an endpoint on the backend to retrieve some amount of data. It will pass several query parameters to tell the server what to sort, filter, search, and which data to return based on the page size and current page the user is viewing. For this example, we'll only support a subset:
+https://www.datatables.net/manual/server-side[DataTables documentation^] shows that its frontend will call an endpoint on the backend to retrieve some amount of data. It will pass several query parameters to tell the server what to sort, filter, search, and which data to return based on the page size and current page the user is viewing. For this example, we'll only support a subset:
 
 * `start` - The index of the first element needed
 * `length` - Total number records to return (or less, if there are less records that meet criteria)
@@ -521,7 +521,7 @@ You should get up to 2 records returned (since we passed `length=2` in the query
 
 == Deploy to OpenShift
 
-Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank], click **+Add** on the left, on the _Database_ box on the project overview:
+Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add** on the left, on the _Database_ box on the project overview:
 
 image::db.png[db, 700]
 
@@ -531,7 +531,7 @@ image::db-postgres.png[db, 700]
 
 Click on *Instantiate Template* and fill in the following fields, leaving the others as their default values:
 
-* **Namespace** (the first one): _choose `{{ USER_ID }}-project`
+* **Namespace** (the first one): Select `{{ USER_ID }}-project`
 * **Namespace** (the _second_ one): `openshift`
 * **Database Service Name**: `postgres-database`
 * **PostgreSQL Connection Username**: `sa`
@@ -542,7 +542,7 @@ image::db-postgres-values.png[db, 700]
 
 Click *Create*.
 
-This will deploy the database to our new project. Click on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank] to see it:
+This will deploy the database to our new project. Click on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to see it:
 
 image::database-deployment.png[inventory_db_deployments, 700]
 
@@ -570,7 +570,7 @@ oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/targe
 
 This will re-build the image by starting with the OpenJDK base image, adding in our executable JAR, and packaging the result as a container image on the internal registry. Wait for the build to finish.
 
-The rebuild will also trigger a re-deployment of our app. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View, window=blank] to ensure the new version is rolled out and the old one killed.
+The rebuild will also trigger a re-deployment of our app. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to ensure the new version is rolled out and the old one killed.
 
 [NOTE]
 ====
@@ -590,7 +590,7 @@ We can access using `curl` once again to find everyone born in or before the yea
 curl -s $(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/birth/before/2000 | jq
 ----
 
-Now access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/datatable.html[graphical person browser powered by the DataTables library, window=blank]. It should look like:
+Now access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/datatable.html[graphical person browser powered by the DataTables library^]. It should look like:
 
 image::datatable.png[datatable,800]
 
