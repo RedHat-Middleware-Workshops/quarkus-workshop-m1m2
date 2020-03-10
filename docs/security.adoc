@@ -279,14 +279,25 @@ Frequently, resource servers only perform authorization decisions based on role-
 
 Keycloak's _Authorization Services_ provides fine-grained authorization policies that decouples the authorization policy from your code, so when your policies change, your code doesn't have to. In this exercise we'll use Keycloak's Authorization Services to protect our Quarkus APIs.
 
-== Enable Quarkus Extension
+== Enable Quarkus Keycloak and OpenID Connect Extensions
 
-First, you'll need to enable the Keycloak extension:
+First, you'll need to enable the Keycloak extension by running this command in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
 mvn quarkus:add-extension -Dextensions="oidc, keycloak-authorization" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
+
+== Disable MicroProfile JWT Extension
+
+Since we will use Keycloak authentication rather than JWT, we'll need to disable the JWT extension. Open the `pom.xml` file and drag to select the `quarkus-smallrye-jwt` extension (including the beginning `<dependency>` and ending `</dependency>` lines)
+
+image:jwt-comment1.png[create,700]
+
+Delete these lines or simply comment them out using kbd:[CTRL+/] (or kbd:[CMD+/] on Mac OS X):
+
+image:jwt-comment2.png[create,700]
+
 
 === Configuring Keycloak
 
