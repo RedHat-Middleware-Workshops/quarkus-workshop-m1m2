@@ -365,6 +365,11 @@ Open the `PersonResource` resource class and add the following code below the `/
     }
 ----
 
+[NOTE]
+====
+You will see syntax errors highlighted in the editor when you paste the code. We'll fix those in the next step!
+====
+
 Here we are using JAX-RS `@QueryParam` values to specify the incoming parameters and be able to use them when the frontend calls the `GET /person/datatable` endpoint.
 
 We'll fill in the `TODO` comments to build this method.

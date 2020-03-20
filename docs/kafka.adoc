@@ -75,7 +75,7 @@ Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^],
 
 image::kafkaup.png[topiccreate,800]
 
-It may take a few minutes for all of the pods to appear spin up.
+It may take a few minutes for all of the pods to appear spin up. You can continue to the next step while the Kafka cluster and topics are created.
 
 == Add Quarkus Kafka Extension
 
