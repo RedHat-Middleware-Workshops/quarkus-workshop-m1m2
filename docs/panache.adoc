@@ -27,8 +27,8 @@ The database connection details (JDBC url, database credentials) are specified i
 
 [source,none]
 ----
-%prod.quarkus.datasource.url: jdbc:postgresql://postgres-database:5432/person
-%prod.quarkus.datasource.driver: org.postgresql.Driver
+%prod.quarkus.datasource.url=jdbc:postgresql://postgres-database:5432/person
+%prod.quarkus.datasource.driver=org.postgresql.Driver
 %dev.quarkus.datasource.url=jdbc:h2:mem:person:default
 %dev.quarkus.datasource.driver=org.h2.Driver
 %test.quarkus.datasource.url=jdbc:h2:mem:person:default
