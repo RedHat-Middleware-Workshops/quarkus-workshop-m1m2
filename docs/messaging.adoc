@@ -62,8 +62,8 @@ Next, create two new endpoints in the same class which creates new people in our
     @POST
     @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<String> addPerson(@PathParam("name") String name) {
-        return bus.<String>send("add-person", name) // <1>
+    public CompletionStage<Person> addPerson(@PathParam("name") String name) {
+        return bus.<Person>send("add-person", name) // <1>
           .thenApply(Message::body); // <2>
     }
 
@@ -138,7 +138,7 @@ public class PersonService {
 
     @ConsumeEvent(value = "add-person", blocking = true) // <1>
     @Transactional
-    public String addPerson(String name) {
+    public Person addPerson(String name) {
         LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 20 * 52 * -1)));
         EyeColor color = EyeColor.values()[(int)(Math.floor(Math.random() * EyeColor.values().length))];
         Person p = new Person();
@@ -146,7 +146,7 @@ public class PersonService {
         p.eyes = color;
         p.name = name;
         Person.persist(p); // <2>
-        return p.name; // <3>
+        return p; // <3>
     }
 
 }
@@ -164,14 +164,28 @@ Let's try our test again:
 curl -X POST http://localhost:8080/person/joe
 ----
 
-You should get back the name you put in (`joe`). Now let's confirm Joe is present:
+You should get back Joe!
+
+[source,json]
+----
+{
+  "id": 1004,<1>
+  "birth": "2000-03-15",
+  "eyes": "BROWN",<2>
+  "name": "joe"
+}
+----
+<1> The id may be different since its auto-generated
+<2> The eye color you see here may be difference, since it's randomly generated in the `addPerson()` method you added!
+
+Now let's re-confirm Joe is present:
 
 [source,sh,role="copypaste"]
 ----
 curl -s http://localhost:8080/person/name/joe | jq
 ----
 
-You should get back Joe!
+You should also get back Joe!
 
 [source,json]
 ----
