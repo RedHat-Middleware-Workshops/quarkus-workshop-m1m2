@@ -151,12 +151,9 @@ It should fail with:
 [source,none]
 ----
 HTTP/1.1 401 Unauthorized
-Connection: keep-alive
-Content-Type: text/html;charset=UTF-8
-Content-Length: 14
-Date: Tue, 16 Jul 2019 00:40:07 GMT
-
-Not authorized
+www-authenticate: Bearer {token}
+Content-Length: 0
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; path=/; HttpOnly
 ----
 
 Let's try with an authenticated user next.
@@ -189,12 +186,12 @@ You should see:
 [source,none]
 ----
 HTTP/1.1 200 OK
-Connection: keep-alive
-Content-Type: text/plain;charset=UTF-8
 Content-Length: 63
-Date: Tue, 16 Jul 2019 00:40:44 GMT
+Content-Type: text/plain;charset=UTF-8
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; path=/; HttpOnly
+Cache-control: private
 
-hello alice, isSecure: false, authScheme: MP-JWT, hasJWT: true
+hello alice, isSecure: false, authScheme: Bearer, hasJWT: true
 ----
 
 Now try to access the `/me/admin` endpoint as `alice`:
@@ -210,12 +207,11 @@ You'll get:
 [source,none]
 ----
 HTTP/1.1 403 Forbidden
-Connection: keep-alive
-Content-Type: text/html;charset=UTF-8
-Content-Length: 34
-Date: Tue, 16 Jul 2019 00:41:37 GMT
+Content-Length: 9
+Content-Type: text/plain;charset=UTF-8
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; path=/; HttpOnly
 
-Access forbidden: role not allowed
+Forbidden
 ----
 
 Alice is not an admin. Let's try with admin!
@@ -252,17 +248,17 @@ You should see:
 [source,none]
 ----
 HTTP/1.1 200 OK
-Connection: keep-alive
+Content-Length: 2256
 Content-Type: text/plain;charset=UTF-8
-Content-Length: 2272
-Date: Tue, 16 Jul 2019 00:14:54 GMT
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; path=/; HttpOnly
+Cache-control: private
 
-hello admin, isSecure: false, authScheme: MP-JWT, hasJWT: true
+hello admin, isSecure: false, authScheme: Bearer, hasJWT: true
 Injected issuer: ["{{KEYCLOAK_URL}}/auth/realms/quarkus"]
 
 Claim Name: [sub] Claim Value: [af134cab-f41c-4675-b141-205f975db679]
 Claim Name: [groups] Claim Value: [[admin, user]]
-Claim Name: [typ] Claim Value: ["Bearer"]
+Claim Name: [typ] Claim Value: [Bearer]
 Claim Name: [preferred_username] Claim Value: [admin]
 ... <more claims>
 ----
