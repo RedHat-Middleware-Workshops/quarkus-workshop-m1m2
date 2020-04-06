@@ -5,31 +5,55 @@ In this step, you will create a straightforward application serving a `hello` en
 
 image::arch.png[arch,800]
 
-## Import new project
+This IDE is based on Eclipse Che (which is in turn based on MicroSoft VS Code editor).
 
-In Che, click on **Import Project...**. In the dialog box, select **GITHUB** as the type of import, and then enter the following URL into the URL field and click **Import**.
+You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to click on them and see what they do:
+
+image::crw-icons.png[cdw, 800]
+
+[NOTE]
+====
+If things get weird or your browser appears, you can simply reload the browser tab to refresh the view.
+====
+
+Many features of CodeReady Workspaces are accessed via *Commands*. You can see a few of the commands listed with links on the home page (e.g. _New File.._, _Git Clone.._, and others).
+
+If you ever need to run commands that you don't see in a menu, you can press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on Mac OS X).
+
+## Import Project
+
+Let's import our project. Click on **Git Clone..** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
+
+image::che-workspace-gitclone.png[cdw, 900]
+
+Step through the prompts, using the following value for **Repository URL**:
 
 [source,none,role="copypaste"]
 ----
 https://github.com/RedHatWorkshops/quarkus-workshop-labs
 ----
 
-image::import.png[import,800]
+image::crw-clone-repo.png[crw,900]
+
+Next, select `/projects` in the drop-down menu for destination directory:
+
+image::crw-clone-dest.png[crw,900]
+
+And click *Select Repository Location*.
+
+Once imported, choose **Add to workspace** when prompted.
+
+The project is imported into your workspace and is visible in the project explorer (click on the top-most icon for project explorer):
+
+image::crw-clone-explorer.png[crw,900]
 
 [NOTE]
 ====
-You may see errors in the _dev machine_ teminal like `Java Model Exception: Java Model Status [people does not exist]`. **These can be safely ignored**.
+The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
+terminal, you can use the **>_ New Terminal** command on the right:
+
+image::cmd-terminal.png[codeready-workspace-terminal, 500]
 ====
-
-After a few seconds, you'll get a _Project Configuration_ Dialog. Select **Maven** as the project type, and click **Save**.
-
-image::importmaven.png[maven,800]
-
-This will tell Che that the project is a Maven-based project, and be able to resolve dependencies and do error checking on the `pom.xml` file.
-
-The structure of the project can be seen in the project browser to the left of the code editor:
-
-image::structure.png[structure,600]
 
 The project has
 
@@ -37,31 +61,13 @@ The project has
 * An `org.acme.people.rest.GreetingResource` resource exposed on `/hello`, along with a simple test
 * A landing page that is accessible on `http://localhost:8080` after starting the application
 * The application configuration file
+* Other source files we'll use later
 
-To save screen space, you can hide the Git Repository window on the right:
+Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`.
 
-image::che-realestate2.png[githide,800]
+image::initnav.png[codeready-workspace-terminal, 500]
 
-Next, double-click on `pom.xml` in the project browser to open it in the editor. You will find the import of the Quarkus BOM, allowing to omit the version on the different Quarkus dependencies. In addition, you can see the `quarkus-maven-plugin` responsible of the packaging of the application and also providing the development mode.
-
-[source,xml]
-----
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-bom</artifactId>
-            <version>${quarkus.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-----
-
-And a few more `<dependency>` imports and other ancillary sections. We will be adding things to our `pom.xml` in future sections.
-
-Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`. This class has a very simple RESTful endpoint definition:
+This class has a very simple RESTful endpoint definition:
 
 [source, java]
 ----
@@ -87,11 +93,13 @@ Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Applicat
 
 **Live Coding** (also referred to as _dev mode_) allows us to run the app and make changes on the fly. Quarkus will automatically re-compile and reload the app when changes are made. This is a powerful and efficient style of developing that you will use throughout the lab.
 
-In Che, select the _Command Palette_ by clicking on its icon in the upper right, and double-click on **Start Live Coding**:
+You can always use the `mvn` (Maven) commands to run Quarkus apps, but we've created a few helpful shortcuts on the right to run various Maven commands.
 
-image::runlocally.png[runlocal,800]
+Start the app by clicking on _Live Coding_:
 
-This will compile and run the app using `mvn compile quarkus:dev` in a Terminal window. Leave this terminal window open throughout the lab! You can complete the entire lab without shutting down Quarkus Live Coding mode. This is very useful for quick expermentation.
+image::cmd-livecoding.png[livecoding, 700]
+
+This will compile and run the app using `mvn compile quarkus:dev` in a Terminal window. Leave this terminal window open throughout the lab! You will complete the entire lab without shutting down Quarkus Live Coding mode, so be careful not to close the tab (if you do, you re-run it). This is very useful for quick expermentation.
 
 [NOTE]
 ====
@@ -107,27 +115,41 @@ You should see:
 
 [source,none]
 ----
-2019-02-28 17:05:22,347 INFO  [io.qua.dep.QuarkusAugmentor] (main) Beginning quarkus augmentation
-2019-02-28 17:05:22,635 INFO  [io.qua.dep.QuarkusAugmentor] (main) Quarkus augmentation completed in 288ms
-2019-02-28 17:05:22,770 INFO  [io.quarkus] (main) Quarkus started in 0.668s. Listening on: http://localhost:8080
-2019-02-28 17:05:22,771 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
+2020-02-21 04:52:36,145 INFO  [io.quarkus] (main) people 1.0-SNAPSHOT (running on Quarkus x.x.x) started in 1.389s. Listening on: http://0.0.0.0:8080
+2020-02-21 04:52:36,145 INFO  [io.quarkus] (main) Profile dev activated. Live Coding activated.
+2020-02-21 04:52:36,146 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
 ----
 
-Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything). To access applications from your laptop browser, Che creates an Ingress (referred to as a _Route_ in OpenShift) that is displayed at the top of the Terminal window. Look for _Preview URL_:
+Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything).
 
-image::previewurl.png[preview,900]
+CodeReady will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Do not open port 5005*, but when prompted, *open the port `8080`*, which opens a small web browser in CodeReady:
 
-Click on this Preview link to open the link in a new tab, which will access the default Quarkus HTML page included in this app:
+image::open-port.png[port, 700]
 
-image::defaultpage.png[default,800]
+You should see the default Quarkus welcome page (you may need to click the _reload_ icon):
 
-Since our RESTful endpoint listens on the `/hello` endpoint, add `/hello` to the end of the URL in your browser tab to access it.
+image::welcome-quarkus.png[port, 900]
 
-You should see `hello` in your browser tab, which means its working!
+Open a *new* CodeReady Workspaces Terminal:
 
-image::hellopage.png[hello,800]
+image::cmd-terminal.png[livecoding, 700]
 
-Now, let's exercise the **live reload** capabilities of Quarkus. In Che, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. After making this change, reload the same brower tab that was showing `hello`. It should now show `hola`.
+and invoke the `hello` endpoint using the following _curl_ command:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/hello
+----
+
+You can also click on the URL link at the upper right to open the same default page in a separate browser tab:
+
+image::crw-open-page.png[page, 800]
+
+Add `/hello` in your browser to see the same result as the _curl_ command:
+
+image::crw-open-page-hello.png[page, 800]
+
+Now, let's exercise the **live reload** capabilities of Quarkus. In CodeReady, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. After making this change, reload the same brower tab that was showing `hello`. It should now show `hola`.
 
 Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started. Leave the app running so we can continue to change it on the fly in the next section.
 
@@ -145,23 +167,15 @@ This will also listen for a debugger on port `5005`. If you want to wait for the
 
 Quarkus apps can be packaged as an executable JAR file or a native binary. We'll cover native binaries later, so for now, let's package as an executable JAR.
 
-Using the command palette, select **Create Executable JAR**.
+Click on 'Package app for OpenShift':
 
-image:createexec.png[create,700]
+image::cmd-package.png[livecoding, 700]
 
-This runs `mvn package` under the hood, and when done produces an executable jar file in the `target/` directory:
+This produces an executable jar file in the `target/` directory:
 
 image::jar.png[jar,800]
 
 * `people-1.0-SNAPSHOT-runner.jar` - being an executable jar. Be aware that it’s not an über-jar as the dependencies are copied into the `target/lib` directory.
-
-## Opening new Terminals
-
-Several steps in this workshop require you to execute commands in a Terminal. To open a new Terminal window, simply right-click on the project name `quarkus-workshop-labs` in the project browser on the left and select **Open In Terminal**:
-
-image::term.png[term,800]
-
-This will open a new Terminal window and set the current directory to the project directory. You could also use the `+` button on the Terminal tabs area, but you would need to change the directory using `cd quarkus-workshop-labs` before executing commands.
 
 ## Run the executable JAR
 
@@ -169,7 +183,7 @@ Run the packaged application. In a Terminal, run the following command:
 
 [source, sh, role="copypaste"]
 ----
-java -Dquarkus.http.port=8081 -jar target/*-runner.jar
+java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar
 ----
 
 [NOTE]
@@ -192,7 +206,7 @@ hola
 
 ## Cleanup
 
-Go back to the terminal in which you ran the app with `java -jar` and stop the app by pressing kbd:[CTRL+C] (or close the Terminal). Be sure not to close the "Live Coding" terminal!
+Go back to the terminal in which you ran the app with `java -jar` and stop the app by pressing kbd:[CTRL+C]. **Be sure not to close the "Live Coding" terminal!**
 
 ## Congratulations!
 

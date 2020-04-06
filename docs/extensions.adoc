@@ -5,7 +5,7 @@ One of the main goals of Quarkus is ease of extensibility and to build a vibrant
 
 Think of Quarkus extensions as your project dependencies. Extensions configure, boot and integrate a framework or technology into your Quarkus application. They also do all of the heavy lifting of providing the right information to GraalVM for your application to compile natively.
 
-Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem,window=_blank], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
+Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem^], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
 
 == List extensions
 
@@ -13,10 +13,10 @@ Retrieve the list of possible extensions using the Maven plugin. Run this in the
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:list-extensions
+mvn quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
-You can see the list of ~50 different extensions available to you in the output:
+You can see the list of ~80 different extensions available to you in the output:
 
 [source,none]
 ----
@@ -42,33 +42,30 @@ INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-
 In Live Coding mode, Quarkus will monitor the state of `pom.xml` and bring in new dependencies. No need to stop and restart!
 ====
 
-
 == Add an extension
 
 Later on in this lab we'll be using MicroProfile metrics, so let's add that extension here. In the Terminal, run the following command to add the _MicroProfile Metrics_ extension to your project:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="metrics"
+mvn quarkus:add-extension -Dextensions="metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 Notice we are using the "short" name `metrics` instead of the fully qualified name `io.quarkus:quarkus-smallrye-metrics`.
 
 The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences you've made up till now.
 
-Right-click on your `pom.xml` and select _Git > Compare with latest repository version_:
+Click on the _Source Control_ view and then double-click on `pom.xml`:
 
-image::gitdiff.png[login,600]
+image::gitdiff.png[login,1000]
 
-You'll see all the changes to `pom.xml` since you started:
-
-image::gitdiffcode.png[login,700]
+You'll see all the changes to `pom.xml` since you started, including the new extensions we've added.
 
 You may see other apparent differences due to whitespace and/or the re-shuffling of XML elements when you ran `mvn quarkus:add-extension`.
 
 There are many other git and GitHub operations like this one that you can perform directly in the IDE for real projects (e.g. committing, branching, merging, push/pull, log viewing, etc).
 
-Close the _diff_ window by clicking **Close**.
+Go back to the **Explorer** view in CodeReady (to see the tree of files once again).
 
 == Writing your own extension
 
@@ -76,10 +73,10 @@ Quarkus extensions add a new developer focused behavior to the core offering, an
 
 This means that metadata is only processed once at build time, which both saves on startup time, and also on memory usage as the classes etc that are used for processing are not loaded (or even present) in the runtime JVM.
 
-Writing a Quarkus extension is beyond the scope of this lab, so consult the https://quarkus.io/guides/extension-authors-guide[Extension Author's Guide,window=_blank] for more detail on writing your own extension.
+Writing a Quarkus extension is beyond the scope of this lab, so consult the https://quarkus.io/guides/extension-authors-guide[Extension Author's Guide^] for more detail on writing your own extension.
 
 == Congratulations
 
-Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem,window=_blank], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
+Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem^], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
 
 We'll be adding additional extensions as we go along in other sections of this workshop.

@@ -29,7 +29,7 @@ A a bug has been reported where the last letter is not working. To reproduce the
 curl http://localhost:8080/hello/lastletter/Foo
 ----
 
-Due to the bug, nothing is returned. It should have given us back an `o`. You'll also see `Got last letter:` and then no letter.
+Due to the bug, nothing is returned from _curl_. It should have given us back an `o`. You'll also see `Got last letter:` in the console output of the Quarkus app terminal.
 
 You can probably spot the bug right away but let's see how you could find this with the debugger, and more importantly fix it and re-test very quickly.
 
@@ -37,50 +37,53 @@ You can probably spot the bug right away but let's see how you could find this w
 
 In _Live Coding_ mode, Quarkus apps also listen for debugger connections on port `5005`. Your app should still be running.
 
-To connect to the running app, use the _Run > Edit Debug Configurations_ menu command. In the dialog, Click the `+` button next to `JAVA` to create a new Java debug configuration. You can name it whatever you want, but keep the `localhost` field as-is and select port `5005` in the port selection field:
+To connect to the running app, access the _debugger_ by clicking on the debug icon:
 
-image::debugconfig.png[debugconfig,600]
+image::crwdebug.png[buttons, 600]
 
-Click **Save** to save this configuration, and then click **Debug** to attach the debugger to our running Quarkus app. The debugger view will appear at the bottom of the screen with several small buttons used to start/stop execution, step into/over/out of code, and other operations.
-
-You can switch between the debug pane and the Terminal panes using the small icons to the left of the debugger window:
+The debugger view will appear with several small buttons used to start/stop execution, step into/over/out of code, and other operations. Ensure that **Attach to App** is selected in the drop-down, and click the **Start Debugging** button to attach the debugger to the app:
 
 image::buttons.png[buttons, 600]
 
 == Set a Breakpoint
 
-To debug the app, let's step through our function that has the bug. In the left gutter of the code, where the line numbers are shown, click once on the line number next to `int len = name.length();` to set a breakpoint. The line number will be highlighted and the breakpoint will be registered in the debug pane:
+To debug the app, let's step through our function that has the bug. In the left gutter of the code, to the left of the line numbers, click once next to `int len = name.length();` to set a breakpoint and cause a red circle to appear:
 
-> **NOTE** - your line numbers may be different depending on where you placed this code in the file.
+[NOTE]
+====
+Your line numbers may be different depending on where you placed this code in the file.
+====
 
 image::break.png[breakpoint,800]
 
 == Trigger the bug
 
-Now that we have a breakpoint, go back to Terminals with the Terminal button. In the Terminal issue the same `curl` command as before:
+Now that we have a breakpoint, in a Terminal issue the same `curl` command as before:
 
 [source, sh, role="copypaste"]
 ----
 curl http://localhost:8080/hello/lastletter/foo
 ----
 
-This time, the command will appear to hang as the breakpoint has been reached. The line where you set the breakpoint will be highlighted. Click the Debugger button to go back to the debugger, which has paused the execution at the breakpoint:
+This time, the command will appear to hang as the breakpoint has been reached. The line where you set the breakpoint will be highlighted:
 
 image::breakreached.png[breakpointreached]
 
-You will see three main sections of the debug view:
+You will see four main sections of the debug view:
+
+* **Threads** - A list of active threads at the point where the breakpoint was reached.
+
+* **Call Stack** - This is an ordered list of _stack frames_ showing the path through the code from the beginning of the thread to the current location in our code.
+
+* **Variables** - Here you can see the value of _local_ variables in the selected stack frame. In our code we have no local variables defined yet, but once we start stepping through the code, newly defined variables (like `len`) will appear here.
 
 * **Breakpoints** - This lists the breakpoints you've set. Each Breakpoint can be further configured, or selectively disabled, by right-clicking on the breakpoint in the breakpoint list.
 
-* **Frames** - This is an ordered list of _stack frames_ showing the path through the code from the beginning of the thread to the current location in our code.
+Step over the current line by clicking **Step Over**:
 
-* **Variables** - Here you can see the value of local variables in the selected stack frame. In our code we have no local variables defined yet, but once we start stepping through the code, newly defined variables (like `len`) will appear here.
+image::stepover.png[length, 800]
 
-You can use the various buttons to step across code:
-
-image::debugbuttons.png[debugbuttons, 800]
-
-Step over the current line by clicking **Step Over**. This will fully execute the current line, and advance to the next line in the code and stop again. (You could also step _into_ methods for deeper debugging).
+This will fully execute the current line, and advance to the next line in the code and stop again. (You could also step _into_ methods for deeper debugging).
 
 At this point, `len` is defined (and listed on the right side):
 
@@ -90,7 +93,9 @@ Click **Step Over** again, which executes the line to grab the last letter using
 
 We need to pass an offset that is one _before_ the end, to get the last letter.
 
-Click the **Resume** button to let the method continue, log the erroneous value to the console, and return the value (your `curl` command has probably timed out by now).
+Click the **Continue** button to let the method continue, log the erroneous value to the console, and return the value (your `curl` command may have timed out).
+
+image::debug-continue.png[buttons, 600]
 
 == Fix the bug
 
@@ -105,19 +110,23 @@ With the bug fixed, re-trigger the method by running the `curl` command again in
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/hello/lastletter/foo
+curl http://localhost:8080/hello/lastletter/foo ; echo
 ----
 
 The breakpoint will be hit once again. Step over the lines to verify the value of `lastLetter` is correct and you see a proper `Got last letter: o` on the console. before the method returns. You've fixed the bug!
 
+image::fixed.png[length, 800]
+
 [WARNING]
 ====
-Occasionally the debugger gets disconnected from the running app. If your breakpoints aren't being hit, try to click the **End Debug Session** button, and then use the _Run > Debug > Debug 'Remote Java'_ menu command to re-connect the debugger, and re-trigger the code.
+Occasionally the debugger gets disconnected from the running app. If your breakpoints aren't being hit, try to click the **Stop** button, and then reconnect with the **Start Debugging** button, and try again.
 ====
 
-Remove the breakpoint by clicking on the line number again to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now: You should see `o`.
+Remove the breakpoint by clicking on the red circle to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now: You should see `o`.
 
-Click **End Debug Session** button to quit the debugging session.
+Click **Stop** button to quit the debugging session.
+
+image::debug-stop.png[buttons, 600]
 
 == Congratulations!
 

@@ -18,16 +18,16 @@ The asynchronous message passing feature in Quarkus allows _replying_ to message
 
 == Add extension
 
-This mechanism uses the https://vertx.io/docs/vertx-core/java/#event_bus[Vert.x EventBus,window=_blank], so you need to enable the `vertx` extension to use this feature. Add the extension in the Terminal using this command:
+This mechanism uses the https://vertx.io/docs/vertx-core/java/#event_bus[Vert.x EventBus^], so you need to enable the `vertx` extension to use this feature. Add the extension in the Terminal using this command:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="vertx"
+mvn quarkus:add-extension -Dextensions="vertx" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 [NOTE]
 ====
-https://vertx.io/[Eclipse Vert.x,window=_blank] is a toolkit for building reactive applications. It is designed to be lightweight and embeddable. Vert.x defines a reactive execution model and provides a large ecosystem. Quarkus integrates Vert.x to implement different reactive features, such as asynchronous message passing (the subject of this exercise), and non-blocking HTTP client. Basically, Quarkus uses Vert.x as its reactive engine. While lots of reactive features from Quarkus don’t show Vert.x, it’s used underneath. But you can also access the managed Vert.x instance and benefit from the Vert.x ecosystem.
+https://vertx.io/[Eclipse Vert.x^] is a toolkit for building reactive applications. It is designed to be lightweight and embeddable. Vert.x defines a reactive execution model and provides a large ecosystem. Quarkus integrates Vert.x to implement different reactive features, such as asynchronous message passing (the subject of this exercise), and non-blocking HTTP client. Basically, Quarkus uses Vert.x as its reactive engine. While lots of reactive features from Quarkus don’t show Vert.x, it’s used underneath. But you can also access the managed Vert.x instance and benefit from the Vert.x ecosystem.
 ====
 
 Quarkus provides 3 Vert.x APIs:
@@ -46,7 +46,14 @@ We'll start by creating a new asynchronous endpoint. Open the `PersonResource` c
 ----
     @Inject EventBus bus; // <1>
 ----
-<1> Use _Assistant > Organize Imports_, and be sure to import the correct `EventBus` class - which is `io.vertx.axle.core.eventbus.EventBus`.
+
+You'll also need to add more import statements at the top:
+
+[source,java,role="copypaste"]
+----
+import io.vertx.axle.core.eventbus.EventBus;
+import javax.inject.Inject;
+----
 
 Next, create two new endpoints in the same class which creates new people in our database given a name, and finds people by their name:
 
@@ -55,8 +62,8 @@ Next, create two new endpoints in the same class which creates new people in our
     @POST
     @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<String> addPerson(@PathParam("name") String name) {
-        return bus.<String>send("add-person", name) // <1>
+    public CompletionStage<Person> addPerson(@PathParam("name") String name) {
+        return bus.<Person>send("add-person", name) // <1>
           .thenApply(Message::body); // <2>
     }
 
@@ -71,7 +78,14 @@ Next, create two new endpoints in the same class which creates new people in our
 <1> send the name to the `add-person` address
 <2> when we get the reply, extract the body and send this as response to the user
 
-Don't forget to _Assistant > Organize Imports_ and import the _axle_ variant of the `Message` class.
+And add the imports:
+
+[source,java,role="copypaste"]
+----
+import javax.ws.rs.POST;
+import java.util.concurrent.CompletionStage;
+import io.vertx.axle.core.eventbus.Message;
+----
 
 This uses the request/reply dispatching mechanism. Instead of implementing the business logic inside the JAX-RS endpoint, we are sending a message. This message is consumed by another bean and the response is sent using the reply mechanism.
 
@@ -85,7 +99,7 @@ With this endpoint we can POST to the `/person/joe` endpoint to create a new use
 
 == Try it, and fail
 
-With our endpoint, confirm it fails using the Terminal to execute:
+With our endpoint implemented and our app still running in Live Coding mode, confirm the new endpoint fails using the Terminal to execute:
 
 [source,sh,role="copypaste"]
 ----
@@ -103,7 +117,7 @@ We posted the message to the Vert.x event bus at the `add-person` address, but t
 
 == Create consumer
 
-Create a new class in the `org.acme.people.service` package called `PersonService`. Use the following code to implement our message consumer:
+Create a new class file in the `org.acme.people.service` package called `PersonService.java`. Use the following code to implement our message consumer:
 
 [source,java,role="copypaste"]
 ----
@@ -124,7 +138,7 @@ public class PersonService {
 
     @ConsumeEvent(value = "add-person", blocking = true) // <1>
     @Transactional
-    public String addPerson(String name) {
+    public Person addPerson(String name) {
         LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 20 * 52 * -1)));
         EyeColor color = EyeColor.values()[(int)(Math.floor(Math.random() * EyeColor.values().length))];
         Person p = new Person();
@@ -132,7 +146,7 @@ public class PersonService {
         p.eyes = color;
         p.name = name;
         Person.persist(p); // <2>
-        return p.name; // <3>
+        return p; // <3>
     }
 
 }
@@ -150,14 +164,28 @@ Let's try our test again:
 curl -X POST http://localhost:8080/person/joe
 ----
 
-You should get back the name you put in (`joe`). Now let's confirm Joe is present:
+You should get back Joe!
+
+[source,json]
+----
+{
+  "id": 1004,<1>
+  "birth": "2000-03-15",
+  "eyes": "BROWN",<2>
+  "name": "joe"
+}
+----
+<1> The id may be different since its auto-generated
+<2> The eye color you see here may be difference, since it's randomly generated in the `addPerson()` method you added!
+
+Now let's re-confirm Joe is present:
 
 [source,sh,role="copypaste"]
 ----
 curl -s http://localhost:8080/person/name/joe | jq
 ----
 
-You should get back Joe!
+You should also get back Joe!
 
 [source,json]
 ----

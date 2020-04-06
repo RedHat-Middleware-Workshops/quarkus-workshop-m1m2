@@ -7,7 +7,7 @@ This guide explains how your Quarkus application can expose its API description 
 
 An OpenAPI definition can then be used by documentation generation tools to display the API, code generation tools to generate servers and clients in various programming languages, testing tools, and many other use cases.
 
-Quarkus implements the https://github.com/eclipse/microprofile-open-api/[MicroProfile Open API Specification,window=_blank] and as such exposes several developer APIs for documenting your application's APIs.
+Quarkus implements the https://github.com/eclipse/microprofile-open-api/[MicroProfile Open API Specification^] and as such exposes several developer APIs for documenting your application's APIs.
 
 The MicroProfile OpenAPI specification requires vendors to produce a valid OpenAPI document from pure JAX-RS 2.0 applications, without the developer adding any special annotations for OpenAPI. This means that vendors must process all the relevant JAX-RS annotations (such as `@Path` and `@Consumes`) as well as Java objects (POJOs) used as input or output to JAX-RS operations.
 
@@ -19,7 +19,7 @@ We need to add another extension for OpenAPI. Run the following command:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="openapi"
+mvn quarkus:add-extension -Dextensions="openapi" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 This will add the necessary extension for using OpenAPI, and a graphical frontend extension called *Swagger* which we'll discuss later. It also enables a new RESTful endpoint in the app accessible at `/openapi`.
@@ -90,9 +90,14 @@ quarkus.swagger-ui.always-include=true
 ----
 ====
 
-Since our app is still running, click on the _Preview URL_ shown at the top of the terminal (on the _Start Live Coding_ tab). Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
+Since our app is still running, click on the `web-{{USER_ID}}` link on the right to open the app's landing page in your browser:
 
-image::swagger.png[swagger,600]
+image::weblink.png[swagger,700]
+
+
+Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
+
+image::swagger.png[swagger,700]
 
 Using the UI, expand the `/person/birth/before/{year}` endpoint. Here you can basic detail about the endpoint: the name of the endpoint, parameters and their type, and the response type one can expect.
 
@@ -114,11 +119,11 @@ OpenAPI and Swagger are useful tools but they become even more useful to 3rd par
 
 You as an application developer have a few choices in documenting your APIs:
 
-. Augment your JAX-RS annotations with the OpenAPI https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#annotations[Annotations,window=_blank]. Using annotations means you don’t have to re-write the portions of the OpenAPI document that are already covered by the JAX-RS framework (e.g. the HTTP method of an operation).
-. Take the initial output from `/openapi` as a starting point to document your APIs via https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#static-openapi-files[Static OpenAPI files,window=_blank] (and then check those into source code repositories and update when APIs change). It’s worth mentioning that these static files can also be written before any code, which is an approach often adopted by enterprises that want to lock-in the contract of the API. In this case, we refer to the OpenAPI document as the "source of truth", by which the client and provider must abide.
-. Use the https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#programming-model[Programming model,window=_blank] to provide a bootstrap (or complete) OpenAPI model tree.
+. Augment your JAX-RS annotations with the OpenAPI https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#annotations[Annotations^]. Using annotations means you don’t have to re-write the portions of the OpenAPI document that are already covered by the JAX-RS framework (e.g. the HTTP method of an operation).
+. Take the initial output from `/openapi` as a starting point to document your APIs via https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#static-openapi-files[Static OpenAPI files^] (and then check those into source code repositories and update when APIs change). It’s worth mentioning that these static files can also be written before any code, which is an approach often adopted by enterprises that want to lock-in the contract of the API. In this case, we refer to the OpenAPI document as the "source of truth", by which the client and provider must abide.
+. Use the https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#programming-model[Programming model^] to provide a bootstrap (or complete) OpenAPI model tree.
 
-Additionally, a https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#filter[Filter,window=_blank] is described which can update the OpenAPI model after it has been built from the previously described documentation mechanisms.
+Additionally, a https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.adoc#filter[Filter^] is described which can update the OpenAPI model after it has been built from the previously described documentation mechanisms.
 
 So let's add a bit more documentation to our `/person/birth/before/{year}` endpoint using the first option (annotations). Open the `PersonResource` class, and find the `getBeforeYear` method -- this method implements our endpoint.
 
@@ -126,7 +131,7 @@ So let's add a bit more documentation to our `/person/birth/before/{year}` endpo
 
 Add a few annotations:
 
-**1. Add an `@Operation` annotation on the `getBeforeYear` method to provide a brief summary and description. You'll need to _Assistant > Organize Imports_ to complete the import statements after adding the code:**
+**1. Add an `@Operation` annotation on the `getBeforeYear` method to provide a brief summary and description:**
 
 [source,java,role="copypaste"]
 ----
@@ -154,7 +159,17 @@ Add a few annotations:
 @Parameter(description = "Cutoff year for searching for people", required = true, name="year")
 ----
 
-Again, _Assistant > Organize Imports_ (and make sure to import the right `Parameter` class: `org.eclipse.microprofile.openapi.annotations.parameters.Parameter`)
+You can individually import the correct classes, but here are the imports you can add to the top of your class to fix the errors in the IDE:
+
+[source,java,role="copypaste"]
+----
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+----
 
 The final method should look like:
 

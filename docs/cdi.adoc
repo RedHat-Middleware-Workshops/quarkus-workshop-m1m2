@@ -1,16 +1,16 @@
 = Dependency Injection
 :experimental:
 
-In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification,window=_blank]. Because of the dynamic nature of some CDI APIs which conflict with native compilation, only a subset of the CDI features are implemented - see also the https://quarkus.io/guides/cdi-reference#supported_features[list,window=_blank] of supported features.
+In the previous step you created a basic RESTful Java application with Quarkus. In this step we'll add a custom bean using dependency injection (DI). Quarkus DI solution is based on the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html[Contexts and Dependency Injection for Java 2.0 specification^].
 
 == Add Custom Bean
 
-Let’s modify the application and add a companion bean. In CodeReady, right-click on the `org.acme.people.service` package in the project browser and select _New_ --> _Java Class_. Name the class `GreetingService`.
+Let’s modify the application and add a companion bean. In CodeReady, right-click on the `org.acme.people.service` package in the project browser and select _New_ --> _File_. Name the file `GreetingService.java`.
 
 image::newclass.png[newclass,600]
 image::classname.png[classname,400]
 
-Next, copy the below code into the class (remove the existing content before pasting in this code):
+Next, copy the below code into the class:
 
 [source,java,role="copypaste"]
 ----
@@ -32,7 +32,7 @@ public class GreetingService {
 
 This is an injectable bean that implements a `greeting()` method returning a string `hello <hostname>` (where `<hostname>` is the Linux hostname of the machine on which the code runs).
 
-Next, open the existing `GreetingResource.java` class file and add a new field and method above the existing `hello` method:
+Next, open the existing `GreetingResource.java` file (in the `org.acme.people.rest` package) and add a new field and method above the existing `hello` method:
 
 [source,java,role="copypaste"]
 ----
@@ -53,22 +53,28 @@ You will get red error squigglies when you paste this code due to missing import
 
 image::importerror.png[error,800]
 
-Use the _Assistant_ > _Organize Imports_ menu option to fix this and import the right classes.
+Add the necessary imports below the existing `import` statements near the top of the file:
 
-image::assistant.png[assistant,800]
-
-You may need to choose from multiple matches, e.g. make sure you choose to import `javax.ws.rs.PathParam` when fixing the missing `PathParam` import. In general, look for `javax` or other well-known names to import. If you get it wrong you'll find out soon enough.
-
-image::importselect.png[select,800]
+[source,java,role="copypaste"]
+----
+import javax.inject.Inject;
+import org.acme.people.service.GreetingService;
+import javax.ws.rs.PathParam;
+----
 
 [WARNING]
 ====
-If you do not get red squigglies, or you can't make them disappear, try to close the file and re-open it, or reload your web browser. This is a known issue with Che on recent versions of Kubernetes.
+If you do not get red squigglies, or you can't make them disappear, try to close the file and re-open it, or reload your web browser.
 ====
 
 == Inspect the results
 
-Check that it works as expected by loading the new endpoint using the same blue Preview URL and adding the `/hello/greeting/quarkus` to the end of the URL, just as you did before.
+Check that it works as expected by accessing the `/hello/greeting/quarkus` with _curl_:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/hello/greeting/quarkus
+----
 
 Note we are exercising our new bean using the `/hello/greeting/quarkus` endpoint, and you should see `hello quarkus from <hostname>`.
 

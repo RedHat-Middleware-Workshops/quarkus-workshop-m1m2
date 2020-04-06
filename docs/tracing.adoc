@@ -1,13 +1,13 @@
 = Tracing with MicroProfile OpenTracing
 :experimental:
 
-This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing,window=_blank] to provide distributed tracing for interactive web applications.
+This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing^] to provide distributed tracing for interactive web applications.
 
 In a distributed cloud-native application, multiple microservices are collaborating to deliver the expected functionality. If you have hundreds of services, how do you debug an individual request as it travels through a distributed system? For Java enterprise developers, the Eclipse MicroProfile OpenTracing specification makes it easier. Let's find out how.
 
 == Install Jaeger
 
-https://www.jaegertracing.io/[Jaeger,window=_blank], inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems, including:
+https://www.jaegertracing.io/[Jaeger^] is a distributed tracing system originally created by Uber (the ride sharing company). It is used for monitoring and troubleshooting microservices-based distributed systems, including:
 
 * Distributed context propagation
 * Distributed transaction monitoring
@@ -26,25 +26,42 @@ At the highest level, a _trace_ tells the story of a transaction or workflow as 
 Each component (microservice) in a distributed trace will contribute its own span or spans.
 ====
 
-To install Jaeger, run the following command in your Terminal:
+Jaeger is installed and managed through its Kubernetes Operator (just like AMQ Streams and Kafka that you used in previous exercises).
 
-[source,sh,role="copypaste"]
-----
-oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/all-in-one/jaeger-all-in-one-template.yml | oc create -f -
-----
+First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add** and, then _From Catalog_:
 
-Jaeger exposes its collector at different ports for different protocols. Most use the HTTP collector at `jaeger-collector:14268` but other protocols like gRPC are also supported on different ports.
+image::fromcat.png[names,800]
+
+Type in `jaeger` in the keyword filter box:
+
+image::jaegercatalog.png[kafkacatalog,800]
+
+Click on **Jaeger**, and then click on **Create**. This will open a yaml file for you to configure the Jaeger service before it's installed.
+
+Change the _metadata > name_ value to `jaeger` as shown, and click **Create**:
+
+image::jaegerdone.png[kafkacatalog,800]
+
+This will create a new `Jaeger` Kubernetes object in your namespace, triggering the Operator to deploy Jaeger. In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] you'll see Jaeger spin up:
+
+image::jaegerspin.png[spin, 600]
+
+Jaeger exposes its collector at different ports for different protocols. Most use the HTTP collector at `jaeger-collector:14268` but other protocols like gRPC are also supported on different ports. You can see them by clicking on the Jaeger circle and clicking the _Resources_ tab:
+
+image::jaegersvcs.png[spin, 700]
+
+The endpoint on port `14268` is the one we'll use for our app.
 
 == Add Tracing to Quarkus
 
-Like other exercises, we'll need another extension to enable tracing. Install it with:
+With Jaeger installed, let's turn back to our Quarkus app. Like other exercises, we'll need another extension to enable tracing in our app. Install it with:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="opentracing, rest-client"
+mvn quarkus:add-extension -Dextensions="opentracing, rest-client" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
-This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and anm HTTP REST Client we'll use pater.
+This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and an HTTP REST Client we'll use pater.
 
 == Configure Quarkus
 
@@ -58,22 +75,22 @@ quarkus.jaeger.sampler-param=1<2>
 quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces<3>
 ----
 <1> The name of our service from the perspective of Jaeger (useful when multiple apps report to the same Jaeger instance)
-<2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist,window=_blank] to tune the performance.
+<2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist^] to tune the performance.
 <3> This is the default HTTP-based collector exposed by Jaeger
 
 == Test it out
 
 Like many other Quarkus frameworks, sensible defaults and out of the box functionality means you can get immediate value out of Quarkus without changing any code. By default, all JAX-RS endpoints (like our `/hello` and others) are automatically traced. Let's see that in action by re-deploying our traced app.
 
-First, re-build the app using the command palette and selecting **Create Executable JAR**.
+First, re-build the app using the **Package for OpenShift**.
 
-image:createexec.png[create,600]
+image:cmd-package.png[create,600]
 
 Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file target/*-runner.jar --follow
+oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
 ----
 
 == Confirm deployment
@@ -87,31 +104,29 @@ oc rollout status -w dc/people
 
 == Trigger traces
 
-You'll need to trigger some HTTP endpoints to generate traces, so let's re-visit our earlier DataTables-powered app. Run this command to open the table with our people database:
+You'll need to trigger some HTTP endpoints to generate traces. Access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/datatable.html[graphical person browser powered by the DataTables library we created earlier^].
 
-[source,sh,role="copypaste"]
-----
-echo ; echo http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/datatable.html ; echo
-----
-
-Open that URL in a separate browser tab, and exercise the table a bit by paging through the entries to force several RESTful calls back to our app:
+Exercise the table a bit by paging through the entries and using various search terms to force several RESTful calls back to our app:
 
 image::paging.png[paging,600]
 
 == Inspect traces
 
-Use this command to generate the URL to Jaeger:
+Open the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^]. By default Jaeger uses the same login details as OpenShift, so click the **Login with OpenShift** button, enter your credentials:
 
-[source,sh,role="copypaste"]
-----
-echo; echo http://$(oc get route jaeger-query -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %}) ; echo
-----
+* **Username**: `{{ USER_ID }}`
+* **Password**: `{{ OPENSHIFT_USER_PASSWORD }}`
 
-Open that URL in a separate tab to arrive at the Jaeger Tracing console (leave the tab open as we'll use it later)
+Then, click **Allow Selected Permissions** to allow Jaeger to access your account details. You'll end up on the Jaeger query page:
 
 image::jaegerui.png[jaeger,600]
 
 Using the menu on the left, select the `people` Service, and click **Find Traces**. Jaeger will show the collected traces on the right:
+
+[WARNING]
+====
+If you do not see `people` in the _Service_ drop-down, ensure your changes to `application.properties` to add Jaeger configuration is correct, and reload the Jaeger UI.
+====
 
 image::find1.png[jaeger,600]
 
@@ -123,18 +138,18 @@ You can see that this trace (along with the others) shows the incoming HTTP GET 
 
 [NOTE]
 ====
-Service Mesh technologies like https://istio.io[Istio,window=_blank] can provide even more tracing prowess as the calls across different services are traced at the network level, not requiring _any_ frameworks or developer instrumentation to be enabled for tracing.
+Service Mesh technologies like https://istio.io[Istio^] can provide even more tracing prowess as the calls across different services are traced at the network level, not requiring _any_ frameworks or developer instrumentation to be enabled for tracing.
 ====
 
 == Tracing external calls
 
-This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client,window=_blank] with Quarkus in order to trace _external_, outbound requests with very little effort.
+This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client^] with Quarkus in order to trace _external_, outbound requests with very little effort.
 
-We will use the publicly available https://swapi.co[Star Wars API,window=_blank] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
+We will use the publicly available https://swapi.co[Star Wars API^] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
 
 === Create model
 
-Create a new class in the `org.acme.people.model` package called `StarWarsPerson` with the following content:
+Create a new class file in the `org.acme.people.model` package called `StarWarsPerson.java` with the following content:
 
 [source,java,role="copypaste"]
 ----
@@ -167,7 +182,7 @@ This contains a subset of the full Star Wars model, just enough to demonstrate t
 
 === Create interface
 
-Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client,window=_blank] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class in the `org.acme.people.service` package called `StarWarsService` with the following content:
+Using the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client^] is as simple as creating an interface using the proper JAX-RS and MicroProfile annotations. Create a new Java class file in the `org.acme.people.service` package called `StarWarsService.java` with the following content:
 
 [source,java,role="copypaste"]
 ----
@@ -201,7 +216,7 @@ public interface StarWarsService {
 
 === Configure endpoint
 
-In order to determine the base URL to which REST calls will be made, the REST Client uses configuration from `application.properties`. To configure it, add this to your `application.properties` (in `src/main/resource`):
+In order to determine the base URL to which REST calls will be made, the REST Client uses configuration from `application.properties`. To configure it, add this to your `application.properties` (in `src/main/resources`):
 
 [source,none,role="copypaste"]
 ----
@@ -262,19 +277,27 @@ public List<StarWarsPerson> getCharacters() {
 <3> For each of the integers, call the `StarWarsService::getPerson` method
 <4> Collect the results into a list and return it
 
-**Don't forget to _Assistant > Organize Imports_ **to import the new classes.
+You'll need to add a few imports at the top of the file:
+
+[source,java,role="copypaste"]
+----
+import org.acme.people.model.StarWarsPerson;
+import org.acme.people.service.StarWarsService;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import java.util.stream.IntStream;
+----
 
 == Test it out
 
-First, re-build the app using the command palette and selecting **Create Executable JAR**.
+First, re-build the app using the **Package App for OpenShift** command:
 
-image:createexec.png[create,600]
+image:cmd-package.png[create,600]
 
 Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file target/*-runner.jar --follow
+oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
 ----
 
 == Confirm deployment
@@ -288,7 +311,7 @@ oc rollout status -w dc/people
 
 == Trigger traces
 
-Try out our new endpoint by running the following command:
+Access the endpoint by running the following command:
 
 [source,sh,role="copypaste"]
 ----
@@ -325,7 +348,7 @@ You should see:
 
 == Inspect traces
 
-Go back to the Jaeger console tab, and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
+Reload the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^], and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
 
 image::swpeople.png[swpeople,800]
 

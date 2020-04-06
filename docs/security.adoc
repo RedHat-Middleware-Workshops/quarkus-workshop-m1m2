@@ -1,7 +1,7 @@
 = Securing Quarkus APIs
 :experimental:
 
-Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak,window=_blank], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC,window=_blank], https://keyloak.org[Keycloak,window=_blank] and https://en.wikipedia.org/wiki/OAuth[OAuth,window=_blank] to secure your Quarkus applications.
+Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak^], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC^], https://keyloak.org[Keycloak^] and https://en.wikipedia.org/wiki/OAuth[OAuth^] to secure your Quarkus applications.
 
 == Add JWT to Quarkus
 
@@ -9,7 +9,7 @@ Like other exercises, we'll need another extension to enable the use of MicroPro
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="jwt"
+mvn quarkus:add-extension -Dextensions="jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in JWT support.
@@ -32,7 +32,7 @@ quarkus.smallrye-jwt.enabled=true
 
 == Create protected endpoints
 
-We'll create 2 JWT-protected endpoints. Create a new class `JWTResource` in the `org.acme.people.rest` package with the following code:
+We'll create 2 JWT-protected endpoints. Create a new class file `JWTResource.java` in the `org.acme.people.rest` package with the following code:
 
 [source,java,role="copypaste"]
 ----
@@ -89,7 +89,7 @@ public class JWTResource {
 
         final StringBuilder helloReply = new StringBuilder(String.format("hello %s, isSecure: %s, authScheme: %s, hasJWT: %s\n", name, ctx.isSecure(), ctx.getAuthenticationScheme(), hasJWT));
         if (hasJWT && (jwt.getClaimNames() != null)) {
-            helloReply.append("Injected issuer: [" + issuer.get() + "]\n"); <5>
+            helloReply.append("Injected issuer: [" + issuer.get() + "]\n"); // <5>
             jwt.getClaimNames().forEach(n -> {
                 helloReply.append("\nClaim Name: [" + n + "] Claim Value: [" + jwt.getClaim(n) + "]");
             });
@@ -106,15 +106,15 @@ public class JWTResource {
 
 == Rebuild and redeploy app
 
-First, re-build the app using the command palette and selecting **Create Executable JAR**.
+First, re-build the app using the **Package App for OpenShift**:
 
-image:createexec.png[create,600]
+image:cmd-package.png[create,600]
 
 Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file target/*-runner.jar --follow
+oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
 ----
 
 == Confirm deployment
@@ -151,12 +151,9 @@ It should fail with:
 [source,none]
 ----
 HTTP/1.1 401 Unauthorized
-Connection: keep-alive
-Content-Type: text/html;charset=UTF-8
-Content-Length: 14
-Date: Tue, 16 Jul 2019 00:40:07 GMT
-
-Not authorized
+www-authenticate: Bearer {token}
+Content-Length: 0
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; path=/; HttpOnly
 ----
 
 Let's try with an authenticated user next.
@@ -189,12 +186,12 @@ You should see:
 [source,none]
 ----
 HTTP/1.1 200 OK
-Connection: keep-alive
-Content-Type: text/plain;charset=UTF-8
 Content-Length: 63
-Date: Tue, 16 Jul 2019 00:40:44 GMT
+Content-Type: text/plain;charset=UTF-8
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; path=/; HttpOnly
+Cache-control: private
 
-hello alice, isSecure: false, authScheme: MP-JWT, hasJWT: true
+hello alice, isSecure: false, authScheme: Bearer, hasJWT: true
 ----
 
 Now try to access the `/me/admin` endpoint as `alice`:
@@ -210,19 +207,18 @@ You'll get:
 [source,none]
 ----
 HTTP/1.1 403 Forbidden
-Connection: keep-alive
-Content-Type: text/html;charset=UTF-8
-Content-Length: 34
-Date: Tue, 16 Jul 2019 00:41:37 GMT
+Content-Length: 9
+Content-Type: text/plain;charset=UTF-8
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; path=/; HttpOnly
 
-Access forbidden: role not allowed
+Forbidden
 ----
 
 Alice is not an admin. Let's try with admin!
 
 [WARNING]
 ====
-Access Tokens have a defined lifespan that's typically short (e.g. 5 minutes), so if you wait too long, the token will expire and you'll get denied access. In this case, just re-fetch a new token using the same `curl` command used the first time. Full-fledged applications can take advantage of things like https://oauth.net/2/grant-types/refresh-token/[_Refresh Tokens_,window=_blank] to do this automatically to ensure a good user experience even for slow users.
+Access Tokens have a defined lifespan that's typically short (e.g. 5 minutes), so if you wait too long, the token will expire and you'll get denied access. In this case, just re-fetch a new token using the same `curl` command used the first time. Full-fledged applications can take advantage of things like https://oauth.net/2/grant-types/refresh-token/[_Refresh Tokens_^] to do this automatically to ensure a good user experience even for slow users.
 ====
 
 === Test Admin
@@ -252,17 +248,17 @@ You should see:
 [source,none]
 ----
 HTTP/1.1 200 OK
-Connection: keep-alive
+Content-Length: 2256
 Content-Type: text/plain;charset=UTF-8
-Content-Length: 2272
-Date: Tue, 16 Jul 2019 00:14:54 GMT
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; path=/; HttpOnly
+Cache-control: private
 
-hello admin, isSecure: false, authScheme: MP-JWT, hasJWT: true
+hello admin, isSecure: false, authScheme: Bearer, hasJWT: true
 Injected issuer: ["{{KEYCLOAK_URL}}/auth/realms/quarkus"]
 
 Claim Name: [sub] Claim Value: [af134cab-f41c-4675-b141-205f975db679]
 Claim Name: [groups] Claim Value: [[admin, user]]
-Claim Name: [typ] Claim Value: ["Bearer"]
+Claim Name: [typ] Claim Value: [Bearer]
 Claim Name: [preferred_username] Claim Value: [admin]
 ... <more claims>
 ----
@@ -285,7 +281,7 @@ First, you'll need to enable the Keycloak extension by running this command in a
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="oidc, keycloak-authorization, resteasy-jsonb"
+mvn quarkus:add-extension -Dextensions="oidc, keycloak-authorization" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 == Disable MicroProfile JWT Extension
@@ -309,6 +305,7 @@ Next, add these to your `application.properties` for Keycloak:
 quarkus.oidc.auth-server-url={{ KEYCLOAK_URL }}/auth/realms/quarkus
 quarkus.oidc.client-id=backend-service
 quarkus.oidc.credentials.secret=secret
+quarkus.http.cors=true
 
 # Enable Policy Enforcement
 quarkus.keycloak.policy-enforcer.enable=true
@@ -320,7 +317,7 @@ quarkus.keycloak.policy-enforcer.paths.live.path=/health/live
 quarkus.keycloak.policy-enforcer.paths.live.enforcement-mode=DISABLED
 ----
 
-This configures the extension with the necessary configuration ( https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[read more,window=_blank] about what these do).
+This configures the extension with the necessary configuration ( https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config[read more^] about what these do).
 
 [NOTE]
 ====
@@ -329,7 +326,7 @@ We explicitly disable authorization checks for the `/health/*` endpoints so that
 
 === Create Keycloak endpoints
 
-Create a new class called `KeycloakResource` in the `org.acme.people.rest` package with the following code:
+Create a new class file called `KeycloakResource.java` in the `org.acme.people.rest` package with the following code:
 
 [source,java,role=copypaste]
 ----
@@ -365,15 +362,15 @@ public class KeycloakResource {
 
 === Rebuild and redeploy app
 
-First, re-build the app using the command palette and selecting **Create Executable JAR**.
+First, re-build the app using the **Package App for OpenShift** command.
 
-image:createexec.png[create,600]
+image:cmd-package.png[create,600]
 
 Once that's done, run the following command to re-deploy:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file target/*-runner.jar --follow
+oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
 ----
 
 === Confirm deployment
@@ -391,7 +388,7 @@ The `/secured/confidential` endpoint is protected with a policy defined in the K
 
 [NOTE]
 ====
-Keycloak caches the resource paths that it is protecting, so that every access doesn't cause a roundtrip back to the server to check whether the user is authorized to access the resource. The lifespan of these cached entries can be controlled through https://www.keycloak.org/docs/latest/authorization_services/index.html#_enforcer_filter[Policy Enforcer Configuration,window=_blank].
+Keycloak caches the resource paths that it is protecting, so that every access doesn't cause a roundtrip back to the server to check whether the user is authorized to access the resource. The lifespan of these cached entries can be controlled through https://www.keycloak.org/docs/latest/authorization_services/index.html#_enforcer_filter[Policy Enforcer Configuration^].
 ====
 
 First make sure even `admin` can't access the endpoint:
@@ -455,12 +452,12 @@ You should see:
 [source,none]
 ----
 HTTP/1.1 200 OK
-Connection: keep-alive
+Content-Length: 153
 Content-Type: text/plain;charset=UTF-8
-Content-Length: 142
-Date: Tue, 16 Jul 2019 00:50:49 GMT
+Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=ee5925163f2245aa33c406a14815e450; path=/; HttpOnly
+Cache-control: private
 
-confidential access for: jdoe from issuer:{{KEYCLOAK_URL}}/auth/realms/quarkus
+confidential access for: jdoe with attributes:{permissions=[Permission {id=99856673-24fa-431b-9e26-93e2113f69db, name=Confidential Resource, scopes=[]}]}
 ----
 
 Success! Even though our code did not explicitly protect the `/secured/confidential` endpoint, we can protect arbitrary URLs in Quarkus apps when using Keycloak.

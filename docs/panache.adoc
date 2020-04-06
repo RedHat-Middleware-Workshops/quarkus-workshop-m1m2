@@ -5,13 +5,10 @@ Hibernate ORM is the de facto JPA implementation and offers you the full breadth
 
 With Panache, we took an opinionated approach to make hibernate as easy as possible. Hibernate ORM with Panache offers the following:
 
-* By extending `PanacheEntity` in your entities, you will get an ID field that is auto-generated. If you require a custom ID strategy, you can extend `PanacheEntityBase` instead and handle the ID yourself.
-
-* By using Use public fields, there is no need for functionless getters and setters (those that simply get or set the field). You simply refer to fields like `person.name` without the need to write a `person.getName()` implementation. Panache will auto-generate any getters and setters you do not write, or you can develop your own getters/setters that do more than get/set, which will be called when the field is accessed directly.
-
-* The `PanacheEntity` superclass comes with lots of super useful static methods and you can add your own in your derived entity class, and much like traditional object-oriented programming it's natural and recommended to place custom queries as close to the entity as possible, ideally within the entity definition itself. Users can just start using your entity `Person` by typing `Person`, and getting completion for all the operations in a single place.
-
-* You don't need to write parts of the query that you don’t need: write `Person.find("order by name")` or `Person.find("name = ?1 and status = ?2", "stef", Status.Alive)` or even better `Person.find("name", "stef")`.
+* Auto-generation of IDs (but you can still customize if needed)
+* No need for getters/setters. You simply refer to fields directly like `person.name` instead of `person.getName()`. You can still create getters and setters if you need to!
+* Lots of super-useful static methods for access like `listAll()`, `find()`, etc.
+* No need for custom queries for basic operations, e.g. `Person.find("name", "stef")`
 
 That’s all there is to it: with Panache, Hibernate ORM has never looked so trim and neat.
 
@@ -21,7 +18,7 @@ You may have wondered why we are using `people` in our Java APIs, and now you'll
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql, resteasy-jsonb"
+mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql, resteasy-jsonb" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-jsonb` is used to encode JSON objects.
@@ -30,8 +27,8 @@ The database connection details (JDBC url, database credentials) are specified i
 
 [source,none]
 ----
-%prod.quarkus.datasource.url: jdbc:postgresql://postgres-database:5432/person
-%prod.quarkus.datasource.driver: org.postgresql.Driver
+%prod.quarkus.datasource.url=jdbc:postgresql://postgres-database:5432/person
+%prod.quarkus.datasource.driver=org.postgresql.Driver
 %dev.quarkus.datasource.url=jdbc:h2:mem:person:default
 %dev.quarkus.datasource.driver=org.h2.Driver
 %test.quarkus.datasource.url=jdbc:h2:mem:person:default
@@ -42,14 +39,14 @@ This causes the `%dev` properties (using H2 database) to be active in developmen
 
 [NOTE]
 ====
-These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide,window=_blank].
+These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide^].
 ====
 
 == Create Entity
 
 With our extension installed, we can now define our entity using Panache.
 
-We'll first need the definition of eye colors, so let's create an `enum`. Create a new java class in `src/main/java/org/acme/people/model` called `EyeColor`, and add the following enum definition:
+We'll first need the definition of eye colors, so let's create an `enum`. Create a new java class file in `src/main/java/org/acme/people/model` called `EyeColor.java`, and add the following enum definition:
 
 [source,java,role="copypaste"]
 ----
@@ -60,7 +57,7 @@ public enum EyeColor {
 }
 ----
 
-This app will be a database of people, each of which have a name, birthdate, and eye color. We'll need an entity, so open up the `src/main/java/org/acme/people/model/Person.java` file, and replace the stub code in the file with the following:
+This app will be a database of people, each of which have a name, birthdate, and eye color. We'll need an entity, so open up the `src/main/java/org/acme/people/model/Person.java` file, and **replace** the stub code in the file with the following:
 
 [source,java,role="copypaste"]
 ----
@@ -105,7 +102,7 @@ As you can see we've defined the three fields `name`, `birth`, and `eyes`. We're
 
 == Define RESTful endpoint
 
-Next, we'll create a `PersonResource` class which we will use for our RESTful endpoint. Create a new Java class in the `src/main/java/org/acme/people/rest` directory called `PersonResource` with the following code:
+Next, we'll create a `PersonResource` class which we will use for our RESTful endpoint. Create a new Java class in the `src/main/java/org/acme/people/rest` directory called `PersonResource.java` with the following code:
 
 [source,java,role="copypaste"]
 ----
@@ -163,10 +160,6 @@ As you can see we've implemented our first Panache-based query, the `getAll` met
 == Add sample data
 
 Let's add some sample data to the database so we can test things out. Create a new file `src/main/resources/import.sql` and add some SQL statements to the file to run on startup:
-
-image::importsql.png[importsql,800]
-
-image::importsqlfile.png[importsqlfile,600]
 
 Add these lines to `import.sql` file you just created:
 
@@ -338,11 +331,11 @@ In the previous step you added a few more custom queries to your entity and the 
 
 Earlier we used `curl` to access our data, which is very useful for testing, but for real applications you will usually surface the data in other ways, like on web pages using tables, with options for searching, sorting, filtering, paging, etc. Quarkus and Panache make this easy to adapt your application for any display library or framework.
 
-Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables,window=_blank]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is inefficient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
+Let's use a popular jQuery-based plugin called https://www.datatables.net[DataTables^]. It features a *server-side* processing mode where it depends on the server (in this case our Quarkus app) to do searching, filtering, sorting, and paging. This is useful for very large datasets, on the order of hundreds of thousands of records or more. Transmitting the entire data set to the client browser is inefficient at best, and will crash browsers, increase networking usage, and frustrate users at worst. So let's just return the exact data needed to be shown.
 
 === Add Datatables endpoint
 
-https://www.datatables.net/manual/server-side[DataTables documentation,window=_blank] shows that its frontend will call an endpoint on the backend to retrieve some amount of data. It will pass several query parameters to tell the server what to sort, filter, search, and which data to return based on the page size and current page the user is viewing. For this example, we'll only support a subset:
+https://www.datatables.net/manual/server-side[DataTables documentation^] shows that its frontend will call an endpoint on the backend to retrieve some amount of data. It will pass several query parameters to tell the server what to sort, filter, search, and which data to return based on the page size and current page the user is viewing. For this example, we'll only support a subset:
 
 * `start` - The index of the first element needed
 * `length` - Total number records to return (or less, if there are less records that meet criteria)
@@ -371,6 +364,11 @@ Open the `PersonResource` resource class and add the following code below the `/
 
     }
 ----
+
+[NOTE]
+====
+You will see syntax errors highlighted in the editor when you paste the code. We'll fix those in the next step!
+====
 
 Here we are using JAX-RS `@QueryParam` values to specify the incoming parameters and be able to use them when the frontend calls the `GET /person/datatable` endpoint.
 
@@ -497,10 +495,10 @@ curl -s "http://localhost:8080/person/datatable?draw=1&start=0&length=2&search\[
 
 [NOTE]
 ====
-Adding 1k entries will make startup time artificially high, around 1-2 seconds.
+Adding 1k entries will make startup time artificially high, around 1 second.
 ====
 
-You should get up to 2 records returned, but the total number available should show many more indicating our search found many more, and the total number of records should now be `1003` (the 1k we added plus the 3 original values):
+You should get up to 2 records returned (since we passed `length=2` in the query), but the total number available should show many more indicating our search found many more, and the total number of records should now be `1003` (the 1k we added plus the 3 original values):
 
 [source, json]
 ----
@@ -520,36 +518,46 @@ You should get up to 2 records returned, but the total number available should s
     }
   ],
   "draw": 1,
-  "recordsFiltered": 126,
+  "recordsFiltered": 126, // <1>
   "recordsTotal": 1003
 }
 ----
-
-Note the values for `recordsFiltered` (the number of records with the letter `F` in the name), and `recordsTotal`. The value you see for `recordsFiltered` may be different than the above value, since the number of records with an `F` in the name may vary since the data is random. But the `recordsTotal` shows our initial 3 values, plus the 1000 additional values we added in the lifecycle hook code.
+<1> Note the values for `recordsFiltered` (the number of records with the letter `F` in the name), and `recordsTotal`. The value you see for `recordsFiltered` may be different than the above value, since the number of records with an `F` in the name may vary since the data is random. But the `recordsTotal` shows our initial 3 values, plus the 1000 additional values we added in the lifecycle hook code.
 
 == Deploy to OpenShift
 
-Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Run the following command to startup a database in our cluster:
+Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add** on the left, on the _Database_ box on the project overview:
 
-[source,sh,role="copypaste"]
-----
-oc new-app \
-    -e POSTGRESQL_USER=sa \
-    -e POSTGRESQL_PASSWORD=sa \
-    -e POSTGRESQL_DATABASE=person \
-    --name=postgres-database \
-    openshift/postgresql
-----
+image::db.png[db, 700]
 
-You should get a `--> Success` message.
+Type in `postgres` in the search box, and click on the *PostgreSQL (ephemeral)*:
+
+image::db-postgres.png[db, 700]
+
+Click on *Instantiate Template* and fill in the following fields, leaving the others as their default values:
+
+* **Namespace** (the first one): Select `{{ USER_ID }}-project`
+* **Namespace** (the _second_ one): `openshift`
+* **Database Service Name**: `postgres-database`
+* **PostgreSQL Connection Username**: `sa`
+* **PostgreSQL Connection Password**: `sa`
+* **PostgreSQL Database Name**: `person`
+
+image::db-postgres-values.png[db, 700]
+
+Click *Create*.
+
+This will deploy the database to our new project. Click on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to see it:
+
+image::database-deployment.png[inventory_db_deployments, 700]
 
 == Rebuild and redeploy app
 
 In previous steps we deployed our sample application as a native binary. Now let's switch to a JVM-based deployment from here on out.
 
-Re-build the application as an executable JAR using the command palette and selecting **Create Executable JAR**.
+Re-build the application as an executable JAR using the **Package App for OpenShift**:
 
-image:createexec.png[create,600]
+image::cmd-package.png[livecoding, 700]
 
 Next, re-define the container build to use the OpenJDK image using these commands:
 
@@ -562,37 +570,32 @@ And now start the build using our executable JAR:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file target/*-runner.jar --follow
+oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
 ----
 
-This will re-build the image by starting with the OpenJDK base image, adding in our executable JAR, and packaging the result as a container image on the internal registry.
+This will re-build the image by starting with the OpenJDK base image, adding in our executable JAR, and packaging the result as a container image on the internal registry. Wait for the build to finish.
 
-This will also trigger a re-deployment of our existing app. Verify the app started up correctly:
+The rebuild will also trigger a re-deployment of our app. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to ensure the new version is rolled out and the old one killed.
 
-[source,sh,role="copypaste"]
-----
-oc rollout status -w dc/people
-----
+[NOTE]
+====
+Remember in our `application.properties` we have pre-defined database connections for the `%prod` profile. When Quarkus runs in production, it will connect to the database you just deployed!
+====
+
+image::database-redeployment.png[inventory_db_deployments, 700]
 
 == Access deployed app
 
-And now we can access using `curl` once again to find everyone born in or before the year 2000 (there will be many).
+Now that we have our app running on OpenShift, let's see what we can do.
+
+We can access using `curl` once again to find everyone born in or before the year 2000 (there will be many).
 
 [source,sh,role="copypaste"]
 ----
 curl -s $(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/birth/before/2000 | jq
 ----
 
-Now that we have our app running on OpenShift, let's see what we can do.
-
-Run the following command to output the full URL to our DataTable graphical frontend:
-
-[source,sh,role="copypaste"]
-----
-echo; echo "http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/datatable.html" ; echo
-----
-
-Copy and paste that URL into a new browser tab to access it. It should look like:
+Now access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/datatable.html[graphical person browser powered by the DataTables library^]. It should look like:
 
 image::datatable.png[datatable,800]
 
