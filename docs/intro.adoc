@@ -40,7 +40,7 @@ echo "This is a bash shell command that you can copy/paste by clicking"
 
 ## Access Your Development Environment
 
-You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[Eclipe Che^]. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
+You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[CodeReady Workspaces^]. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
 
 To get started, {{ CHE_URL }}[access the Che instance^] and log in using the username and password you've been assigned:
 
