@@ -145,7 +145,7 @@ Service Mesh technologies like https://istio.io[Istio^] can provide even more tr
 
 This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client^] with Quarkus in order to trace _external_, outbound requests with very little effort.
 
-We will use the publicly available https://swapi.co[Star Wars API^] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
+We will use the publicly available https://swapi.dev[Star Wars API^] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
 
 === Create model
 
@@ -220,18 +220,18 @@ In order to determine the base URL to which REST calls will be made, the REST Cl
 
 [source,none,role="copypaste"]
 ----
-org.acme.people.service.StarWarsService/mp-rest/url=https://swapi.co
+org.acme.people.service.StarWarsService/mp-rest/url=https://swapi.dev
 ----
 
-Having this configuration means that all requests performed using our code will use `https://swapi.co` as the base URL.
+Having this configuration means that all requests performed using our code will use `https://swapi.dev` as the base URL.
 
 Note that `org.acme.people.service.StarWarsService` must match the fully qualified name of the StarWarsService interface we created in the previous section.
 
-Using the configuration above, calling the `getPerson(int)` method of StarWarsService with a value of `1` would result in an HTTP GET request being made to `https://swapi.co/api/people/1/`. Confirm you can access the Star Wars API using curl:
+Using the configuration above, calling the `getPerson(int)` method of StarWarsService with a value of `1` would result in an HTTP GET request being made to `https://swapi.dev/api/people/1/`. Confirm you can access the Star Wars API using curl:
 
 [source,sh,role="copypaste"]
 ----
-curl -s https://swapi.co/api/people/1/ | jq
+curl -s https://swapi.dev/api/people/1/ | jq
 ----
 
 You should get Luke Skywalker back:
@@ -247,7 +247,7 @@ You should get Luke Skywalker back:
   "eye_color": "blue",
   "birth_year": "19BBY",
   "gender": "male",
-  "homeworld": "https://swapi.co/api/planets/1/",
+  "homeworld": "https://swapi.dev/api/planets/1/",
   ....<more here>....
 }
 ----
