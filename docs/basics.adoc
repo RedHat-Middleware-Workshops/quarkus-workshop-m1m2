@@ -30,7 +30,7 @@ Step through the prompts, using the following value for **Repository URL**:
 
 [source,none,role="copypaste"]
 ----
-https://github.com/RedHatWorkshops/quarkus-workshop-labs
+https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-labs
 ----
 
 image::crw-clone-repo.png[crw,900]
