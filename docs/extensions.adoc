@@ -16,16 +16,21 @@ Retrieve the list of possible extensions using the Maven plugin. Run this in the
 mvn quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
-You can see the list of ~80 different extensions available to you in the output:
+You can see the list of ~191 different extensions available to you in the output:
 
 [source,none]
 ----
-Current Quarkus extensions available:
-Agroal - Database connection pool                  quarkus-agroal
-Amazon DynamoDB                                    quarkus-amazon-dynamodb
-Apache Kafka Client                                quarkus-kafka-client
-Apache Kafka Streams                               quarkus-kafka-streams
-Apache Tika                                        quarkus-tika
+Current Quarkus extensions available: 
+OpenShift                                          quarkus-openshift                                 
+Quarkus - Core                                     quarkus-core                                      
+JAXB                                               quarkus-jaxb                                      
+Jackson                                            quarkus-jackson                                   
+JSON-B                                             quarkus-jsonb                                     
+JSON-P                                             quarkus-jsonp                                     
+Agroal - Database connection pool                  quarkus-agroal                                    
+YAML Configuration                                 quarkus-config-yaml                               
+Elytron Security Properties File                   quarkus-elytron-security-properties-file  
+...
 ----
 
 Adding an extension is similarly easy. With Maven, you can add extensions using `mvn quarkus:add-extension -Dextensions="extension1,extension2,..."`. The extension name can be the maven groupId/artifactId name of the extension: e.g. `io.quarkus:quarkus-agroal`. But you can pass a partial name and Quarkus will do its best to find the right extension. For example, `agroal`, `Agroal` or `agro` will expand to `io.quarkus:quarkus-agroal`. If no extension is found or if more than one extensions match, you will see a warning and a list of possible matches in the command result.

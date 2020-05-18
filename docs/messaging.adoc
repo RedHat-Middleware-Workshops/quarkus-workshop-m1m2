@@ -161,7 +161,7 @@ Let's try our test again:
 
 [source,sh,role="copypaste"]
 ----
-curl -X POST http://localhost:8080/person/joe
+curl -X POST http://localhost:8080/person/joe  | jq
 ----
 
 You should get back Joe!

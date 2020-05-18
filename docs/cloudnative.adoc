@@ -316,14 +316,14 @@ In the `org.acme.people.rest.GreetingResource` class, add the following fields t
 
 [source, java, role="copypaste"]
 ----
-@ConfigProperty(name = "greeting.message")
-String message;
+    @ConfigProperty(name = "greeting.message")
+    String message;
 
-@ConfigProperty(name = "greeting.suffix", defaultValue="!")
-String suffix;
+    @ConfigProperty(name = "greeting.suffix", defaultValue="!")
+    String suffix;
 
-@ConfigProperty(name = "greeting.name")
-Optional<String> name;
+    @ConfigProperty(name = "greeting.name")
+    Optional<String> name;
 ----
 
 You'll get red squiggly errors underneath `@ConfigProperty`. Hover the cursor over them and select _Quick Fix_:
@@ -345,11 +345,11 @@ Now, modify the `hello()` method to use the injected properties:
 
 [source, java, role="copypaste"]
 ----
-@GET
-@Produces(MediaType.TEXT_PLAIN)
-public String hello() {
-    return message + " " + name.orElse("world") + suffix; // <1>
-}
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return message + " " + name.orElse("world") + suffix; 
+    }
 ----
 <1> Here we use the _Optional_ API to safely access the value using `name.orElse()` and provide a default `world` value in case the value for `name` is not defined in `application.properties`.
 

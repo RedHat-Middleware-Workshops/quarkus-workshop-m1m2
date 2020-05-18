@@ -58,7 +58,7 @@ With Jaeger installed, let's turn back to our Quarkus app. Like other exercises,
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="opentracing, rest-client" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and an HTTP REST Client we'll use pater.
@@ -82,15 +82,12 @@ quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces<3>
 
 Like many other Quarkus frameworks, sensible defaults and out of the box functionality means you can get immediate value out of Quarkus without changing any code. By default, all JAX-RS endpoints (like our `/hello` and others) are automatically traced. Let's see that in action by re-deploying our traced app.
 
-First, re-build the app using the **Package for OpenShift**.
-
-image:cmd-package.png[create,600]
-
-Once that's done, run the following command to re-deploy:
+Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
 ----
 
 == Confirm deployment
@@ -259,18 +256,18 @@ We need to `@Inject` an instance of our new `StarWarsService` and call it. Open 
 
 [source,java,role="copypaste"]
 ----
-@Inject
-@RestClient
-StarWarsService swService; // <1>
+    @Inject
+    @RestClient
+    StarWarsService swService; // <1>
 
-@GET
-@Path("/swpeople")
-@Produces(MediaType.APPLICATION_JSON)
-public List<StarWarsPerson> getCharacters() {
-    return IntStream.range(1, 6) // <2>
-        .mapToObj(swService::getPerson)  // <3>
-        .collect(Collectors.toList());  // <4>
-}
+    @GET
+    @Path("/swpeople")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<StarWarsPerson> getCharacters() {
+        return IntStream.range(1, 6) // <2>
+            .mapToObj(swService::getPerson)  // <3>
+            .collect(Collectors.toList());  // <4>
+    }
 ----
 <1> Our injected service
 <2> Generate a stream of 5 integers that we will use as IDs to pass to the service
@@ -289,15 +286,12 @@ import java.util.stream.IntStream;
 
 == Test it out
 
-First, re-build the app using the **Package App for OpenShift** command:
-
-image:cmd-package.png[create,600]
-
-Once that's done, run the following command to re-deploy:
+Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
 ----
 
 == Confirm deployment

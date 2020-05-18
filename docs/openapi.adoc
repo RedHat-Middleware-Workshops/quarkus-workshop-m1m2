@@ -135,7 +135,7 @@ Add a few annotations:
 
 [source,java,role="copypaste"]
 ----
-@Operation(summary = "Finds people born before a specific year",
+    @Operation(summary = "Finds people born before a specific year",
            description = "Search the people database and return a list of people born before the specified year")
 ----
 
@@ -143,13 +143,13 @@ Add a few annotations:
 
 [source,java,role="copypaste"]
 ----
-@APIResponses(value = {
-    @APIResponse(responseCode = "200", description = "The list of people born before the specified year",
-        content = @Content(
-            schema = @Schema(implementation = Person.class)
-        )),
-    @APIResponse(responseCode = "500", description = "Something bad happened")
-})
+    @APIResponses(value = {
+        @APIResponse(responseCode = "200", description = "The list of people born before the specified year",
+            content = @Content(
+                schema = @Schema(implementation = Person.class)
+            )),
+        @APIResponse(responseCode = "500", description = "Something bad happened")
+    })
 ----
 
 **3. Add an additional bit of documentation before the existing `@PathParam` method parameter:**

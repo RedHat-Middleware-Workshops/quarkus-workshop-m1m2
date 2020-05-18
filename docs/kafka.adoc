@@ -1,7 +1,7 @@
 = Reactive Streams with Quarkus and Kafka
 :experimental:
 
-In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reactive Streams Messaging and https://kafka.apache.org[Apache Kafka^], a distributed streaming platform. You will also use https://strimzi.io/[Strimzi^], which provides an easy way to run an Apache Kafka cluster on Kubernetes using https://operatorhub.io/what-is-an-operator[Operators^].
+In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reactive Streams Messaging and https://kafka.apache.org[Apache Kafka^], a distributed streaming platform. You will also use https://www.redhat.com/en/resources/amq-streams-datasheet[Red Hat AMQ streams^], which provides an easy way to run an Apache Kafka cluster on Kubernetes and OpenShift using https://operatorhub.io/what-is-an-operator[Operators^].
 
 == What is Apache Kafka?
 
@@ -16,17 +16,20 @@ Kafka is generally used for two broad classes of applications:
 * Building real-time streaming data pipelines that reliably get data between systems or applications
 * Building real-time streaming applications that transform or react to the streams of data
 
-== What is Strimzi?
+== What is AMQ Streams?
 
-Strimzi provides a way to run an Apache Kafka cluster on Kubernetes in various deployment configurations.
+AMQ Streams simplifies the process of running Apache Kafka in an OpenShift cluster. AMQ Streams provides container images and Operators for running Kafka on OpenShift. AMQ Streams Operators are fundamental to the running of AMQ Streams. The Operators provided with AMQ Streams are purpose-built with specialist operational knowledge to effectively manage Kafka.
 
-Strimzi is based on Apache Kafka, and makes it easy to run Apache Kafka on OpenShift or Kubernetes.
+Operators simplify the process of:
 
-Strimzi provides three operators:
-
-* **Cluster Operator** - Responsible for deploying and managing Apache Kafka clusters within an OpenShift or Kubernetes cluster.
-* **Topic Operator** - Responsible for managing Kafka topics within a Kafka cluster running within an OpenShift or Kubernetes cluster.
-* **User Operator** - Responsible for managing Kafka users within a Kafka cluster running within an OpenShift or Kubernetes cluster.
+* Deploying and running Kafka clusters
+* Deploying and running Kafka components
+* Configuring access to Kafka
+* Securing access to Kafka
+* Upgrading Kafka
+* Managing brokers
+* Creating and managing topics
+* Creating and managing users
 
 == The Goal
 
@@ -258,21 +261,16 @@ More details about this configuration is available on the https://kafka.apache.o
 What about `my-data-stream`? This is an in-memory stream, not connected to a message broker.
 ====
 
-== Rebuild Executable JAR
+== Rebuild and redeploy app to OpenShift
 
-Using the commands on the right, select **Package App for OpenShift**.
-
-image:cmd-package.png[create,600]
-
-You should see a bunch of log output that ends with a `SUCCESS` message.
-
-== Deploy to OpenShift
-
-And now start the build using our executable JAR:
+Run the following command which will build and deploy using the OpenShift extension:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
+oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
 ----
 
 The build should take a minute or two to complete.

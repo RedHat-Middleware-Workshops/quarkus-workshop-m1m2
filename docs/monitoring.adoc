@@ -31,7 +31,7 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9090']
 
-  - job_name: 'people_app' # <2>
+  - job_name: 'quarkus-people-app' # <2>
     static_configs:
     - targets: ['people:8080']
 ----
@@ -44,13 +44,13 @@ On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for you
 
 image::add-to-project.png[Prometheus, 800]
 
-Fill out the following fields:
+Press *Enter Key* once you type `prom/prometheus` in *Image Name*. You will see *green checked* icon and *Validated* under the input box.
 
-* *Image Name*: `prom/prometheus`
+Next, fill out the following fields:
+
+* *Application*: `Create Applcation`
 * *Application Name*: `prometheus`
 * *Name*: `prometheus`
-
-Click the "Magnifying Glass" search icon next to the image name to confirm the image exists.
 
 Leave the rest as-is and click *Create*:
 
@@ -65,7 +65,7 @@ Finally, mount the ConfigMap into the running container:
 oc set volume deployment/prometheus --add -t configmap --configmap-name=prom -m /etc/prometheus/prometheus.yml --sub-path=prometheus.yml
 ----
 
-You should get `deployment.extensions/prometheus volume updated` and this will cause the contents of the `ConfigMap`'s `prometheus.yml` data to be mounted at `/etc/prometheus/prometheus.yml` where Prometheus is expecting it, and it will start scraping metrics from our app. But our app does not yet expose metrics. We'll do that in the next step.
+You should get `deployment.extensions/prometheus volume updated` and this will cause the contents of the `ConfigMap`'s prometheus.yml` data to be mounted at `/etc/prometheus/prometheus.yml` where Prometheus is expecting it, and it will start scraping metrics from our app. But our app does not yet expose metrics. We'll do that in the next step.
 
 Verify Prometheus is up and running:
 
@@ -108,12 +108,14 @@ You will see a bunch of metrics in the OpenMetrics format:
 
 [source, none]
 ----
-# HELP base:jvm_uptime_seconds Displays the time from the start of the Java virtual machine in milliseconds.
-# TYPE base:jvm_uptime_seconds gauge
-base:jvm_uptime_seconds 5.631
-# HELP base:gc_ps_mark_sweep_count Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
-# TYPE base:gc_ps_mark_sweep_count counter
-base:gc_ps_mark_sweep_count 2.0
+# TYPE base_cpu_availableProcessors gauge
+base_cpu_availableProcessors 1.0
+# HELP base_thread_max_count Displays the peak live thread count since the Java virtual machine started or peak was reset. This includes daemon and non-daemon threads.
+# TYPE base_thread_max_count gauge
+base_thread_max_count 39.0
+# HELP base_memory_usedHeap_bytes Displays the amount of used heap memory in bytes.
+# TYPE base_memory_usedHeap_bytes gauge
+base_memory_usedHeap_bytes 9.824268E7
 ----
 
 This is what Prometheus will use to access and index the metrics from our app when we deploy it to the cluster.
@@ -126,7 +128,7 @@ Open the `GreetingService` class (in the `org.acme.people.service` package). Let
 
 [source,java,role="copypaste"]
 ----
-@Counted(name = "greetings", description = "How many greetings we've given.")
+    @Counted(name = "greetings", description = "How many greetings we've given.")
 ----
 
 Also, add the necessary import statement at the top of the file:
@@ -182,8 +184,8 @@ Let's add a few more metrics for our Kafka stream we setup in the previous exerc
 
 [source,java,role="copypaste"]
 ----
-@Counted(name = "convertedNames", description = "How many names have been converted.") // <1>
-@Timed(name = "converter", description = "A measure how long it takes to convert names.", unit = MetricUnits.MILLISECONDS) // <2>
+    @Counted(name = "convertedNames", description = "How many names have been converted.") // <1>
+    @Timed(name = "converter", description = "A measure how long it takes to convert names.", unit = MetricUnits.MILLISECONDS) // <2>
 ----
 <1> This metric will count the number of times this method is called
 <2> This metric will measure how long it takes the method to run
@@ -206,21 +208,14 @@ curl http://localhost:8080/metrics/application
 
 You'll get many more metrics this time which we'll explore soon.
 
-== Rebuild Executable JAR
+== Rebuild and redeploy to OpenShift
 
-Now we are ready to run our application on the cluster and look at the generated metrics. Using the link on the right, select **Package App for OpenShift**.
-
-image:cmd-package.png[create,600]
-
-You should see a bunch of log output that ends with a `SUCCESS` message.
-
-== Deploy to OpenShift
-
-Let's deploy our app to the cluster and see if Prometheus picks up our metrics! To do this, start the container build using our executable JAR:
+Run the following command which will build and deploy using the OpenShift extension:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
 ----
 
 == Confirm deployment
@@ -275,7 +270,7 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
 
-* *Image Name*: `grafana/grafana` (and then click the magnifying glass)
+* *Image Name*: `grafana/grafana` (Press Enter key then make sure to see *Validated*)
 * *Application*: `Create Application`
 * *Application Name*: `grafana`
 * *Name*: `grafana`

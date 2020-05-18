@@ -101,7 +101,7 @@ Now re-run the tests (click on **Run Tests** again) and look for
 
 [source, none]
 ----
- INFO  [io.quarkus] (main) Quarkus x.xx.x started in 1.997s. Listening on: http://[::]:8083
+INFO  [io.quarkus] (main) Quarkus x.xx.x.Final started in 1.131s. Listening on: http://0.0.0.0:8083
 ----
 
 Notice the port `8083`.

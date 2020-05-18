@@ -232,15 +232,15 @@ Let’s modify the application and add some queries. Much like traditional objec
 
 [source,java,role="copypaste"]
 ----
-public static List<Person> findByColor(EyeColor color) {
-    return list("eyes", color);
-}
+    public static List<Person> findByColor(EyeColor color) {
+        return list("eyes", color);
+    }
 
-public static List<Person> getBeforeYear(int year) {
-    return Person.<Person>streamAll()
-    .filter(p -> p.birth.getYear() <= year)
-    .collect(Collectors.toList());
-}
+    public static List<Person> getBeforeYear(int year) {
+        return Person.<Person>streamAll()
+        .filter(p -> p.birth.getYear() <= year)
+        .collect(Collectors.toList());
+    }
 ----
 
 These two queries will find a list of people in our database based on eye color, or birth year. Note the `getBeforeYear` is implemented using the Java Streams API.
@@ -256,19 +256,19 @@ Open the `PersonResource` class and add two news endpoint under the `//TODO: add
 
 [source,java,role="copypaste"]
 ----
-@GET
-@Path("/eyes/{color}")
-@Produces(MediaType.APPLICATION_JSON)
-public List<Person> findByColor(@PathParam(value = "color") EyeColor color) {
-    return Person.findByColor(color);
-}
+    @GET
+    @Path("/eyes/{color}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Person> findByColor(@PathParam(value = "color") EyeColor color) {
+        return Person.findByColor(color);
+    }
 
-@GET
-@Path("/birth/before/{year}")
-@Produces(MediaType.APPLICATION_JSON)
-public List<Person> getBeforeYear(@PathParam(value = "year") int year) {
-    return Person.getBeforeYear(year);
-}
+    @GET
+    @Path("/birth/before/{year}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Person> getBeforeYear(@PathParam(value = "year") int year) {
+        return Person.getBeforeYear(year);
+    }
 ----
 
 == Inspect the results
@@ -388,8 +388,8 @@ So, in our `PersonResource` endpoint, we'll start with an empty `result` object 
 
 [source,java,role="copypaste"]
 ----
-DataTable result = new DataTable();
-result.setDraw(draw); // <1>
+            DataTable result = new DataTable();
+            result.setDraw(draw); // <1>
 ----
 <1> We initialize the `DataTable` return object with the value passed in, to ensure DataTables redraws in the correct order in case of async returns.
 
@@ -399,14 +399,14 @@ Next, if the request includes a search parameter, let's take care of that by inc
 
 [source,java,role="copypaste"]
 ----
-PanacheQuery<Person> filteredPeople;
+            PanacheQuery<Person> filteredPeople;
 
-if (searchVal != null && !searchVal.isEmpty()) { // <1>
-    filteredPeople = Person.<Person>find("name like :search",
-        Parameters.with("search", "%" + searchVal + "%"));
-} else {
-    filteredPeople = Person.findAll();
-}
+            if (searchVal != null && !searchVal.isEmpty()) { // <1>
+                filteredPeople = Person.<Person>find("name like :search",
+                    Parameters.with("search", "%" + searchVal + "%"));
+            } else {
+                filteredPeople = Person.findAll();
+            }
 ----
 <1> If a search value was passed in, use it to search using the Panache `find` method. Otherwise, use `findAll` to skip filtering.
 
@@ -416,14 +416,14 @@ And finally, we use the built-in Panache `page` operator to seek to the correct 
 
 [source,java,role="copypaste"]
 ----
-int page_number = start / length;
-filteredPeople.page(page_number, length);
+            int page_number = start / length;
+            filteredPeople.page(page_number, length);
 
-result.setRecordsFiltered(filteredPeople.count());
-result.setData(filteredPeople.list());
-result.setRecordsTotal(Person.count());
+            result.setRecordsFiltered(filteredPeople.count());
+            result.setData(filteredPeople.list());
+            result.setRecordsTotal(Person.count());
 
-return result;
+            return result;
 ----
 
 === Test the result
@@ -467,19 +467,19 @@ Open the `PersonResource` resource class and add the following lifecycle listene
 
 [source,java,role="copypaste"]
 ----
-@Transactional
-void onStart(@Observes StartupEvent ev) {
-    for (int i = 0; i < 1000; i++) {
-        String name = CuteNameGenerator.generate();
-        LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 20 * 52 * -1)));
-        EyeColor color = EyeColor.values()[(int)(Math.floor(Math.random() * EyeColor.values().length))];
-        Person p = new Person();
-        p.birth = birth;
-        p.eyes = color;
-        p.name = name;
-        Person.persist(p);
+    @Transactional
+    void onStart(@Observes StartupEvent ev) {
+        for (int i = 0; i < 1000; i++) {
+            String name = CuteNameGenerator.generate();
+            LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 20 * 52 * -1)));
+            EyeColor color = EyeColor.values()[(int)(Math.floor(Math.random() * EyeColor.values().length))];
+            Person p = new Person();
+            p.birth = birth;
+            p.eyes = color;
+            p.name = name;
+            Person.persist(p);
+        }
     }
-}
 ----
 
 This code will insert 1,000 fake people with random birthdates, eye colors, and names at startup. Note the use of the `@Transactional` annotation - this is required for methods that make changes to the underlying database (and automatically executes the method in a Transaction for you).
@@ -547,6 +547,16 @@ image::db-postgres-values.png[db, 700]
 
 Click *Create*.
 
+And label the items with proper icons:
+
+[source,sh,role="copypaste"]
+----
+oc label dc/postgres-database  app.openshift.io/runtime=postgresql --overwrite && \
+oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
+oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+----
+
 This will deploy the database to our new project. Click on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to see it:
 
 image::database-deployment.png[inventory_db_deployments, 700]
@@ -555,27 +565,69 @@ image::database-deployment.png[inventory_db_deployments, 700]
 
 In previous steps we deployed our sample application as a native binary. Now let's switch to a JVM-based deployment from here on out.
 
-Re-build the application as an executable JAR using the **Package App for OpenShift**:
+Quarkus offers the ability to automatically generate OpenShift resources based on sane default and user supplied configuration. The OpenShift extension is actually a wrapper extension that brings together the https://quarkus.io/guides/deploying-to-kubernetes[kubernetes^] and https://quarkus.io/guides/container-image#s2i[container-image-s2i^] extensions with defaults so that it’s easier for the user to get started with Quarkus on OpenShift.
 
-image::cmd-package.png[livecoding, 700]
-
-Next, re-define the container build to use the OpenJDK image using these commands:
+Add _openshift_ extension via CodeReady Workspaces Terminal:
 
 [source,sh,role="copypaste"]
 ----
-oc delete bc/people && oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.6 --binary --name=people
+mvn quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
-And now start the build using our executable JAR:
+you will see:
+
+✅ Adding extension io.quarkus:quarkus-openshift
+
+Let’s `add` the following variables in _src/main/resources/application.properties_:
+
+[source,shell,role="copypaste"]
+----
+%prod.quarkus.kubernetes-client.trust-certs=true
+%prod.quarkus.container-image.build=true
+%prod.quarkus.kubernetes.deploy=true
+%prod.quarkus.kubernetes.deployment-target=openshift
+%prod.quarkus.openshift.expose=true
+%prod.quarkus.openshift.labels.app.openshift.io/runtime=quarkus 
+----
+
+For more details of the above options:
+
+* `quarkus.kubernetes-client.trust-certs=true` - We are using self-signed certs in this simple example, so this simply says to the extension to trust them.
+* `quarkus.container-image.build=true` - Instructs the extension to build a container image
+* `quarkus.kubernetes.deploy=true` - Instructs the extension to deploy to OpenShift after the container image is built
+* `quarkus.kubernetes.deployment-target=openshift` - Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig`s and `Service`s) after building the container
+* `quarkus.openshift.expose=true` - Instructs the extension to generate an OpenShift `Route`.
+* `quarkus.openshift.labels.app.openshift.io/runtime=java` - Adds a nice-looking icon to the app when viewing the OpenShift Developer Toplogy
+
+Now let's deploy the application itself. Run the following command which will build and deploy using the OpenShift extension:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
+oc delete bc/people && \
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
-This will re-build the image by starting with the OpenJDK base image, adding in our executable JAR, and packaging the result as a container image on the internal registry. Wait for the build to finish.
+The output should end with `BUILD SUCCESS`.
 
-The rebuild will also trigger a re-deployment of our app. Watch the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to ensure the new version is rolled out and the old one killed.
+Finally, make sure it's actually done rolling out:
+
+[source,sh,role="copypaste"]
+----
+oc rollout status -w dc/people
+----
+
+Wait for that command to report *replication controller _inventory-xx_ successfully rolled out* before continuing.
+
+And let's do again to label the items with proper icons:
+
+[source,sh,role="copypaste"]
+----
+oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
+oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+----
+
+Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], make sure it's done deploying (dark blue circle):
 
 [NOTE]
 ====

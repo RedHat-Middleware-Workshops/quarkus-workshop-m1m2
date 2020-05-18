@@ -73,7 +73,7 @@ Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
 ----
-2019-07-10 04:04:11,817 INFO  [io.quarkus] (main) Quarkus xx.xx.xx started in 0.015s. Listening on: http://[::]:8081
+2020-05-17 22:53:05,792 INFO  [io.quarkus] (main) Quarkus xx.xx.xx started in 0.015s. Listening on: http://0.0.0.0:8081
 ----
 
 That's 15 milliseconds to start up.
@@ -88,8 +88,8 @@ You should see something like:
 
 [source,none]
 ----
-   PID   RSS COMMAND
- 16017 53816 target/people-1.0-SNAPSHOT-runner
+    PID   RSS COMMAND
+   1066 49160 /projects/quarkus-workshop-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
 ----
 
 This shows that our process is taking around 50 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!

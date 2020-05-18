@@ -106,15 +106,12 @@ public class JWTResource {
 
 == Rebuild and redeploy app
 
-First, re-build the app using the **Package App for OpenShift**:
-
-image:cmd-package.png[create,600]
-
-Once that's done, run the following command to re-deploy:
+Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
 ----
 
 == Confirm deployment
@@ -362,15 +359,12 @@ public class KeycloakResource {
 
 === Rebuild and redeploy app
 
-First, re-build the app using the **Package App for OpenShift** command.
-
-image:cmd-package.png[create,600]
-
-Once that's done, run the following command to re-deploy:
+Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
 ----
 
 === Confirm deployment
@@ -419,9 +413,8 @@ You should see in the returned HTTP headers:
 [source,none]
 ----
 HTTP/1.1 403 Forbidden
-Connection: keep-alive
-Content-Length: 0
-Date: Tue, 16 Jul 2019 00:59:56 GMT
+content-length: 0
+set-cookie: xxxxxxxxxxxx; path=/; HttpOnly
 ----
 
 Failed as expected!
