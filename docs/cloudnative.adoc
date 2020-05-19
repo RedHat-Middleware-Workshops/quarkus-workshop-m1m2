@@ -336,6 +336,14 @@ image::quickfiximport.png[quickfix, 600]
 
 Do the same for the `java.util.Optional` type to eliminate the errors.
 
+The new `import` statements can also be added manually:
+
+[source,java,role="copypaste"]
+----
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import java.util.Optional;
+----
+
 [NOTE]
 ====
 MicroProfile config annotations include a `name =` (required) and a `defaultValue =` (optional). You can also later access these values directly if declared as a String or other primitive type, or declare them with `<Optional>` type to safely access them using the _Optional_ API in case they are not defined.
@@ -348,7 +356,7 @@ Now, modify the `hello()` method to use the injected properties:
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-        return message + " " + name.orElse("world") + suffix; 
+        return message + " " + name.orElse("world") + suffix;
     }
 ----
 <1> Here we use the _Optional_ API to safely access the value using `name.orElse()` and provide a default `world` value in case the value for `name` is not defined in `application.properties`.
@@ -456,7 +464,7 @@ Let's give this a go. In your `application.properties`, add a different `message
 [source,none,role="copypaste"]
 ----
 greeting.message = hello
-greeting.name = quarkus
+greeting.name = quarkus in dev mode
 %prod.greeting.name = production quarkus
 ----
 
@@ -467,7 +475,7 @@ Verify that in _dev_ mode (which you're currently running in) that:
 curl http://localhost:8080/hello
 ----
 
-produces `hello quarkus!`.
+produces `hello quarkus in dev mode!`.
 
 Next, let's re-build the app as an executable JAR (which will run with the `prod` profile active).
 

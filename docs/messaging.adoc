@@ -44,7 +44,7 @@ We'll start by creating a new asynchronous endpoint. Open the `PersonResource` c
 
 [source,java,role="copypaste"]
 ----
-    @Inject EventBus bus; // <1>
+    @Inject EventBus bus;
 ----
 
 You'll also need to add more import statements at the top:
@@ -161,7 +161,7 @@ Let's try our test again:
 
 [source,sh,role="copypaste"]
 ----
-curl -X POST http://localhost:8080/person/joe  | jq
+curl -s -X POST http://localhost:8080/person/joe  | jq
 ----
 
 You should get back Joe!
@@ -200,7 +200,7 @@ You should also get back Joe!
 
 To better understand, let’s detail how the HTTP request/response has been handled:
 
-. The request is received by the addPerson method
+. The request is received by the `addPerson` method
 . a message containing the desired name is sent to the event bus
 . Another bean receives this message and computes the response
 . This response is sent back using the reply mechanism

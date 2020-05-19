@@ -554,7 +554,7 @@ And label the items with proper icons:
 oc label dc/postgres-database  app.openshift.io/runtime=postgresql --overwrite && \
 oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 This will deploy the database to our new project. Click on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to see it:
@@ -582,22 +582,19 @@ Let’s `add` the following variables in _src/main/resources/application.propert
 
 [source,shell,role="copypaste"]
 ----
-%prod.quarkus.kubernetes-client.trust-certs=true
-%prod.quarkus.container-image.build=true
-%prod.quarkus.kubernetes.deploy=true
-%prod.quarkus.kubernetes.deployment-target=openshift
-%prod.quarkus.openshift.expose=true
-%prod.quarkus.openshift.labels.app.openshift.io/runtime=quarkus 
+%prod.quarkus.kubernetes-client.trust-certs=true<1>
+%prod.quarkus.container-image.build=true<2>
+%prod.quarkus.kubernetes.deploy=true<3>
+%prod.quarkus.kubernetes.deployment-target=openshift<4>
+%prod.quarkus.openshift.expose=true<5>
+%prod.quarkus.openshift.labels.app.openshift.io/runtime=quarkus<6>
 ----
-
-For more details of the above options:
-
-* `quarkus.kubernetes-client.trust-certs=true` - We are using self-signed certs in this simple example, so this simply says to the extension to trust them.
-* `quarkus.container-image.build=true` - Instructs the extension to build a container image
-* `quarkus.kubernetes.deploy=true` - Instructs the extension to deploy to OpenShift after the container image is built
-* `quarkus.kubernetes.deployment-target=openshift` - Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig`s and `Service`s) after building the container
-* `quarkus.openshift.expose=true` - Instructs the extension to generate an OpenShift `Route`.
-* `quarkus.openshift.labels.app.openshift.io/runtime=java` - Adds a nice-looking icon to the app when viewing the OpenShift Developer Toplogy
+<1> We are using self-signed certs in this simple example, so this simply says to the extension to trust them.
+<2> Instructs the extension to build a container image
+<3> Instructs the extension to deploy to OpenShift after the container image is built
+<4> Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig` and `Service`) after building the container
+<5> Instructs the extension to generate an OpenShift `Route`.
+<6> Adds a nice-looking icon to the app when viewing the OpenShift Developer Toplogy
 
 Now let's deploy the application itself. Run the following command which will build and deploy using the OpenShift extension:
 
@@ -624,7 +621,7 @@ And let's do again to label the items with proper icons:
 ----
 oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], make sure it's done deploying (dark blue circle):
