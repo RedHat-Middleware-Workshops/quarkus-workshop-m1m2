@@ -596,7 +596,7 @@ Let’s `add` the following variables in _src/main/resources/application.propert
 <4> Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig` and `Service`) after building the container
 <5> Instructs the extension to generate an OpenShift `Route`.
 <6> Adds a nice-looking icon to the app when viewing the OpenShift Developer Toplogy
-<7> build the application based on OpenJDK 11 image
+<7> Build the application based on OpenJDK 11 image
 
 Now let's deploy the application itself. Run the following command which will build and deploy using the OpenShift extension:
 
