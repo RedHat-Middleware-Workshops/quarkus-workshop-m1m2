@@ -69,10 +69,10 @@ Next, open the `application.properties` file (in the `src/main/resources` direct
 
 [source,none,role="copypaste"]
 ----
-quarkus.jaeger.service-name=people<1>
-quarkus.jaeger.sampler-type=const<2>
-quarkus.jaeger.sampler-param=1<2>
-quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces<3>
+%prod.quarkus.jaeger.service-name=people<1>
+%prod.quarkus.jaeger.sampler-type=const<2>
+%prod.quarkus.jaeger.sampler-param=1<2>
+%prod.quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces<3>
 ----
 <1> The name of our service from the perspective of Jaeger (useful when multiple apps report to the same Jaeger instance)
 <2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist^] to tune the performance.

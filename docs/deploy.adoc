@@ -39,6 +39,11 @@ Using project "{{ USER_ID }}-project".
 Welcome! See 'oc help' to get started.
 ----
 
+[NOTE]
+====
+After you log in using *Login to OpenShift*, the terminal is no longer usable as a regular terminal. You can close the terminal window. You will still be logged in when you open more terminals later!
+====
+
 Congratulations, you are now authenticated to the OpenShift server via the CLI. We'll use the prettier web console later on in this lab.
 
 [WARNING]

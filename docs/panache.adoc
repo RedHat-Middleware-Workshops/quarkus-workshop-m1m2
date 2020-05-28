@@ -588,6 +588,7 @@ Let’s `add` the following variables in _src/main/resources/application.propert
 %prod.quarkus.kubernetes.deployment-target=openshift<4>
 %prod.quarkus.openshift.expose=true<5>
 %prod.quarkus.openshift.labels.app.openshift.io/runtime=quarkus<6>
+%prod.quarkus.s2i.base-jvm-image=registry.access.redhat.com/ubi8/openjdk-11<7>
 ----
 <1> We are using self-signed certs in this simple example, so this simply says to the extension to trust them.
 <2> Instructs the extension to build a container image
@@ -595,6 +596,7 @@ Let’s `add` the following variables in _src/main/resources/application.propert
 <4> Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig` and `Service`) after building the container
 <5> Instructs the extension to generate an OpenShift `Route`.
 <6> Adds a nice-looking icon to the app when viewing the OpenShift Developer Toplogy
+<7> build the application based on OpenJDK 11 image
 
 Now let's deploy the application itself. Run the following command which will build and deploy using the OpenShift extension:
 

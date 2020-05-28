@@ -11,9 +11,13 @@ Throughout this lab you'll discover how Quarkus can make your development of clo
 
 == First Step: Set Your Username!
 
-In the above box, enter the user ID you were assigned:
+Look in the box at the top of your screen. Is your username set already? If so it will look like this:
 
-image::setuser.png[Set User ID above, 900]
+image::alreadyset.png[Set User ID above, 700]
+
+If your username is properly set, then you can move on. **If not, in the above box, enter the user ID you were assigned** like this:
+
+image::setuser.png[Set User ID above, 700]
 
 This will customize the links and copy/paste code for this workshop. If you accidently type the wrong username, just click the green recycle icon to reset it.
 
