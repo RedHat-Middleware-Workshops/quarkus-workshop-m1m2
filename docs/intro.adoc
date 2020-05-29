@@ -5,7 +5,7 @@ image::logo.png[quarkus-logo, 900]
 
 Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot^] and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy_ to your development.
 
-*Red Hat* offers https://access.redhat.com/products/quarkus[Red Hat build of Quarkus(RHBQ)^] to support and maintenance over stated time periods for the major versions of Quarkus. In this workhop, we will use RHBQ to develop cloud-native microservices. https://access.redhat.com/documentation/en-us/red_hat_build_of_quarkus[Learn more about RHBQ^]. This is one of the cloud-native runtimes included in https://www.redhat.com/en/products/runtimes[Red Hat Runtimes^].
+*Red Hat* offers the fully supported https://access.redhat.com/products/quarkus[Red Hat Build of Quarkus(RHBQ)^] with support and maintenance of Quarkus. In this workhop, you will use Quarkus to develop Kubernetes-native microservices and deploy them to OpenShift. Quarkus is one of the runtimes included in https://www.redhat.com/en/products/runtimes[Red Hat Runtimes^]. https://access.redhat.com/documentation/en-us/red_hat_build_of_quarkus[Learn more about RHBQ^].
 
 Throughout this lab you'll discover how Quarkus can make your development of cloud native apps faster and more productive.
 
