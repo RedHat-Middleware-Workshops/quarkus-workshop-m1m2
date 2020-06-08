@@ -89,10 +89,10 @@ You should see something like:
 [source,none]
 ----
     PID   RSS COMMAND
-   1066 49160 /projects/quarkus-workshop-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+   1108 61196 /projects/quarkus-workshop-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
 ----
 
-This shows that our process is taking around 50 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
+This shows that our process is taking around 60 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
 
 [NOTE]
 ====
