@@ -20,28 +20,19 @@ Within the `pom.xml` is the declaration for the Quarkus Maven plugin which conta
 
 [source,xml]
 ----
-  <profile>
-    <id>native</id>
-    <build>
-      <plugins>
-        <plugin>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-maven-plugin</artifactId>
-          <version>${quarkus.version}</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>native-image</goal>
-              </goals>
-              <configuration>
-                <enableHttpUrlHandler>true</enableHttpUrlHandler>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
+  <profiles>
+    <profile>
+      <id>native</id>
+      <activation>
+      ...
+      </activation>
+      <build>
+      ...
+      <properties>
+        <quarkus.package.type>native</quarkus.package.type>
+      </properties>
+    </profile>
+  </profiles>
 ----
 
 We use a profile because, you will see very soon, packaging the native image takes a few seconds. However, this compilation time is only incurred _once_, as opposed to _every_ time the application starts, which is the case with other approaches for building and executing JARs.
