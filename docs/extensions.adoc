@@ -1,13 +1,239 @@
 = Quarkus Extensions
 :experimental:
 
-One of the main goals of Quarkus is ease of extensibility and to build a vibrant ecosystem.
+Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot, crafted from the best of breed Java libraries and standards. Amazingly fast boot time, incredibly low RSS memory (not just heap size!) offering near instant scale up and high density memory utilization in container orchestration platforms like Kubernetes. Quarkus uses a technique called https://quarkus.io/vision/container-first[compile time boot^] and offers a unified imperative and reactive programming model and a number of other developer features like Live Reload to bring _real joy_ to your development.
+
+*Red Hat* offers the fully supported https://access.redhat.com/products/quarkus[Red Hat Build of Quarkus(RHBQ)^] with support and maintenance of Quarkus. In this workhop, you will use Quarkus to develop Kubernetes-native microservices and deploy them to OpenShift. Quarkus is one of the runtimes included in https://www.redhat.com/en/products/runtimes[Red Hat Runtimes^]. https://access.redhat.com/documentation/en-us/red_hat_build_of_quarkus[Learn more about RHBQ^].
+
+Throughout this lab you'll discover how Quarkus can make your development of cloud native apps faster and more productive.
+
+== First Step: Set Your Username!
+
+Look in the box at the top of your screen. Is your username set already? If so it will look like this:
+
+image::alreadyset.png[Set User ID above, 700]
+
+If your username is properly set, then you can move on. **If not, in the above box, enter the user ID you were assigned** like this:
+
+image::setuser.png[Set User ID above, 700]
+
+This will customize the links and copy/paste code for this workshop. If you accidently type the wrong username, just click the green recycle icon to reset it.
+
+== Click-to-Copy
+
+You will see various code and command blocks throughout these exercises which can be copy/pasted directly by clicking anywhere on the block of text:
+
+[source,java,role="copypaste"]
+----
+/* A sample Java snippet that you can copy/paste by clicking */
+public class CopyMeDirectly {
+    public static void main(String[] args) {
+        System.out.println("You can copy this whole class with a click!");
+    }
+}
+----
+
+Simply click once and the whole block is copied to your clipboard, ready to be pasted with kbd:[CTRL+V] (or kbd:[Command+V] on Mac OS).
+
+There are also Linux shell commands that can also be copied and pasted into a Terminal in your Development Environment:
+
+[source,sh,role="copypaste"]
+----
+echo "This is a bash shell command that you can copy/paste by clicking"
+----
+
+## Access Your Development Environment
+
+You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[CodeReady Workspaces^]. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
+
+To get started, {{ CHE_URL }}[access the CodeReady Workspaces instance^] and log in using the username and password you've been assigned:
+
+* *Username*: `{{ USER_ID }}`
+* *Password*: `{{ CHE_USER_PASSWORD }}`
+
+image::che-login.png[login,400]
+
+Once you log in, you'll be placed on your personal dashboard. We've pre-created workspaces for you to use. Click on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number). You can also click on the name of the workspace in the center, and then click on the green button that says "OPEN" on the top right hand side of the screen:
+
+image::che-precreated.png[precreated,800]
+
+After a minute or two, you'll be placed in the workspace:
+
+image::che-workspace.png[workspace,800]
+
+Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
+
+You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to click on them and see what they do:
+
+image::crw-icons.png[cdw, 800]
+
+[NOTE]
+====
+If things get weird or your browser appears, you can simply reload the browser tab to refresh the view.
+====
+
+Many features of CodeReady Workspaces are accessed via *Commands*. You can see a few of the commands listed with links on the home page (e.g. _New File.._, _Git Clone.._, and others).
+
+If you ever need to run commands that you don't see in a menu, you can press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on Mac OS X).
+
+## Import Project
+
+Let's import our project. Click on **Git Clone..** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
+
+image::che-workspace-gitclone.png[cdw, 900]
+
+Step through the prompts, using the following value for **Repository URL**:
+
+[source,none,role="copypaste"]
+----
+https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-labs
+----
+
+image::crw-clone-repo.png[crw,900]
+
+The project is imported into your workspace and is visible in the project explorer (click on the top-most icon for project explorer):
+
+image::crw-clone-explorer.png[crw,900]
+
+[NOTE]
+====
+The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
+terminal, you can use the **>_ New Terminal** command on the right:
+
+image::cmd-terminal.png[codeready-workspace-terminal, 500]
+====
+
+==== IMPORTANT: Check out proper Git branch
+
+To make sure you're using the right version of the project files, run this command in a CodeReady Terminal:
+
+[source,sh,role="copypaste"]
+----
+cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.4
+----
+
+The project has
+
+* The Maven structure
+* An `org.acme.people.rest.GreetingResource` resource exposed on `/hello`, along with a simple test
+* A landing page that is accessible on `http://localhost:8080` after starting the application
+* The application configuration file
+* Other source files we'll use later
+
+Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`.
+
+image::initnav.png[codeready-workspace-terminal, 500]
+
+This class has a very simple RESTful endpoint definition:
+
+[source, java]
+----
+@Path("/hello")
+public class GreetingResource {
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "hello";
+    }
+}
+----
+
+It’s a very simple REST endpoint, returning "hello" to requests on `/hello`.
+
+[NOTE]
+====
+Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Application` class. It’s supported but not required. In addition, only one instance of the resource is created and not one per request. You can configure this using the different `*Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
+====
+
+## Running the Application in Live Coding Mode
+
+**Live Coding** (also referred to as _dev mode_) allows us to run the app and make changes on the fly. Quarkus will automatically re-compile and reload the app when changes are made. This is a powerful and efficient style of developing that you will use throughout the lab.
+
+You can always use the `mvn` (Maven) commands to run Quarkus apps, but we've created a few helpful shortcuts on the right to run various Maven commands.
+
+Start the app by clicking on _Live Coding_:
+
+image::cmd-livecoding.png[livecoding, 700]
+
+This will compile and run the app using `mvn compile quarkus:dev` in a Terminal window. Leave this terminal window open throughout the lab! You will complete the entire lab without shutting down Quarkus Live Coding mode, so be careful not to close the tab (if you do, you re-run it). This is very useful for quick expermentation.
+
+[NOTE]
+====
+The first time you build the app, new dependencies may be downloaded via maven. This should only happen once, after that things will go even faster
+====
+
+[NOTE]
+====
+You may see WARNINGs like `Unrecognized configuration key` or `Duplicate entry`. These are configuration values that will take effect later on and can be safely ignored for now.
+====
+
+You should see:
+
+[source,none]
+----
+2020-02-21 04:52:36,145 INFO  [io.quarkus] (main) people 1.0-SNAPSHOT (running on Quarkus x.x.x) started in 1.389s. Listening on: http://0.0.0.0:8080
+2020-02-21 04:52:36,145 INFO  [io.quarkus] (main) Profile dev activated. Live Coding activated.
+2020-02-21 04:52:36,146 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
+----
+
+Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything).
+
+CodeReady will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Do not open port 5005*, but when prompted, *open the port `8080`*, which opens a small web browser in CodeReady:
+
+image::open-port.png[port, 700]
+
+You should see the default Quarkus welcome page (you may need to click the _reload_ icon):
+
+image::welcome-quarkus.png[port, 900]
+
+Open a *new* CodeReady Workspaces Terminal:
+
+image::cmd-terminal.png[livecoding, 700]
+
+and invoke the `hello` endpoint using the following _curl_ command:
+
+[source,sh,role="copypaste"]
+----
+curl http://localhost:8080/hello
+----
+
+You can also click on the URL link at the upper right to open the same default page in a separate browser tab:
+
+image::crw-open-page.png[page, 800]
+
+Add `/hello` in your browser to see the same result as the _curl_ command:
+
+image::crw-open-page-hello.png[page, 800]
+
+Now, let's exercise the **live reload** capabilities of Quarkus. In CodeReady, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. After making this change, reload the same brower tab that was showing `hello`. It should now show `hola`.
+
+Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started. Leave the app running so we can continue to change it on the fly in the next section.
+
+[NOTE]
+====
+`quarkus:dev` runs Quarkus in development mode. This enables live reload with background compilation, which means that when you modify your Java files your resource files and refresh your browser these changes will automatically take effect.
+====
+
+[NOTE]
+====
+This will also listen for a debugger on port `5005`. If you want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`. We'll use this later.
+====
+
+**In case you haven’t done Module 1(Basic) today**, or you didn’t quite complete them, you should deploy the people microservices by executing the following shell scripts in CodeReady Workspaces Terminal:
+
+[source, shell, role="copypaste"]
+----
+sh $CHE_PROJECTS_ROOT/quarkus-workshop-labs/scripts/deploy-people.sh {{ USER_ID }}
+----
+
+== List extensions
+
+Ready to dive into *advanced* Quarkus development? Let's learn how easily Quarkus allows developers to extend for building a vibrant ecosystem.
 
 Think of Quarkus extensions as your project dependencies. Extensions configure, boot and integrate a framework or technology into your Quarkus application. They also do all of the heavy lifting of providing the right information to GraalVM for your application to compile natively.
 
 Quarkus aims to provide a support for a full https://quarkus.io/extensions/[extension ecosystem^], to make it easy to discover and consume 3rd party extensions, as well as providing easier version management.
-
-== List extensions
 
 Retrieve the list of possible extensions using the Maven plugin. Run this in the Terminal:
 

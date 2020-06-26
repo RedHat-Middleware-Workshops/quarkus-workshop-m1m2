@@ -35,31 +35,29 @@ This endpoint was created as part of the Quarkus OpenAPI Extension, and emits a 
 
 [source,yaml]
 ----
+openapi: 3.0.1
+info:
+  title: Generated API
+  version: "1.0"
 paths:
   /hello:
     get:
       responses:
-        200:
+        "200":
           description: OK
           content:
             text/plain:
               schema:
                 type: string
-  /hello/greeting/{name}:
+  /person:
     get:
-      parameters:
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
       responses:
-        200:
+        "200":
           description: OK
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/ListPerson'
 # ... and the rest of your endpoints
 ----
 

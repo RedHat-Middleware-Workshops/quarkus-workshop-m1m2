@@ -170,7 +170,7 @@ Finally, let’s bind our stream to a JAX-RS resource. Create a new Java class i
 ----
 package org.acme.people.stream;
 
-import io.smallrye.reactive.messaging.annotations.Channel;
+import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.reactivestreams.Publisher;
 import javax.inject.Inject;
 import javax.ws.rs.GET;

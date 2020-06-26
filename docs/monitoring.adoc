@@ -74,7 +74,7 @@ Verify Prometheus is up and running:
 oc rollout status -w deployment/prometheus
 ----
 
-You should see `replication controller "prometheus-2" successfully rolled out`.
+You should see `deployment "prometheus" successfully rolled out`.
 
 Once it completes, click on the arrow to access the prometheus query UI:
 
@@ -124,7 +124,7 @@ This is what Prometheus will use to access and index the metrics from our app wh
 
 Out of the box, you get a lot of basic JVM metrics which are useful, but what if you wanted to provide metrics for your app? Let's add a few using the MicroProfile Metrics APIs.
 
-Open the `GreetingService` class (in the `org.acme.people.service` package). Let's add a metric to count the number of times we've greeted someone. Add the following annotation to the `greeting()` method:
+Open the `GreetingResource` class (in the `org.acme.people.rest` package). Let's add a metric to count the number of times we've greeted someone. Add the following annotation to the `hello()` method:
 
 [source,java,role="copypaste"]
 ----
@@ -147,7 +147,7 @@ Next, trigger a greeting:
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/hello/greeting/quarkus
+curl http://localhost:8080/hello
 ----
 
 And then access the metrics again, this time we'll look for our new metric, specifying a scope of _application_ in the URL so that only metrics in that _scope_ are returned:
