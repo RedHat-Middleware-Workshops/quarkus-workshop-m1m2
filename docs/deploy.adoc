@@ -132,7 +132,7 @@ So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_U
 
 image::ocplogin.png[login,600]
 
-Once logged in, click on the name of your project ({{ OPENSHIFT_USER_NAME }}-project_):
+Once logged in, click on the name of your project (`{{ USER_ID }}-project`):
 
 image::ocpproj.png[project,600]
 
@@ -180,4 +180,6 @@ At this point, the probes will be accessed periodically to ensure the app is hea
 
 == Congratulations!
 
-This step covered the deployment of a native Quarkus application on OpenShift. However, there is much more, and the integration with these cloud native platforms (through health checks, configuration management, and monitoring which we'll cover later) has been tailored to make Quarkus applications execution very smooth.
+This step covered the deployment of a native Quarkus application on OpenShift. However, there is much more, and the integration with these cloud native platforms (through health checks, configuration management, and monitoring) has been tailored to make Quarkus applications execution very smooth.
+
+This is the end of the *Basic Quarkus Hands-On Lab*. You can now continue with the *Advanced Quarkus Hands-On Lab* if your instructor has included that lab.

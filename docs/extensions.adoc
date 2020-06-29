@@ -7,6 +7,10 @@ Quarkus is a Kubernetes Native Java stack tailored for GraalVM & OpenJDK HotSpot
 
 Throughout this lab you'll discover how Quarkus can make your development of cloud native apps faster and more productive.
 
+== If you've already completed the Quarkus Basic Hands-on Lab Today
+
+*If you have completed the Basic lab today*, you can scroll/skip down to the **List Extensions** exercise to continue your Quarkus lab. If not, then continue below:
+
 == First Step: Set Your Username!
 
 Look in the box at the top of your screen. Is your username set already? If so it will look like this:
@@ -220,12 +224,69 @@ Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it 
 This will also listen for a debugger on port `5005`. If you want to wait for the debugger to attach before running you can pass `-Ddebug` on the command line. If you don’t want the debugger at all you can use `-Ddebug=false`. We'll use this later.
 ====
 
-**In case you haven’t done Module 1(Basic) today**, or you didn’t quite complete them, you should deploy the people microservices by executing the following shell scripts in CodeReady Workspaces Terminal:
+== In case you haven’t done Module 1 (Basic) today
+
+If you are only doing the *Advanced* lab today, or you didn’t quite complete the Basic Lab, you'll need to login to OpenShift, then build and deploy the application needed for the exercises using a utility script provided. Follow the steps below to do this.
+
+==== Login to OpenShift
+
+Although your CodeReady workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So, in CodeReady, log in with your workshop user. Click on **Login to OpenShift**, and enter your given credentials:
+
+* Username: **`{{ USER_ID }}`**
+* Password: **`{{ OPENSHIFT_USER_PASSWORD }}`**
+
+image::cmd-login.png[login,700]
+
+[WARNING]
+====
+Use the username and password you were assigned by the instructor.
+====
+
+You should see:
+
+[source, none]
+----
+Login successful.
+
+You have one project on this server: "{{ USER_ID }}-project"
+
+Using project "{{ USER_ID }}-project".
+Welcome! See 'oc help' to get started.
+----
+
+[NOTE]
+====
+After you log in using *Login to OpenShift*, the terminal is no longer usable as a regular terminal. You can close the terminal window. You will still be logged in when you open more terminals later!
+====
+
+Congratulations, you are now authenticated to the OpenShift server via the CLI. We'll use the prettier web console later on in this lab.
+
+=== Deploy app
+
+Deploy the `people` microservice by executing the following shell script in a CodeReady Workspaces Terminal:
 
 [source, shell, role="copypaste"]
 ----
 sh $CHE_PROJECTS_ROOT/quarkus-workshop-labs/scripts/deploy-people.sh {{ USER_ID }}
 ----
+
+Wait for the script to complete before continuing.
+
+When the script completes, the app is deployed to OpenShift. You can see it in the {{ CONSOLE_URL}}[OpenShift Console^]. Login with your assigned username and password (e.g. `{{ USER_ID }}/{{ OPENSHIFT_USER_PASSWORD }}`):
+
+image::ocplogin.png[login,600]
+
+Once logged in, click on the name of your project (`{{ USER_ID }}-project`):
+
+image::ocpproj.png[project,600]
+
+Switch to the _Developer Perspective_ using the upper-left drop-down:
+
+image::devperspective.png[perspective, 700]
+
+This provides a developer-centric Topology view of applications deployed to the project. You can see the single `people` deployment that we just deployed earlier using the CLI:
+
+image::peopledc.png[project,600]
 
 == List extensions
 
@@ -246,16 +307,16 @@ You can see the list of ~191 different extensions available to you in the output
 
 [source,none]
 ----
-Current Quarkus extensions available: 
-OpenShift                                          quarkus-openshift                                 
-Quarkus - Core                                     quarkus-core                                      
-JAXB                                               quarkus-jaxb                                      
-Jackson                                            quarkus-jackson                                   
-JSON-B                                             quarkus-jsonb                                     
-JSON-P                                             quarkus-jsonp                                     
-Agroal - Database connection pool                  quarkus-agroal                                    
-YAML Configuration                                 quarkus-config-yaml                               
-Elytron Security Properties File                   quarkus-elytron-security-properties-file  
+Current Quarkus extensions available:
+OpenShift                                          quarkus-openshift
+Quarkus - Core                                     quarkus-core
+JAXB                                               quarkus-jaxb
+Jackson                                            quarkus-jackson
+JSON-B                                             quarkus-jsonb
+JSON-P                                             quarkus-jsonp
+Agroal - Database connection pool                  quarkus-agroal
+YAML Configuration                                 quarkus-config-yaml
+Elytron Security Properties File                   quarkus-elytron-security-properties-file
 ...
 ----
 
