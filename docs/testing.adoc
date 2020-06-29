@@ -97,6 +97,16 @@ You can configure the port used by tests by configuring `quarkus.http.test-port`
 quarkus.http.test-port=8083
 ----
 
+[NOTE]
+====
+You may see yellow lines underneath the `quarkus.datasource.*` properties:
+
+image::yellow-squigglies.png[yellow, 300]
+
+This is due to not yet installing any database extensions. That's part of the _Advanced_ labs which you may or may not be doing today, so you can ignore them for now!
+
+====
+
 Now re-run the tests (click on **Run Tests** again) and look for
 
 [source, none]
