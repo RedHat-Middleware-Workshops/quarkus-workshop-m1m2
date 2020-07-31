@@ -113,7 +113,7 @@ To make sure you're using the right version of the project files, run this comma
 
 [source,sh,role="copypaste"]
 ----
-cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.4
+cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.5
 ----
 
 The project has
