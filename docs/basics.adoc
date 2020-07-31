@@ -53,7 +53,7 @@ To make sure you're using the right version of the project files, run this comma
 
 [source,sh,role="copypaste"]
 ----
-cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.4
+cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.5
 ----
 
 The project has
@@ -87,7 +87,7 @@ It’s a very simple REST endpoint, returning "hello" to requests on `/hello`.
 
 [NOTE]
 ====
-Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Application` class. It’s supported but not required. In addition, only one instance of the resource is created and not one per request. You can configure this using the different `*Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
+Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Application` class. It’s supported but not required. In addition, only one instance of the resource is created and not one per request. You can configure this using the different `Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
 ====
 
 ## Running the Application in Live Coding Mode
