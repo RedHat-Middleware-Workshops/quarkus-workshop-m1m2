@@ -150,7 +150,7 @@ image::container1.png[container,600]
 
 [NOTE]
 ====
-You may see _Container people does not have health checks to ensure your application is running correctly_. Don't worry and we will add MicroProfile health check at the next step.
+You may see _"Container people does not have health checks to ensure your application is running correctly"_. Don't worry we will add MicroProfile health check at the next step.
 ====
 
 Click on the **View Logs** link to see the console output from the app:
