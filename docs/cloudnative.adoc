@@ -428,7 +428,7 @@ You can override these runtime properties with the following mechanisms (in decr
 
 * using system properties:
 . for a runner jar: `java -Dquarkus.datasource.password=youshallnotpass -jar target/myapp-runner.jar`
-. for a native executable: ``./target/myapp-runner -Dquarkus.datasource.password=youshallnotpass`
+. for a native executable: `./target/myapp-runner -Dquarkus.datasource.password=youshallnotpass`
 
 * using environment variables:
 . for a runner jar: `QUARKUS_DATASOURCE_PASSWORD=youshallnotpass java -jar target/myapp-runner.jar`

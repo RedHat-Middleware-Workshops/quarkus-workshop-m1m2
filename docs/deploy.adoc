@@ -87,7 +87,7 @@ Once that's done, deploy the new image as an OpenShift application and expose it
 
 [source,sh,role="copypaste"]
 ----
-oc new-app people -l "app.openshift.io/runtime=quarkus,app.kubernetes.io/part-of=people" && oc expose svc/people
+oc new-app --as-deployment-config people -l "app.openshift.io/runtime=quarkus,app.kubernetes.io/part-of=people" && oc expose svc/people
 ----
 
 Finally, make sure it's actually done rolling out:
@@ -147,6 +147,11 @@ image::peopledc.png[project,600]
 Click on the circle to get details:
 
 image::container1.png[container,600]
+
+[NOTE]
+====
+You may see _Container people does not have health checks to ensure your application is running correctly_. Don't worry and we will add MicroProfile health check at the next step.
+====
 
 Click on the **View Logs** link to see the console output from the app:
 
