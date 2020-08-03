@@ -366,7 +366,7 @@ Follow the same steps as before to create a few more panels, and **don't forget 
 
 Add Panels for:
 
-* The different quantiles of time it takes to process names `application_org_acme_people_stream_NameConverter_converter_seconds` (configure it to _stack_ its values on the _Visualization_ , and name it "Converter Performance" on the _Panel Title_).
+* The different quantiles of time it takes to process names `application_org_acme_people_stream_NameConverter_converter_seconds` (Toggle _Stack_ on the _Display_ , and name it `Converter Performance` on the _Panel Title_).
 * The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Unit in _Field_ tab to `bytes(IEC)` on the _Visualization_, and the title to `Memory` on the _Panel Title_.
 
 image::grafjvm.png[jvm,500]

@@ -66,7 +66,7 @@ image::createkafkatopic.png[createkafka,800]
 We'll need to create a topic for our application to stream to and from, so in the YAML:
 
 * Change the _metadata > name_ value from `my-topic` to `names`.
-* Change the vale of the `strimzi.io/cluster` label from `my-cluster` to `names-cluster`
+* Change the vale of the `strimzi.io/cluster=my-cluster` to `strimzi.io/cluster=names-cluster`
 
 Then click **Create**.
 

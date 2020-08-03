@@ -417,7 +417,7 @@ content-length: 0
 set-cookie: xxxxxxxxxxxx; path=/; HttpOnly
 ----
 
-Failed as expected!
+*Failed* as expected!
 
 To access the confidential endpoint, you should obtain an access token for user `jdoe`:
 
