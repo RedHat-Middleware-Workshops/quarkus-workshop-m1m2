@@ -96,7 +96,6 @@ oc delete user admin --ignore-not-found
 # become admin
 oc login $MASTER_URL -u admin -p "${ADMIN_PASSWORD}" --insecure-skip-tls-verify
 
-exit
 # create projects for users
 for i in {1..$USERCOUNT} ; do
     PROJ="user${i}-project"
