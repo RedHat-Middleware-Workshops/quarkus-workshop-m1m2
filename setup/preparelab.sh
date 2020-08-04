@@ -213,23 +213,6 @@ while [ 1 ]; do
   sleep 10
 done
 
-# workaround for PVC problem
-oc get --export cm/custom -n che -o yaml | yq w - 'data.CHE_INFRA_KUBERNETES_PVC_WAIT__BOUND' \"false\" | oc apply -f - -n che
-oc scale -n che deployment/codeready --replicas=0
-oc scale -n che deployment/codeready --replicas=1
-
-# Wait for che to be back up
-echo "Waiting for Che to come back up..."
-while [ 1 ]; do
-  STAT=$(curl -s -w '%{http_code}' -o /dev/null http://codeready-che.${HOSTNAME_SUFFIX}/dashboard/)
-  if [ "$STAT" = 200 ] ; then
-    break
-  fi
-  echo -n .
-  sleep 10
-done
-
-
 # workaround for Che Terminal timeouts
 # must be run from AWS bastion host
 
