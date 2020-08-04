@@ -90,9 +90,13 @@ sleep 30
 # Make the admin as cluster admin
 oc adm policy add-cluster-role-to-user cluster-admin admin
 
+# Delete any already existing admin user to be sure it won't be in conflict with the new one provided by the configured identity provider
+oc delete user admin --ignore-not-found
+
 # become admin
 oc login $MASTER_URL -u admin -p "${ADMIN_PASSWORD}" --insecure-skip-tls-verify
 
+exit
 # create projects for users
 for i in {1..$USERCOUNT} ; do
     PROJ="user${i}-project"
