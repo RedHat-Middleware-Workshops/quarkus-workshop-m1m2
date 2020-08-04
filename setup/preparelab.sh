@@ -226,8 +226,11 @@ done
 # sudo -u ec2-user aws elb modify-load-balancer-attributes --load-balancer-name <name> --load-balancer-attributes "{\"ConnectionSettings\":{\"IdleTimeout\":300}}"
 
 # get keycloak admin password
-KEYCLOAK_USER="$(oc set env deployment/keycloak --list -n che | grep SSO_ADMIN_USERNAME | cut -d= -f2)"
-KEYCLOAK_PASSWORD="$(oc set env deployment/keycloak --list -n che | grep SSO_ADMIN_PASSWORD | cut -d= -f2)"
+KEYCLOAK_USER="$(oc get secret che-identity-secret -n che -o yaml -o jsonpath='{.data.user}' | base64 -d)"
+echo KEYCLOAK_USER=$KEYCLOAK_USER
+KEYCLOAK_PASSWORD="$(oc get secret che-identity-secret -n che -o yaml -o jsonpath='{.data.password}' | base64 -d)"
+echo KEYCLOAK_PASSWORD=$KEYCLOAK_PASSWORD
+
 SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&grant_type=password&client_id=admin-cli" \
   -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/master/protocol/openid-connect/token | \
   jq  -r '.access_token')
