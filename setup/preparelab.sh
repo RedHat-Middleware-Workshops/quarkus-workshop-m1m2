@@ -51,7 +51,7 @@ fi
 
 # adjust limits for admin
 if test "$(oc get crd userquota.gpte.opentlc.com --ignore-not-found)"; then
-    oc delete userquota/default
+    oc delete userquota/default --ignore-not-found
 fi
 
 # get routing suffix
@@ -73,7 +73,7 @@ done
 htpasswd -b ${TMPHTPASS} admin "${ADMIN_PASSWORD}"
 
 # Create user secret in OpenShift
-! oc -n openshift-config delete secret workshop-user-secret
+! oc -n openshift-config delete secret workshop-user-secret --ignore-not-found
 oc -n openshift-config create secret generic workshop-user-secret --from-file=htpasswd=${TMPHTPASS}
 rm -f ${TMPHTPASS}
 
