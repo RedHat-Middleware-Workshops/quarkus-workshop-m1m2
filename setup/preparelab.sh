@@ -294,27 +294,12 @@ done
 
 
 # Install the strimzi operator for all namespaces
-cat <<EOF | oc apply -n openshift-marketplace -f -
-apiVersion: operators.coreos.com/v1
-kind: CatalogSourceConfig
-metadata:
-  finalizers:
-  - finalizer.catalogsourceconfigs.operators.coreos.com
-  name: installed-community-openshift-operators
-  namespace: openshift-marketplace
-spec:
-  csDisplayName: Community Operators
-  csPublisher: Community
-  packages: strimzi-kafka-operator
-  targetNamespace: openshift-operators
-EOF
-
 cat <<EOF | oc apply -n openshift-operators -f -
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   labels:
-    csc-owner-name: installed-community-openshift-operators
+    csc-owner-name: community-operators
     csc-owner-namespace: openshift-marketplace
   name: strimzi-kafka-operator
   namespace: openshift-operators
@@ -322,8 +307,8 @@ spec:
   channel: stable
   installPlanApproval: Automatic
   name: strimzi-kafka-operator
-  source: installed-community-openshift-operators
-  sourceNamespace: openshift-operators
+  source: community-operators
+  sourceNamespace: openshift-marketplace
 EOF
 
 # Build stack
