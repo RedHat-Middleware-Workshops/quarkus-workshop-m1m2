@@ -65,7 +65,7 @@ MASTER_URL=$(oc whoami --show-server)
 CONSOLE_URL=$(oc whoami --show-console)
 # create users
 TMPHTPASS=$(mktemp)
-for i in {1..$USERCOUNT} ; do
+for i in $(seq 1 $USERCOUNT); do
     htpasswd -b ${TMPHTPASS} "user$i" "pass$i"
 done
 
@@ -100,7 +100,7 @@ oc delete user admin --ignore-not-found
 oc login $MASTER_URL -u admin -p "${ADMIN_PASSWORD}" --insecure-skip-tls-verify
 
 # create projects for users
-for i in {1..$USERCOUNT} ; do
+for i in $(seq 1 $USERCOUNT); do
     PROJ="user${i}-project"
     oc new-project $PROJ --display-name="Working Project for user${i}" >&- && \
     oc label namespace $PROJ quarkus-workshop=true  && \
@@ -272,7 +272,7 @@ echo "Keycloak credentials: $KEYCLOAK_USER / $KEYCLOAK_PASSWORD"
 echo "URL: http://keycloak-che.${HOSTNAME_SUFFIX}"
 
 # Create Che users, let them view che namespace
-for i in {1..$USERCOUNT} ; do
+for i in $(seq 1 $USERCOUNT) ; do
     # oc adm policy add-role-to-user view user${i} -n che
     USERNAME=user${i}
     FIRSTNAME=User${i}
@@ -310,7 +310,7 @@ oc create -n openshift -f $MYDIR/../files/stack.imagestream.yaml
 oc import-image --all quarkus-stack -n openshift
 
 # Pre-create workspaces for users
-for i in {1..$USERCOUNT} ; do
+for i in $(seq 1 $USERCOUNT); do
     SSO_CHE_TOKEN=$(curl -s -d "username=user${i}&password=pass${i}&grant_type=password&client_id=admin-cli" \
         -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/codeready/protocol/openid-connect/token | jq  -r '.access_token')
 
