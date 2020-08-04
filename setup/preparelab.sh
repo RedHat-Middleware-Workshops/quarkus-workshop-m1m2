@@ -50,7 +50,9 @@ if [ ! "$(oc get clusterrolebindings)" ] ; then
 fi
 
 # adjust limits for admin
-oc delete userquota/default
+if test "$(oc get crd userquota.gpte.opentlc.com --ignore-not-found)"; then
+    oc delete userquota/default
+fi
 
 # get routing suffix
 TMP_PROJ="dummy-$RANDOM"
