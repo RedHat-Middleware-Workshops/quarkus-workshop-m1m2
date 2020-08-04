@@ -126,20 +126,6 @@ oc expose svc/web
 
 # Install Che
 oc new-project che
-cat <<EOF | oc apply -n openshift-marketplace -f -
-apiVersion: operators.coreos.com/v1
-kind: CatalogSourceConfig
-metadata:
-  finalizers:
-  - finalizer.catalogsourceconfigs.operators.coreos.com
-  name: installed-redhat-che
-  namespace: openshift-marketplace
-spec:
-  targetNamespace: che
-  packages: codeready-workspaces
-  csDisplayName: Red Hat Operators
-  csPublisher: Red Hat
-EOF
 
 cat <<EOF | oc apply -n che -f -
 apiVersion: operators.coreos.com/v1alpha2
@@ -162,14 +148,14 @@ metadata:
   name: codeready-workspaces
   namespace: che
   labels:
-    csc-owner-name: installed-redhat-che
+    csc-owner-name: redhat-operators
     csc-owner-namespace: openshift-marketplace
 spec:
-  channel: final
+  channel: latest
   installPlanApproval: Automatic
   name: codeready-workspaces
-  source: installed-redhat-che
-  sourceNamespace: che
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
 EOF
 
 # Wait for checluster to be a thing
