@@ -50,7 +50,9 @@ if [ ! "$(oc get clusterrolebindings)" ] ; then
 fi
 
 # adjust limits for admin
-oc delete userquota/default
+if test "$(oc get crd userquota.gpte.opentlc.com --ignore-not-found)"; then
+    oc delete userquota/default --ignore-not-found
+fi
 
 # get routing suffix
 TMP_PROJ="dummy-$RANDOM"
@@ -71,7 +73,7 @@ done
 htpasswd -b ${TMPHTPASS} admin "${ADMIN_PASSWORD}"
 
 # Create user secret in OpenShift
-! oc -n openshift-config delete secret workshop-user-secret
+! oc -n openshift-config delete secret workshop-user-secret --ignore-not-found
 oc -n openshift-config create secret generic workshop-user-secret --from-file=htpasswd=${TMPHTPASS}
 rm -f ${TMPHTPASS}
 
@@ -87,6 +89,9 @@ sleep 30
 
 # Make the admin as cluster admin
 oc adm policy add-cluster-role-to-user cluster-admin admin
+
+# Delete any already existing admin user to be sure it won't be in conflict with the new one provided by the configured identity provider
+oc delete user admin --ignore-not-found
 
 # become admin
 oc login $MASTER_URL -u admin -p "${ADMIN_PASSWORD}" --insecure-skip-tls-verify
