@@ -278,7 +278,7 @@ fi
 # oc patch -n che limitrange/che-core-resource-limits -p '' --type=merge
 
 # import stack image
-oc create -n openshift -f $MYDIR/../files/stack.imagestream.yaml
+oc apply -n openshift -f $MYDIR/../files/stack.imagestream.yaml
 oc import-image --all quarkus-stack -n openshift
 
 # Pre-create workspaces for users
