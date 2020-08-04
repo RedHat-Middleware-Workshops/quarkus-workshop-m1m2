@@ -90,6 +90,9 @@ sleep 30
 # Make the admin as cluster admin
 oc adm policy add-cluster-role-to-user cluster-admin admin
 
+# Delete previous identity to avoid login failure after deleting any existing admin user below
+oc delete identity htpassidp:admin --ignore-not-found
+ 
 # Delete any already existing admin user to be sure it won't be in conflict with the new one provided by the configured identity provider
 oc delete user admin --ignore-not-found
 
