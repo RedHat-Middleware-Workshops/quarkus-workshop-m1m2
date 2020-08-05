@@ -236,7 +236,7 @@ SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&
   jq  -r '.access_token')
 
 # Import realm
-curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${MYDIR}/../files/quarkus-realm.json \
+curl -w "\n" -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${MYDIR}/../files/quarkus-realm.json \
   -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms"
 
 ## MANUALLY add ProtocolMapper to map User Roles to "groups" prefix for JWT claims
@@ -249,7 +249,7 @@ for i in $(seq 1 $USERCOUNT) ; do
     USERNAME=user${i}
     FIRSTNAME=User${i}
     LASTNAME=Developer
-    curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d '{"username":"user'${i}'","enabled":true,"emailVerified": true,"firstName": "User'${i}'","lastName": "Developer","email": "user'${i}'@no-reply.com", "credentials":[{"type":"password","value":"pass'${i}'","temporary":false}]}' -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms/codeready/users"
+    curl -w "\n" -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d '{"username":"user'${i}'","enabled":true,"emailVerified": true,"firstName": "User'${i}'","lastName": "Developer","email": "user'${i}'@no-reply.com", "credentials":[{"type":"password","value":"pass'${i}'","temporary":false}]}' -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms/codeready/users"
 done
 
 # Import stack definition
@@ -257,7 +257,7 @@ SSO_CHE_TOKEN=$(curl -s -d "username=admin&password=admin&grant_type=password&cl
   -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/codeready/protocol/openid-connect/token | \
   jq  -r '.access_token')
 
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
+curl -w "\n" -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
     --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${MYDIR}/../files/stack.json \
     "http://codeready-che.${HOSTNAME_SUFFIX}/api/stack"
 
@@ -289,13 +289,13 @@ for i in $(seq 1 $USERCOUNT); do
     TMPWORK=$(mktemp)
     sed 's/WORKSPACENAME/WORKSPACE'${i}'/g' $MYDIR/../files/workspace.json > $TMPWORK
 
-    curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
+    curl -w "\n" -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
     --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${TMPWORK} \
     "http://codeready-che.${HOSTNAME_SUFFIX}/api/workspace?start-after-create=true&namespace=user${i}"
     rm -f $TMPWORK
 done
 
-
+echo
 # Install the strimzi operator for all namespaces
 cat <<EOF | oc apply -n openshift-operators -f -
 apiVersion: operators.coreos.com/v1alpha1
