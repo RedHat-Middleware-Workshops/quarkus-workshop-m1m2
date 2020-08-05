@@ -300,7 +300,7 @@ Retrieve the list of possible extensions using the Maven plugin. Run this in the
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 You can see the list of ~191 different extensions available to you in the output:
@@ -340,7 +340,13 @@ Later on in this lab we'll be using MicroProfile metrics, so let's add that exte
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+----
+
+You should see
+[source,console]
+----
+✅ Adding extension io.quarkus:quarkus-smallrye-metrics
 ----
 
 Notice we are using the "short" name `metrics` instead of the fully qualified name `io.quarkus:quarkus-smallrye-metrics`.

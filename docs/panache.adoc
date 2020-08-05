@@ -18,7 +18,17 @@ You may have wondered why we are using `people` in our Java APIs, and now you'll
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql, resteasy-jsonb" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql, resteasy-jsonb" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+----
+
+You should see:
+
+[source,console]
+----
+✅ Adding extension io.quarkus:quarkus-hibernate-orm-panache
+✅ Adding extension io.quarkus:quarkus-jdbc-h2
+✅ Adding extension io.quarkus:quarkus-resteasy-jsonb
+✅ Adding extension io.quarkus:quarkus-jdbc-postgresql
 ----
 
 We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-jsonb` is used to encode JSON objects.
@@ -571,14 +581,17 @@ Add _openshift_ extension via CodeReady Workspaces Terminal:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 you will see:
 
+[source,console]
+----
 ✅ Adding extension io.quarkus:quarkus-openshift
+----
 
-Let’s `add` the following variables in _src/main/resources/application.properties_:
+Next, add the following variables in `src/main/resources/application.properties`:
 
 [source,shell,role="copypaste"]
 ----

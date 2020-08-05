@@ -36,9 +36,9 @@ Type in `jaeger` in the keyword filter box:
 
 image::jaegercatalog.png[kafkacatalog,800]
 
-Click on **Jaeger**, and then click on **Create**. This will open a yaml file for you to configure the Jaeger service before it's installed.
+Click on **Jaeger**, and then click on **Create**. This will open a dialog for you to configure the Jaeger service before it's installed.
 
-Change the _metadata > name_ value to `jaeger` as shown, and click **Create**:
+Change the name to `jaeger` as shown, and click **Create**:
 
 image::jaegerdone.png[kafkacatalog,800]
 
@@ -58,7 +58,15 @@ With Jaeger installed, let's turn back to our Quarkus app. Like other exercises,
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+----
+
+You will see:
+
+[source,console]
+----
+✅ Adding extension io.quarkus:quarkus-rest-client
+✅ Adding extension io.quarkus:quarkus-smallrye-opentracing
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and an HTTP REST Client we'll use pater.
@@ -87,7 +95,7 @@ Let's re-build and re-deploy the application:
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 == Confirm deployment
@@ -291,7 +299,7 @@ Let's re-build and re-deploy the application:
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 == Confirm deployment

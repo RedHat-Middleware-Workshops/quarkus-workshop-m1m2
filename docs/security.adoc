@@ -9,7 +9,14 @@ Like other exercises, we'll need another extension to enable the use of MicroPro
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+----
+
+You should see:
+
+[source,console]
+----
+✅ Adding extension io.quarkus:quarkus-smallrye-jwt
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in JWT support.
@@ -111,7 +118,7 @@ Let's re-build and re-deploy the application:
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 == Confirm deployment
@@ -278,7 +285,15 @@ First, you'll need to enable the Keycloak extension by running this command in a
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="oidc, keycloak-authorization" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="oidc, keycloak-authorization" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+----
+
+You should see:
+
+[source,console]
+----
+✅ Adding extension io.quarkus:quarkus-oidc
+✅ Adding extension io.quarkus:quarkus-keycloak-authorization
 ----
 
 == Disable MicroProfile JWT Extension
@@ -364,7 +379,7 @@ Let's re-build and re-deploy the application:
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 === Confirm deployment

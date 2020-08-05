@@ -86,7 +86,14 @@ With Kafka installing, turn your attention back to the app. Like other exercises
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="kafka" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="kafka" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+----
+
+You should see:
+
+[source,console]
+----
+✅ Adding extension io.quarkus:quarkus-smallrye-reactive-messaging-kafka
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the Kafka extension.
@@ -270,7 +277,7 @@ Run the following command which will build and deploy using the OpenShift extens
 mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
 oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite 
+oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 The build should take a minute or two to complete.
