@@ -50,7 +50,9 @@ if [ ! "$(oc get clusterrolebindings)" ] ; then
 fi
 
 # adjust limits for admin
-oc delete userquota/default
+if test "$(oc get crd userquota.gpte.opentlc.com --ignore-not-found)"; then
+    oc delete userquota/default --ignore-not-found
+fi
 
 # get routing suffix
 TMP_PROJ="dummy-$RANDOM"
@@ -63,7 +65,7 @@ MASTER_URL=$(oc whoami --show-server)
 CONSOLE_URL=$(oc whoami --show-console)
 # create users
 TMPHTPASS=$(mktemp)
-for i in {1..$USERCOUNT} ; do
+for i in $(seq 1 $USERCOUNT); do
     htpasswd -b ${TMPHTPASS} "user$i" "pass$i"
 done
 
@@ -71,7 +73,7 @@ done
 htpasswd -b ${TMPHTPASS} admin "${ADMIN_PASSWORD}"
 
 # Create user secret in OpenShift
-! oc -n openshift-config delete secret workshop-user-secret
+! oc -n openshift-config delete secret workshop-user-secret --ignore-not-found
 oc -n openshift-config create secret generic workshop-user-secret --from-file=htpasswd=${TMPHTPASS}
 rm -f ${TMPHTPASS}
 
@@ -88,11 +90,17 @@ sleep 30
 # Make the admin as cluster admin
 oc adm policy add-cluster-role-to-user cluster-admin admin
 
+# Delete previous identity to avoid login failure after deleting any existing admin user below
+oc delete identity htpassidp:admin --ignore-not-found
+ 
+# Delete any already existing admin user to be sure it won't be in conflict with the new one provided by the configured identity provider
+oc delete user admin --ignore-not-found
+
 # become admin
 oc login $MASTER_URL -u admin -p "${ADMIN_PASSWORD}" --insecure-skip-tls-verify
 
 # create projects for users
-for i in {1..$USERCOUNT} ; do
+for i in $(seq 1 $USERCOUNT); do
     PROJ="user${i}-project"
     oc new-project $PROJ --display-name="Working Project for user${i}" >&- && \
     oc label namespace $PROJ quarkus-workshop=true  && \
@@ -118,20 +126,6 @@ oc expose svc/web
 
 # Install Che
 oc new-project che
-cat <<EOF | oc apply -n openshift-marketplace -f -
-apiVersion: operators.coreos.com/v1
-kind: CatalogSourceConfig
-metadata:
-  finalizers:
-  - finalizer.catalogsourceconfigs.operators.coreos.com
-  name: installed-redhat-che
-  namespace: openshift-marketplace
-spec:
-  targetNamespace: che
-  packages: codeready-workspaces
-  csDisplayName: Red Hat Operators
-  csPublisher: Red Hat
-EOF
 
 cat <<EOF | oc apply -n che -f -
 apiVersion: operators.coreos.com/v1alpha2
@@ -154,14 +148,14 @@ metadata:
   name: codeready-workspaces
   namespace: che
   labels:
-    csc-owner-name: installed-redhat-che
+    csc-owner-name: redhat-operators
     csc-owner-namespace: openshift-marketplace
 spec:
-  channel: final
+  channel: latest
   installPlanApproval: Automatic
   name: codeready-workspaces
-  source: installed-redhat-che
-  sourceNamespace: che
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
 EOF
 
 # Wait for checluster to be a thing
@@ -219,23 +213,6 @@ while [ 1 ]; do
   sleep 10
 done
 
-# workaround for PVC problem
-oc get --export cm/custom -n che -o yaml | yq w - 'data.CHE_INFRA_KUBERNETES_PVC_WAIT__BOUND' \"false\" | oc apply -f - -n che
-oc scale -n che deployment/codeready --replicas=0
-oc scale -n che deployment/codeready --replicas=1
-
-# Wait for che to be back up
-echo "Waiting for Che to come back up..."
-while [ 1 ]; do
-  STAT=$(curl -s -w '%{http_code}' -o /dev/null http://codeready-che.${HOSTNAME_SUFFIX}/dashboard/)
-  if [ "$STAT" = 200 ] ; then
-    break
-  fi
-  echo -n .
-  sleep 10
-done
-
-
 # workaround for Che Terminal timeouts
 # must be run from AWS bastion host
 
@@ -249,14 +226,17 @@ done
 # sudo -u ec2-user aws elb modify-load-balancer-attributes --load-balancer-name <name> --load-balancer-attributes "{\"ConnectionSettings\":{\"IdleTimeout\":300}}"
 
 # get keycloak admin password
-KEYCLOAK_USER="$(oc set env deployment/keycloak --list |grep SSO_ADMIN_USERNAME | cut -d= -f2)"
-KEYCLOAK_PASSWORD="$(oc set env deployment/keycloak --list |grep SSO_ADMIN_PASSWORD | cut -d= -f2)"
+KEYCLOAK_USER="$(oc get secret che-identity-secret -n che -o yaml -o jsonpath='{.data.user}' | base64 -d)"
+echo KEYCLOAK_USER=$KEYCLOAK_USER
+KEYCLOAK_PASSWORD="$(oc get secret che-identity-secret -n che -o yaml -o jsonpath='{.data.password}' | base64 -d)"
+echo KEYCLOAK_PASSWORD=$KEYCLOAK_PASSWORD
+
 SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&grant_type=password&client_id=admin-cli" \
   -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/master/protocol/openid-connect/token | \
   jq  -r '.access_token')
 
 # Import realm
-curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${MYDIR}../files/quarkus-realm.json \
+curl -w "\n" -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @${MYDIR}/../files/quarkus-realm.json \
   -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms"
 
 ## MANUALLY add ProtocolMapper to map User Roles to "groups" prefix for JWT claims
@@ -264,12 +244,12 @@ echo "Keycloak credentials: $KEYCLOAK_USER / $KEYCLOAK_PASSWORD"
 echo "URL: http://keycloak-che.${HOSTNAME_SUFFIX}"
 
 # Create Che users, let them view che namespace
-for i in {1..$USERCOUNT} ; do
+for i in $(seq 1 $USERCOUNT) ; do
     # oc adm policy add-role-to-user view user${i} -n che
     USERNAME=user${i}
     FIRSTNAME=User${i}
     LASTNAME=Developer
-    curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d '{"username":"user'${i}'","enabled":true,"emailVerified": true,"firstName": "User'${i}'","lastName": "Developer","email": "user'${i}'@no-reply.com", "credentials":[{"type":"password","value":"pass'${i}'","temporary":false}]}' -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms/codeready/users"
+    curl -w "\n" -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d '{"username":"user'${i}'","enabled":true,"emailVerified": true,"firstName": "User'${i}'","lastName": "Developer","email": "user'${i}'@no-reply.com", "credentials":[{"type":"password","value":"pass'${i}'","temporary":false}]}' -X POST "http://keycloak-che.${HOSTNAME_SUFFIX}/auth/admin/realms/codeready/users"
 done
 
 # Import stack definition
@@ -277,7 +257,7 @@ SSO_CHE_TOKEN=$(curl -s -d "username=admin&password=admin&grant_type=password&cl
   -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/codeready/protocol/openid-connect/token | \
   jq  -r '.access_token')
 
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
+curl -w "\n" -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
     --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${MYDIR}/../files/stack.json \
     "http://codeready-che.${HOSTNAME_SUFFIX}/api/stack"
 
@@ -298,46 +278,31 @@ fi
 # oc patch -n che limitrange/che-core-resource-limits -p '' --type=merge
 
 # import stack image
-oc create -n openshift -f $MYDIR/../files/stack.imagestream.yaml
+oc apply -n openshift -f $MYDIR/../files/stack.imagestream.yaml
 oc import-image --all quarkus-stack -n openshift
 
 # Pre-create workspaces for users
-for i in {1..$USERCOUNT} ; do
+for i in $(seq 1 $USERCOUNT); do
     SSO_CHE_TOKEN=$(curl -s -d "username=user${i}&password=pass${i}&grant_type=password&client_id=admin-cli" \
         -X POST http://keycloak-che.${HOSTNAME_SUFFIX}/auth/realms/codeready/protocol/openid-connect/token | jq  -r '.access_token')
 
     TMPWORK=$(mktemp)
     sed 's/WORKSPACENAME/WORKSPACE'${i}'/g' $MYDIR/../files/workspace.json > $TMPWORK
 
-    curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
+    curl -w "\n" -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
     --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${TMPWORK} \
     "http://codeready-che.${HOSTNAME_SUFFIX}/api/workspace?start-after-create=true&namespace=user${i}"
     rm -f $TMPWORK
 done
 
-
+echo
 # Install the strimzi operator for all namespaces
-cat <<EOF | oc apply -n openshift-marketplace -f -
-apiVersion: operators.coreos.com/v1
-kind: CatalogSourceConfig
-metadata:
-  finalizers:
-  - finalizer.catalogsourceconfigs.operators.coreos.com
-  name: installed-community-openshift-operators
-  namespace: openshift-marketplace
-spec:
-  csDisplayName: Community Operators
-  csPublisher: Community
-  packages: strimzi-kafka-operator
-  targetNamespace: openshift-operators
-EOF
-
 cat <<EOF | oc apply -n openshift-operators -f -
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   labels:
-    csc-owner-name: installed-community-openshift-operators
+    csc-owner-name: community-operators
     csc-owner-namespace: openshift-marketplace
   name: strimzi-kafka-operator
   namespace: openshift-operators
@@ -345,8 +310,8 @@ spec:
   channel: stable
   installPlanApproval: Automatic
   name: strimzi-kafka-operator
-  source: installed-community-openshift-operators
-  sourceNamespace: openshift-operators
+  source: community-operators
+  sourceNamespace: openshift-marketplace
 EOF
 
 # Build stack
