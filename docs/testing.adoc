@@ -190,7 +190,7 @@ public class StaticContentTest {
 ----
 <1> The `@TestHTTPResource` annotation allows you to directly inject the URL of the Quarkus instance, the value of the annotation will be the path component of the URL. For now `@TestHTTPResource` allows you to inject URI, URL and String representations of the URL.
 
-Re-run the tests (with **Run Tests**) to ensure they're still passing:
+Re-run the tests (with **Run Tests**) to ensure they're still passing.
 
 == Injection into tests
 
