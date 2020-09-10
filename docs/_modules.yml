@@ -14,7 +14,7 @@ modules:
   cloudnative:
     name: Developing Cloud Native with Quarkus
   deploy:
-    name: "Deploying to the cloud"
+    name: Deploying to the cloud
   extensions:
     name: Using Quarkus extensions
   panache:
@@ -31,3 +31,15 @@ modules:
     name: Tracing Quarkus Apps
   security:
     name: Securing Quarkus APIs 
+  springweb:
+    name: Spring Web to Quarkus Qute
+  springdata:
+    name: Spring JPA to Quarkus Hibernate ORM with Panache
+  springconfig:
+    name: Spring Config to Quarkus Config
+  springcloud:
+    name: Spring Cloud to Quarkus on OpenShift
+  springmessaging:
+    name: Reactive Messaging Quarkus
+  springserverless:
+    name: Spring to Quarkus Serverless on OpenShift
