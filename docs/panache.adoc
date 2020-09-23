@@ -471,7 +471,7 @@ Open the `PersonResource` resource class and add the following lifecycle listene
 void onStart(@Observes StartupEvent ev) {
     for (int i = 0; i < 1000; i++) {
         String name = CuteNameGenerator.generate();
-        LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 20 * 52 * -1)));
+        LocalDate birth = LocalDate.now().plusWeeks(Math.round(Math.floor(Math.random() * 40 * 52 * -1)));
         EyeColor color = EyeColor.values()[(int)(Math.floor(Math.random() * EyeColor.values().length))];
         Person p = new Person();
         p.birth = birth;
@@ -482,7 +482,7 @@ void onStart(@Observes StartupEvent ev) {
 }
 ----
 
-This code will insert 1,000 fake people with random birthdates, eye colors, and names at startup. Note the use of the `@Transactional` annotation - this is required for methods that make changes to the underlying database (and automatically executes the method in a Transaction for you).
+This code will insert 1,000 fake people with random birthdates in the last 40 years, eye colors, and names at startup. Note the use of the `@Transactional` annotation - this is required for methods that make changes to the underlying database (and automatically executes the method in a Transaction for you).
 
 === Access new data
 
