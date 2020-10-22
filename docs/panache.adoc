@@ -1,7 +1,7 @@
 = Hibernate ORM with Panache
 :experimental:
 
-Hibernate ORM is the de facto JPA implementation and offers you the full breadth of an Object Relational Mapper. It makes complex mappings possible, but many simple and common mappings can also be complex. Hibernate ORM with **Panache** focuses on making your entities trivial and fun to write and use with Quarkus.
+Hibernate ORM is the de facto JPA implementation and offers you the full breadth of an Object Relational Mapper. It makes complex mappings possible, but many simple and common mappings can also be complex. Hibernate ORM with https://quarkus.io/guides/hibernate-orm-panache[*Panache*^] focuses on making your entities trivial and fun to write and use with Quarkus.
 
 With Panache, we took an opinionated approach to make hibernate as easy as possible. Hibernate ORM with Panache offers the following:
 
@@ -106,6 +106,11 @@ public class Person extends PanacheEntity {
 [NOTE]
 ====
 You will incrementally replace the `// TODO` elements as we go along, so don't delete them just yet!
+====
+
+[NOTE]
+====
+Extending `PanacheEntity` is referred to as the https://quarkus.io/guides/hibernate-orm-panache#solution-1-using-the-active-record-pattern[Active Record Pattern^]. There is also another pattern called the https://quarkus.io/guides/hibernate-orm-panache#solution-2-using-the-repository-pattern[Repository Pattern^] that you could use which involves separating your entities from the operations on those entities.
 ====
 
 As you can see we've defined the three fields `name`, `birth`, and `eyes`. We're using the Java Persistence API's `@Enumerated` field type for our eye color.
