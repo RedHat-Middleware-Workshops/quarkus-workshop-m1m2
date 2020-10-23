@@ -29,7 +29,7 @@ You should see:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-vertx
+✅ Extension io.quarkus:quarkus-vertx has been installed
 ----
 
 [NOTE]

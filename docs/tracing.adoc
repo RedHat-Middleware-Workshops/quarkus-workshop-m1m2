@@ -65,8 +65,8 @@ You will see:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-rest-client
-✅ Adding extension io.quarkus:quarkus-smallrye-opentracing
+✅ Extension io.quarkus:quarkus-rest-client has been installed
+✅ Extension io.quarkus:quarkus-smallrye-opentracing has been installed
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and an HTTP REST Client we'll use pater.
