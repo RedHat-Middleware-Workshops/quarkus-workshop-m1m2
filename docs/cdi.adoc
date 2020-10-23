@@ -10,7 +10,7 @@ Let’s modify the application and add a companion bean. In CodeReady, right-cli
 image::newclass.png[newclass,600]
 image::classname.png[classname,400]
 
-Next, copy the below code into the class:
+Next, replace the below code into the class:
 
 [source,java,role="copypaste"]
 ----

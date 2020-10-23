@@ -5,13 +5,7 @@ With our app fully ready for its first cloud native deployment, let's package it
 
 OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD^], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
 
-== Build native image
 
-Let's rebuild our native image with all our changes thus far. Run the **Build Native App** command again:
-
-image::cmd-native.png[livecoding, 700]
-
-As you recall, the output of this process is a native Linux binary. Let's deploy it to our cluster.
 
 == Login to OpenShift
 
@@ -58,39 +52,46 @@ their content in isolation from other communities. OpenShift _projects_ provide 
 
 For this scenario, a project has been created for you called `{{ USER_ID }}-project`. You will use this project to deploy your developed project in the next step.
 
-== Deploy to OpenShift
+== Build and Deploy native image
 
-First, create a new _binary_ build within OpenShift by opening a Terminal and running:
+Quarkus offers the ability to automatically generate OpenShift resources based on sane default and user supplied configuration. The OpenShift extension is actually a wrapper extension that brings together the https://quarkus.io/guides/deploying-to-kubernetes[kubernetes^] and https://quarkus.io/guides/container-image#s2i[container-image-s2i^] extensions with defaults so that it’s easier for the user to get started with Quarkus on OpenShift.
 
-[source,sh,role="copypaste"]
-----
-oc new-build quay.io/quarkus/ubi-quarkus-native-binary-s2i:19.3.1 --binary --name=people -l app=people
-----
-
-You should get a `--> Success` message at the end.
-
-[NOTE]
-====
-This build uses the new https://developers.redhat.com/products/rhel/ubi/[Red Hat Universal Base Image^], providing foundational software needed to run most applications, while staying at a reasonable size.
-====
-
-And then start and watch the build, which will take about a minute to complete:
+Add _openshift_ extension via CodeReady Workspaces Terminal:
 
 [source,sh,role="copypaste"]
 ----
-oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner --follow
+mvn -q quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
-This step will combine the native binary with a base OS image, create a new container image, and push it to an internal image registry. **Wait for it to finish!**. You should get a **Push successful** message at the end.
+you will see:
 
-Once that's done, deploy the new image as an OpenShift application and expose its HTTP endpoint to the outside world:
-
-[source,sh,role="copypaste"]
+[source,console]
 ----
-oc new-app --as-deployment-config people -l "app.openshift.io/runtime=quarkus,app.kubernetes.io/part-of=people" && oc expose svc/people
+✅ Extension io.quarkus:quarkus-openshift has been installed
 ----
 
-Finally, make sure it's actually done rolling out:
+Next, add the following variables in `src/main/resources/application.properties` for native compilation using `Mandrel` builder image:
+
+[source,properties,role="copypaste"]
+----
+%prod.quarkus.kubernetes-client.trust-certs=true<1>
+%prod.quarkus.kubernetes.deploy=true<2>
+%prod.quarkus.kubernetes.deployment-target=openshift<3>
+%prod.quarkus.openshift.expose=true<4>
+----
+
+<1> We are using self-signed certs in this simple example, so this simply says to the extension to trust them.
+<2> Instructs the extension to deploy to OpenShift after the container image is built
+<3> Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig` and `Service`) after building the container
+<4> Instructs the extension to generate an OpenShift `Route`.
+
+Let's rebuild our native image with all our changes thus far. Run the **Build Native App** command again:
+
+image::cmd-native.png[livecoding, 700]
+
+As you recall, the output of this process is a native Linux binary but also running Source-To-Image(S2I) build processor.
+
+**Wait for it to finish!**. You should get a **BUILD SUCCESS** message at the end. Once that's done, make sure it's actually done rolling out:
 
 [source,sh,role="copypaste"]
 ----
@@ -148,14 +149,9 @@ Click on the circle to get details:
 
 image::container1.png[container,600]
 
-[NOTE]
-====
-You may see _"Container people does not have health checks to ensure your application is running correctly"_. Don't worry we will add MicroProfile health check at the next step.
-====
-
 Click on the **View Logs** link to see the console output from the app:
 
-image::podlogs.png[logs,600]
+image::podlogs.png[logs,700]
 
 This is the same output you saw earlier when you ran it "locally" with it's super-fast startup time.
 
@@ -171,7 +167,8 @@ Earlier you implemented a series of MicroProfile health checks. To make OpenShif
 
 [source,sh,role="copypaste"]
 ----
-oc set probe dc/people --readiness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20 --get-url=http://:8080/health/ready && oc set probe dc/people --liveness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20  --get-url=http://:8080/health/live
+oc set probe dc/people --readiness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20 --get-url=http://:8080/health/ready && oc set probe dc/people --liveness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20  --get-url=http://:8080/health/live &&
+oc rollout latest dc/people
 ----
 
 You'll see in the Topology view that the app is re-deployed with the new settings and the old app will be _terminated_ soon after:
