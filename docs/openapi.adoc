@@ -26,7 +26,7 @@ You should see:
 
 [source,console]
 ----
- Extension io.quarkus:quarkus-smallrye-openapi has been installed
+✅ Extension io.quarkus:quarkus-smallrye-openapi has been installed
 ----
 
 This will add the necessary extension for using OpenAPI, and a graphical frontend extension called *Swagger* which we'll discuss later. It also enables a new RESTful endpoint in the app accessible at `/openapi`.

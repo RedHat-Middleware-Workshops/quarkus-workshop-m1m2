@@ -85,9 +85,12 @@ Next, add the following variables in `src/main/resources/application.properties`
 <3> Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig` and `Service`) after building the container
 <4> Instructs the extension to generate an OpenShift `Route`.
 
-Let's rebuild our native image with all our changes thus far. Run the **Build Native App** command again:
+Rebuild and re-deploy the people application via running the following maven plugin in CodeReady Workspaces Terminal:
 
-image::cmd-native.png[livecoding, 700]
+[source,sh,role="copypaste"]
+----
+mvn clean package -Pnative -DskipTests -Dquarkus.package.uber-jar=false -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+----
 
 As you recall, the output of this process is a native Linux binary but also running Source-To-Image(S2I) build processor.
 
