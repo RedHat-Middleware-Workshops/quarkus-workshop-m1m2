@@ -25,10 +25,10 @@ You should see:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-hibernate-orm-panache
-✅ Adding extension io.quarkus:quarkus-jdbc-h2
-✅ Adding extension io.quarkus:quarkus-resteasy-jsonb
-✅ Adding extension io.quarkus:quarkus-jdbc-postgresql
+✅ Extension io.quarkus:quarkus-hibernate-orm-panache has been installed
+✅ Extension io.quarkus:quarkus-jdbc-h2 has been installed
+✅ Extension io.quarkus:quarkus-resteasy-jsonb has been installed
+✅ Extension io.quarkus:quarkus-jdbc-postgresql has been installed
 ----
 
 We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-jsonb` is used to encode JSON objects.
@@ -56,7 +56,7 @@ These names are known to Quarkus, and you can introduce your own profiles and us
 
 With our extension installed, we can now define our entity using Panache.
 
-We'll first need the definition of eye colors, so let's create an `enum`. Create a new java class file in `src/main/java/org/acme/people/model` called `EyeColor.java`, and add the following enum definition:
+We'll first need the definition of eye colors, so let's create an `enum`. Create a new java class file in `src/main/java/org/acme/people/model` called `EyeColor.java`, and replace the following enum definition:
 
 [source,java,role="copypaste"]
 ----
@@ -580,41 +580,18 @@ image::database-deployment.png[inventory_db_deployments, 700]
 
 In previous steps we deployed our sample application as a native binary. Now let's switch to a JVM-based deployment from here on out.
 
-Quarkus offers the ability to automatically generate OpenShift resources based on sane default and user supplied configuration. The OpenShift extension is actually a wrapper extension that brings together the https://quarkus.io/guides/deploying-to-kubernetes[kubernetes^] and https://quarkus.io/guides/container-image#s2i[container-image-s2i^] extensions with defaults so that it’s easier for the user to get started with Quarkus on OpenShift.
-
-Add _openshift_ extension via CodeReady Workspaces Terminal:
-
-[source,sh,role="copypaste"]
-----
-mvn -q quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
-----
-
-you will see:
-
-[source,console]
-----
-✅ Adding extension io.quarkus:quarkus-openshift
-----
-
-Next, add the following variables in `src/main/resources/application.properties`:
+Append the following variables in `src/main/resources/application.properties`:
 
 [source,shell,role="copypaste"]
 ----
-%prod.quarkus.kubernetes-client.trust-certs=true<1>
-%prod.quarkus.container-image.build=true<2>
-%prod.quarkus.kubernetes.deploy=true<3>
-%prod.quarkus.kubernetes.deployment-target=openshift<4>
-%prod.quarkus.openshift.expose=true<5>
-%prod.quarkus.openshift.labels.app.openshift.io/runtime=quarkus<6>
-%prod.quarkus.s2i.base-jvm-image=registry.access.redhat.com/ubi8/openjdk-11<7>
+%prod.quarkus.container-image.build=true<1>
+%prod.quarkus.openshift.labels.app.openshift.io/runtime=quarkus<2>
+%prod.quarkus.s2i.base-jvm-image=registry.access.redhat.com/ubi8/openjdk-11<3>
 ----
-<1> We are using self-signed certs in this simple example, so this simply says to the extension to trust them.
-<2> Instructs the extension to build a container image
-<3> Instructs the extension to deploy to OpenShift after the container image is built
-<4> Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig` and `Service`) after building the container
-<5> Instructs the extension to generate an OpenShift `Route`.
-<6> Adds a nice-looking icon to the app when viewing the OpenShift Developer Toplogy
-<7> Build the application based on OpenJDK 11 image
+
+<1> Instructs the extension to build a container image
+<2> Adds a nice-looking icon to the app when viewing the OpenShift Developer Toplogy
+<3> Build the application based on OpenJDK 11 image
 
 Now let's deploy the application itself. Run the following command which will build and deploy using the OpenShift extension:
 

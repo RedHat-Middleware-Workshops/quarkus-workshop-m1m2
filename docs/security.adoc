@@ -16,7 +16,7 @@ You should see:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-smallrye-jwt
+✅ Extension io.quarkus:quarkus-smallrye-jwt has been installed
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in JWT support.
@@ -292,8 +292,8 @@ You should see:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-oidc
-✅ Adding extension io.quarkus:quarkus-keycloak-authorization
+✅ Extension io.quarkus:quarkus-oidc has been installed
+✅ Extension io.quarkus:quarkus-keycloak-authorization has been installed
 ----
 
 == Disable MicroProfile JWT Extension

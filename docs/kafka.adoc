@@ -86,14 +86,14 @@ With Kafka installing, turn your attention back to the app. Like other exercises
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="kafka" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="messaging-kafka" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-smallrye-reactive-messaging-kafka
+✅ Extension io.quarkus:quarkus-smallrye-reactive-messaging-kafka has been installed
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the Kafka extension.

@@ -1,9 +1,9 @@
 = Building Native Images
 :experimental:
 
-Let’s now produce a native executable for our application. It improves the startup time of the application, and produces a minimal disk and memory footprint. The executable would have everything to run the application including the "JVM" (shrunk to be just enough to run the application), and the application. This is accomplished using https://graalvm.org[GraalVM^].
+Let’s now produce a native executable for our application. It improves the startup time of the application, and produces a minimal disk and memory footprint. The executable would have everything to run the application including the "JVM" (shrunk to be just enough to run the application), and the application. This is accomplished using https://github.com/graalvm/mandrel[Mandrel^].
 
-GraalVM is a universal virtual machine for compiling and running applications written in JavaScript, Python, Ruby, R, JVM-based languages like Java, Scala, Groovy, Kotlin, Clojure, and LLVM-based languages such as C and C++. It includes ahead-of-time compilation, aggressive dead code elimination, and optimal packaging as native binaries that moves a lot of startup logic to _build-time_, thereby reducing startup time and memory resource requirements significantly.
+Mandrel is a downstream distribution of the GraalVM community edition. Mandrel's main goal is to provide a native-image release specifically to support https://access.redhat.com/documentation/en-us/red_hat_build_of_quarkus[Quarkus^]. The aim is to align the native-image capabilities from GraalVM with OpenJDK and Red Hat Enterprise Linux libraries to improve maintainability for native Quarkus applications.
 
 image::native-image-process.png[native, 600]
 
@@ -88,10 +88,10 @@ Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
 ----
-2020-07-31 17:32:01,151 INFO  [io.quarkus] (main) Quarkus xx.xx.xx started in 0.015s. Listening on: http://0.0.0.0:8081
+2020-10-23 15:04:18,061 INFO  [io.quarkus] (main) people 1.0-SNAPSHOT native (powered by Quarkus x.x.x) started in 0.016s. Listening on: http://0.0.0.0:8081
 ----
 
-That's 15 milliseconds to start up.
+That's 16 milliseconds to start up.
 
 And extremely low memory usage as reported by the Linux `ps` utility. While the app is running, open another Terminal and run:
 

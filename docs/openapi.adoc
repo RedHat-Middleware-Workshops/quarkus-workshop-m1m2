@@ -19,14 +19,14 @@ We need to add another extension for OpenAPI. Run the following command:
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="openapi" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-openapi" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Adding extension io.quarkus:quarkus-smallrye-openapi
+✅ Extension io.quarkus:quarkus-smallrye-openapi has been installed
 ----
 
 This will add the necessary extension for using OpenAPI, and a graphical frontend extension called *Swagger* which we'll discuss later. It also enables a new RESTful endpoint in the app accessible at `/openapi`.
@@ -42,7 +42,7 @@ This endpoint was created as part of the Quarkus OpenAPI Extension, and emits a 
 
 [source,yaml]
 ----
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   title: Generated API
   version: "1.0"

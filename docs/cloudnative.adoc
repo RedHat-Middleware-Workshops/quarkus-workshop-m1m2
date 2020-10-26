@@ -20,14 +20,14 @@ We'll need to add a https://quarkus.io/extensions[Quarkus Extension^] to enable 
 
 [source, sh, role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="health" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-health" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 You should get:
 
 [source,console,role="copypaste"]
 ----
-✅ Adding extension io.quarkus:quarkus-smallrye-health
+✅ Extension io.quarkus:quarkus-smallrye-health has been installed
 ----
 
 This will add the extension below to your `pom.xml`:

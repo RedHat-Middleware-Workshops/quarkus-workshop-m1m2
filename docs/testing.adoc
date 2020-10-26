@@ -73,9 +73,8 @@ The tests will run, and eventually complete. Did you get any errors? You should 
 
 [source, none]
 ----
-[ERROR] testHelloEndpoint  Time elapsed: 1.112 s  <<< FAILURE!
-java.lang.AssertionError:
-1 expectation failed.
+[ERROR] Failures: 
+[ERROR]   GreetingResourceTest.testHelloEndpoint:20 1 expectation failed.
 Response body doesn't match expectation.
 Expected: is "hello"
   Actual: hola
@@ -145,7 +144,7 @@ Add this code to the file:
 ----
 Our test will verify that the `<title>` tags contain the right content.
 
-Next, create a new test under `src/test/java` in the `org.acme.people` package called `StaticContentTest.java`. Add this code to the file:
+Next, create a new test under `src/test/java` in the `org.acme.people` package called `StaticContentTest.java`. Replace this code to the file:
 
 [source, java, role="copypaste"]
 ----

@@ -90,18 +90,12 @@ Like other exercises, we'll need another extension to enable metrics. Install it
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
 
 [INFO]
 ====
-If you previously added this extension in earlier exercises, then you'll see:
-
-[source,console]
-----
-👍 Skipping already present extension io.quarkus:quarkus-smallrye-metrics
-----
-
+If you previously added this extension in earlier exercises, then you'll see nothing.
 ====
 
 This will add the necessary entries in your `pom.xml` to bring in the Metrics capability. It will import the `smallrye-metrics` extension which is an implementation of the MicroProfile Metrics specification used in Quarkus.
