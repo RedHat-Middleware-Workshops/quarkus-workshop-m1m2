@@ -90,7 +90,7 @@ Step through the prompts, using the following value for **Repository URL**:
 
 [source,none,role="copypaste"]
 ----
-https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-labs
+https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
 ----
 
 image::crw-clone-repo.png[crw,900]
@@ -113,7 +113,7 @@ To make sure you're using the right version of the project files, run this comma
 
 [source,sh,role="copypaste"]
 ----
-cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.5
+cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.6
 ----
 
 The project has
