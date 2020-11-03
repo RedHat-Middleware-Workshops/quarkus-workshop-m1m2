@@ -1,4 +1,0 @@
-= Spring Data
-:experimental:
-
-To be filled
