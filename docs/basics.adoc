@@ -53,7 +53,7 @@ To make sure you're using the right version of the project files, run this comma
 
 [source,sh,role="copypaste"]
 ----
-cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.6
+cd $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && git checkout ocp-4.6
 ----
 
 The project has
@@ -116,9 +116,9 @@ You should see:
 
 [source,none]
 ----
-2020-10-23 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus x.x.x) started in 0.972s. Listening on: http://0.0.0.0:8080
-2020-10-23 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2020-10-23 14:27:00,103 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy]
+2020-11-03 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus x.x.x) started in 0.972s. Listening on: http://0.0.0.0:8080
+2020-11-03 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2020-11-03 14:27:00,103 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy]
 ----
 
 Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything).
@@ -184,7 +184,7 @@ Run the packaged application. In a Terminal, run the following command:
 
 [source, sh, role="copypaste"]
 ----
-java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar
+java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/*-runner.jar
 ----
 
 [NOTE]
