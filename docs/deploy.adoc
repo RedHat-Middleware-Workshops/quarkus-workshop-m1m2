@@ -60,7 +60,7 @@ Add _openshift_ extension via CodeReady Workspaces Terminal:
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 you will see:
@@ -89,7 +89,7 @@ Rebuild and re-deploy the people application via running the following maven plu
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -Pnative -DskipTests -Dquarkus.package.uber-jar=false -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn clean package -Pnative -DskipTests -Dquarkus.package.uber-jar=false -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 As you recall, the output of this process is a native Linux binary but also running Source-To-Image(S2I) build processor.

@@ -20,7 +20,7 @@ We'll need to add a https://quarkus.io/extensions[Quarkus Extension^] to enable 
 
 [source, sh, role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-health" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-health" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should get:
@@ -408,7 +408,7 @@ It is also possible to generate an example `application.properties` with _all kn
 
 [source,sh,role=copypaste]
 ----
-mvn -q quarkus:generate-config -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:generate-config -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 This will create a `src/main/resources/application.properties.example` file that contains all the config options exposed via the extensions you currently have installed. These options are commented out, and have their default value when applicable.
@@ -484,7 +484,7 @@ Next, run the the rebuilt app in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
-java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar
+java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/*-runner.jar
 ----
 
 Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`.

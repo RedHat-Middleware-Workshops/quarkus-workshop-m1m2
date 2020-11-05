@@ -80,7 +80,7 @@ Since our environment here is Linux, you can _just run it_. In the terminal, run
 
 [source,sh,role="copypaste"]
 ----
-$CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081 # <1>
+$CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081 # <1>
 ----
 <1> We use port `8081` here to avoid conflicting with our already-running development mode Quarkus app.
 
@@ -88,7 +88,7 @@ Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
 ----
-2020-10-23 15:04:18,061 INFO  [io.quarkus] (main) people 1.0-SNAPSHOT native (powered by Quarkus x.x.x) started in 0.016s. Listening on: http://0.0.0.0:8081
+2020-11-04 23:24:38,770 INFO  [io.quarkus] (main) people 1.0-SNAPSHOT native (powered by Quarkus x.x.x.) started in 0.018s. Listening on: http://0.0.0.0:8081
 ----
 
 That's 16 milliseconds to start up.
@@ -104,7 +104,7 @@ You should see something like:
 [source,none]
 ----
     PID   RSS COMMAND
-   1108 61196 /projects/quarkus-workshop-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+   1108 61196 /projects/quarkus-workshop-m1m2-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
 ----
 
 This shows that our process is taking around 60 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
