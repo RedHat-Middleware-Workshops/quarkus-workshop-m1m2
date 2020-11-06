@@ -19,7 +19,7 @@ We need to add another extension for OpenAPI. Run the following command:
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-openapi" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-openapi" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:

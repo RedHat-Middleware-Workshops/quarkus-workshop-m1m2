@@ -22,7 +22,7 @@ This mechanism uses the https://vertx.io/docs/vertx-core/java/#event_bus[Vert.x 
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="vertx" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="vertx" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:

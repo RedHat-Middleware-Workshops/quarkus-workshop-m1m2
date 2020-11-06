@@ -113,7 +113,7 @@ To make sure you're using the right version of the project files, run this comma
 
 [source,sh,role="copypaste"]
 ----
-cd $CHE_PROJECTS_ROOT/quarkus-workshop-labs && git checkout ocp-4.6
+cd $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && git checkout ocp-4.6
 ----
 
 The project has
@@ -176,9 +176,9 @@ You should see:
 
 [source,none]
 ----
-2020-10-23 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus x.x.x) started in 0.972s. Listening on: http://0.0.0.0:8080
-2020-10-23 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2020-10-23 14:27:00,103 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy]
+2020-11-03 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus x.x.x) started in 0.972s. Listening on: http://0.0.0.0:8080
+2020-11-03 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2020-11-03 14:27:00,103 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy]
 ----
 
 Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything).
@@ -267,7 +267,7 @@ Deploy the `people` microservice by executing the following shell script in a Co
 
 [source, shell, role="copypaste"]
 ----
-sh $CHE_PROJECTS_ROOT/quarkus-workshop-labs/scripts/deploy-people.sh {{ USER_ID }}
+sh $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/scripts/deploy-people.sh {{ USER_ID }}
 ----
 
 Wait for the script to complete before continuing.
@@ -300,7 +300,7 @@ Retrieve the list of possible extensions using the Maven plugin. Run this in the
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You can see the list of ~286 different extensions available to you in the output:
@@ -340,7 +340,7 @@ Later on in this lab we'll be using MicroProfile metrics, so let's add that exte
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see

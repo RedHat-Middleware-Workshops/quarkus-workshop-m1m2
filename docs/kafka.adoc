@@ -86,7 +86,7 @@ With Kafka installing, turn your attention back to the app. Like other exercises
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="messaging-kafka" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="messaging-kafka" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
@@ -274,7 +274,7 @@ Run the following command which will build and deploy using the OpenShift extens
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && \
 oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite

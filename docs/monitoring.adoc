@@ -19,7 +19,7 @@ To install it, first create a Kubernetes ConfigMap that will hold the Prometheus
 
 [source,sh,role="copypaste"]
 ----
-oc create configmap prom --from-file=prometheus.yml=$CHE_PROJECTS_ROOT/quarkus-workshop-labs/src/main/kubernetes/prometheus.yml
+oc create configmap prom --from-file=prometheus.yml=$CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/src/main/kubernetes/prometheus.yml
 ----
 
 This will create a ConfigMap using the contents of the `src/main/kubernetes/prometheus.yml` file in your project (we've created this file for you). It contains basic Prometheus configuration, plus a specific _target_ which instructs it to look for application metrics from both Prometheus itself, and our `people` app, on HTTP port 8080 at the `/metrics` endpoint. Here's a snippet of that file:
@@ -90,7 +90,7 @@ Like other exercises, we'll need another extension to enable metrics. Install it
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 [INFO]
@@ -219,7 +219,7 @@ Run the following command which will build and deploy using the OpenShift extens
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 

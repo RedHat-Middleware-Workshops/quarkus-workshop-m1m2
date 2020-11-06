@@ -58,7 +58,7 @@ With Jaeger installed, let's turn back to our Quarkus app. Like other exercises,
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You will see:
@@ -94,7 +94,7 @@ Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
@@ -298,7 +298,7 @@ Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
