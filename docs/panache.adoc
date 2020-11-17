@@ -610,7 +610,7 @@ Finally, make sure it's actually done rolling out:
 oc rollout status -w dc/people
 ----
 
-Wait for that command to report *replication controller _inventory-xx_ successfully rolled out* before continuing.
+Wait for that command to report *replication controller _people-xx_ successfully rolled out* before continuing.
 
 And let's do again to label the items with proper icons:
 
