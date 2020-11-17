@@ -118,6 +118,7 @@ Let's re-build and re-deploy the application:
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
@@ -379,6 +380,7 @@ Let's re-build and re-deploy the application:
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
+oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
