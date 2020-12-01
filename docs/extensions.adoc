@@ -86,7 +86,7 @@ Let's import our project. Click on **Git Clone..** (or type kbd:[F1], enter 'git
 
 image::che-workspace-gitclone.png[cdw, 900]
 
-Step through the prompts, using the following value for **Repository URL**:
+Step through the prompts, using the following value for **Repository URL**. If you use *FireFox*, it may end up pasting extra spaces at the end, so just press backspace after pasting:
 
 [source,none,role="copypaste"]
 ----
@@ -94,6 +94,10 @@ https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
 ----
 
 image::crw-clone-repo.png[crw,900]
+
+Click on *Select Repository Location* then click on *Add to Workpace*:
+
+image::crw-add-workspace.png[crw, 900]
 
 The project is imported into your workspace and is visible in the project explorer (click on the top-most icon for project explorer):
 
