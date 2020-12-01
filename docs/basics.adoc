@@ -48,7 +48,7 @@ image::crw-clone-explorer.png[crw,900]
 The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
 terminal, you can use the **>_ New Terminal** command on the right:
 
-image::codeready-workspace-terminal.png[codeready-workspace-terminal, 500]
+image::codeready-workspace-terminal.png[codeready-workspace-terminal, 900]
 ====
 
 ==== IMPORTANT: Check out proper Git branch
@@ -137,7 +137,7 @@ image::welcome-quarkus.png[port, 900]
 
 Open a *new* CodeReady Workspaces Terminal:
 
-image::codeready-workspace-terminal.png[livecoding, 700]
+image::codeready-workspace-terminal.png[livecoding, 900]
 
 and invoke the `hello` endpoint using the following _curl_ command:
 
