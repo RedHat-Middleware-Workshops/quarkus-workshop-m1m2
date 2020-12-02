@@ -52,7 +52,7 @@ The output of the native build is a native Linux binary, which you can see using
 
 [source,sh,role="copypaste"]
 ----
-readelf -h $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner
+readelf -h $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/*-runner
 ----
 
 you’ll see:
