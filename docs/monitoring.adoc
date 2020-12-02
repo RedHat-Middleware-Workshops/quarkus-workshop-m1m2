@@ -44,7 +44,7 @@ On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for you
 
 image::add-to-project.png[Prometheus, 800]
 
-Press *Enter Key* once you type `prom/prometheus` in *Image Name*. You will see *green checked* icon and *Validated* under the input box.
+Press *Enter Key* once you type `quay.io/prometheus/prometheus` in *Image Name*. You will see *green checked* icon and *Validated* under the input box.
 
 Next, fill out the following fields:
 
@@ -276,7 +276,7 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
 
-* *Image Name*: `grafana/grafana` (Press Enter key then make sure to see *Validated*)
+* *Image Name*: `registry.redhat.io/openshift4/ose-grafana` (Press Enter key then make sure to see *Validated*)
 * *Application*: `Create Application`
 * *Application Name*: `grafana`
 * *Name*: `grafana`
