@@ -31,7 +31,7 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9090']
 
-  - job_name: 'quarkus-people-app' # <2>
+  - job_name: 'people_app' # <2>
     static_configs:
     - targets: ['people:8080']
 ----
@@ -44,13 +44,13 @@ On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for you
 
 image::add-to-project.png[Prometheus, 800]
 
-Press *Enter Key* once you type `prom/prometheus` in *Image Name*. You will see *green checked* icon and *Validated* under the input box.
+Fill out the following fields:
 
-Next, fill out the following fields:
-
-* *Application*: `Create Applcation`
+* *Image Name*: `quay.io/prometheus/prometheus`
 * *Application Name*: `prometheus`
 * *Name*: `prometheus`
+
+Click the "Magnifying Glass" search icon next to the image name to confirm the image exists.
 
 Leave the rest as-is and click *Create*:
 
@@ -65,7 +65,7 @@ Finally, mount the ConfigMap into the running container:
 oc set volume deployment/prometheus --add -t configmap --configmap-name=prom -m /etc/prometheus/prometheus.yml --sub-path=prometheus.yml
 ----
 
-You should get `deployment.extensions/prometheus volume updated` and this will cause the contents of the `ConfigMap`'s prometheus.yml` data to be mounted at `/etc/prometheus/prometheus.yml` where Prometheus is expecting it, and it will start scraping metrics from our app. But our app does not yet expose metrics. We'll do that in the next step.
+You should get `deployment.extensions/prometheus volume updated` and this will cause the contents of the `ConfigMap`'s `prometheus.yml` data to be mounted at `/etc/prometheus/prometheus.yml` where Prometheus is expecting it, and it will start scraping metrics from our app. But our app does not yet expose metrics. We'll do that in the next step.
 
 Verify Prometheus is up and running:
 
@@ -74,7 +74,7 @@ Verify Prometheus is up and running:
 oc rollout status -w deployment/prometheus
 ----
 
-You should see `deployment "prometheus" successfully rolled out`.
+You should see `replication controller "prometheus-2" successfully rolled out`.
 
 Once it completes, click on the arrow to access the prometheus query UI:
 
@@ -90,13 +90,8 @@ Like other exercises, we'll need another extension to enable metrics. Install it
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
+mvn quarkus:add-extension -Dextensions="metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs
 ----
-
-[INFO]
-====
-If you previously added this extension in earlier exercises, then you'll see nothing.
-====
 
 This will add the necessary entries in your `pom.xml` to bring in the Metrics capability. It will import the `smallrye-metrics` extension which is an implementation of the MicroProfile Metrics specification used in Quarkus.
 
@@ -113,14 +108,12 @@ You will see a bunch of metrics in the OpenMetrics format:
 
 [source, none]
 ----
-# TYPE base_cpu_availableProcessors gauge
-base_cpu_availableProcessors 1.0
-# HELP base_thread_max_count Displays the peak live thread count since the Java virtual machine started or peak was reset. This includes daemon and non-daemon threads.
-# TYPE base_thread_max_count gauge
-base_thread_max_count 39.0
-# HELP base_memory_usedHeap_bytes Displays the amount of used heap memory in bytes.
-# TYPE base_memory_usedHeap_bytes gauge
-base_memory_usedHeap_bytes 9.824268E7
+# HELP base:jvm_uptime_seconds Displays the time from the start of the Java virtual machine in milliseconds.
+# TYPE base:jvm_uptime_seconds gauge
+base:jvm_uptime_seconds 5.631
+# HELP base:gc_ps_mark_sweep_count Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
+# TYPE base:gc_ps_mark_sweep_count counter
+base:gc_ps_mark_sweep_count 2.0
 ----
 
 This is what Prometheus will use to access and index the metrics from our app when we deploy it to the cluster.
@@ -129,11 +122,11 @@ This is what Prometheus will use to access and index the metrics from our app wh
 
 Out of the box, you get a lot of basic JVM metrics which are useful, but what if you wanted to provide metrics for your app? Let's add a few using the MicroProfile Metrics APIs.
 
-Open the `GreetingResource` class (in the `org.acme.people.rest` package). Let's add a metric to count the number of times we've greeted someone. Add the following annotation to the `hello()` method:
+Open the `GreetingService` class (in the `org.acme.people.service` package). Let's add a metric to count the number of times we've greeted someone. Add the following annotation to the `greeting()` method:
 
 [source,java,role="copypaste"]
 ----
-    @Counted(name = "greetings", description = "How many greetings we've given.")
+@Counted(name = "greetings", description = "How many greetings we've given.")
 ----
 
 Also, add the necessary import statement at the top of the file:
@@ -152,7 +145,7 @@ Next, trigger a greeting:
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/hello
+curl http://localhost:8080/hello/greeting/quarkus
 ----
 
 And then access the metrics again, this time we'll look for our new metric, specifying a scope of _application_ in the URL so that only metrics in that _scope_ are returned:
@@ -189,8 +182,8 @@ Let's add a few more metrics for our Kafka stream we setup in the previous exerc
 
 [source,java,role="copypaste"]
 ----
-    @Counted(name = "convertedNames", description = "How many names have been converted.") // <1>
-    @Timed(name = "converter", description = "A measure how long it takes to convert names.", unit = MetricUnits.MILLISECONDS) // <2>
+@Counted(name = "convertedNames", description = "How many names have been converted.") // <1>
+@Timed(name = "converter", description = "A measure how long it takes to convert names.", unit = MetricUnits.MILLISECONDS) // <2>
 ----
 <1> This metric will count the number of times this method is called
 <2> This metric will measure how long it takes the method to run
@@ -213,15 +206,21 @@ curl http://localhost:8080/metrics/application
 
 You'll get many more metrics this time which we'll explore soon.
 
-== Rebuild and redeploy to OpenShift
+== Rebuild Executable JAR
 
-Run the following command which will build and deploy using the OpenShift extension:
+Now we are ready to run our application on the cluster and look at the generated metrics. Using the link on the right, select **Package App for OpenShift**.
+
+image:cmd-package.png[create,600]
+
+You should see a bunch of log output that ends with a `SUCCESS` message.
+
+== Deploy to OpenShift
+
+Let's deploy our app to the cluster and see if Prometheus picks up our metrics! To do this, start the container build using our executable JAR:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-labs && \
-oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
+oc start-build people --from-file $CHE_PROJECTS_ROOT/quarkus-workshop-labs/target/*-runner.jar --follow
 ----
 
 == Confirm deployment
@@ -276,7 +275,7 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
 
-* *Image Name*: `grafana/grafana` (Press Enter key then make sure to see *Validated*)
+* *Image Name*: `registry.redhat.io/openshift4/ose-grafana` (and then click the magnifying glass)
 * *Application*: `Create Application`
 * *Application Name*: `grafana`
 * *Name*: `grafana`
@@ -298,7 +297,7 @@ Log into Grafana web UI using the following values:
 * Username: `admin`
 * Password: `admin`
 
-*Skip* the New Password (or change it to something else that you can remember)
+*Skip* the Change Password (or change it to something else that you can remember)
 
 You will see the landing page of Grafana as shown:
 
@@ -324,17 +323,13 @@ With our prometheus data source working, let's make a dashboard.
 
 == Create Dashboard
 
-Back on the http://grafana-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Grafana Home^], select *New Dashboard* to create a new _Dashboard_ to review the metrics.
+Hover over the `+` button on the left, and select _Create > Dashboard_:
 
-image::grafana-create-dashboard.png[metrics_grafana, 900]
+image::grafcreate.png[create, 600]
 
 This will create a new dashboard with a single Panel. Each Panel can visualize a computed metric (either a single metric, or a more complex query) and display the results in the Panel.
 
-Click on *Add new panel* to add a new panel with a query:
-
-image::grafana-add-query.png[metrics_grafana, 700]
-
-In the Query box, type `acme` to again get an autocompleted list of available metrics from our app:
+Click **Add Query**. In the Query box, type `acme` to again get an autocompleted list of available metrics from our app:
 
 image::grafquery.png[query,600]
 
@@ -346,21 +341,25 @@ The metrics should immediately begin to show in the graph above:
 
 image::grafgraf.png[graf,800]
 
-Next click on the _Visualization_ on the right:
+Next click on the _Visualization_ tab on the left:
 
 image::grafvis.png[graf,800]
 
-This lets you fine tune the display, along with the type of graph (bar, line, gauge, etc). Leave them for now, and scroll to the top of the _Panel_ tab. Change the name of the panel to `Converted Names`.
+This lets you fine tune the display, along with the type of graph (bar, line, gauge, etc). Leave them for now, and click on the _General_ tab. Change the name of the panel to `Converted Names`.
 
 image::grafgen.png[graf,800]
 
-Click the **Save** icon at the top to save our new dashboard, enter `Quarkus Metrics Dashboard` as its name (you can actually name it any name you want, it will show up in a list of dashboards later on).
+There is an _Alerts_ tab you can configure to send alerts (email, etc) when conditions are met for this and other queries. We'll skip this for now.
+
+Click the _Save_ icon at the top to save our new dashboard, enter `Quarkus Metrics Dashboard` as its name (you can actually name it any name you want, it will show up in a list of dashboards later on).
 
 image::grafdashsave.png[graf,800]
 
+Click **Save**.
+
 == Add more Panels
 
-See if you can add additional Panels to your new Dashboard. Use the **Add new panel** button to add a new Panel:
+See if you can add additional Panels to your new Dashboard. Use the **Add Panel** button to add a new Panel:
 
 image::grafmorepanels.png[graf,800]
 
@@ -368,8 +367,8 @@ Follow the same steps as before to create a few more panels, and **don't forget 
 
 Add Panels for:
 
-* The different quantiles of time it takes to process names `application_org_acme_people_stream_NameConverter_converter_seconds` (Turn on _Stack_ in the _Display_ section of the _Panel_ tab , and name it `Converter Performance` for the _Panel Title_).
-* The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Unit in _Field_ tab to `bytes(IEC)` on the _Visualization_, and the title to `Memory` on the _Panel Title_.
+* The different quantiles of time it takes to process names `application_org_acme_people_stream_NameConverter_converter_seconds` (configure it to _stack_ its values on the _Visualization_ tab, and name it "Converter Performance" on the _General_ tab).
+* The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Field Units to `bytes` on the _Visualization_ tab, and the title to `Memory` on the _General_ tab.
 
 image::grafjvm.png[jvm,500]
 
