@@ -299,14 +299,19 @@ You should see:
 
 == Disable MicroProfile JWT Extension
 
-Since we will use Keycloak authentication rather than JWT, we'll need to disable the JWT extension. Open the `pom.xml` file and drag to select the `quarkus-smallrye-jwt` extension (including the beginning `<dependency>` and ending `</dependency>` lines)
+Since we will use Keycloak authentication rather than JWT, we'll need to disable the JWT extension. To remove the extension, run this command in a Terminal:
 
-image:jwt-comment1.png[create,700]
+[source,sh,role="copypaste"]
+----
+mvn -q quarkus:remove-extension -Dextensions="jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+----
 
-Delete these lines or simply comment them out using kbd:[CTRL+/] (or kbd:[CMD+/] on Mac OS X):
+You should see:
 
-image:jwt-comment2.png[create,700]
-
+[source,console]
+----
+✅ Extension io.quarkus:quarkus-smallrye-jwt has been uninstalled
+----
 
 === Configuring Keycloak
 
