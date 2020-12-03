@@ -95,7 +95,7 @@ https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
 
 image::crw-clone-repo.png[crw,900]
 
-Click on *Select Repository Location* then click on *Add to Workpace*:
+Click on *Select Repository Location* then click on *Open in New Window*. It will reload your web browser immediately:
 
 image::crw-add-workspace.png[crw, 900]
 
@@ -108,7 +108,7 @@ image::crw-clone-explorer.png[crw,900]
 The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
 terminal, you can use the **>_ New Terminal** command on the right:
 
-image::codeready-workspace-terminal.png[codeready-workspace-terminal, 900]
+image::cmd-terminal.png[codeready-workspace-terminal, 900]
 ====
 
 ==== IMPORTANT: Check out proper Git branch
@@ -197,7 +197,7 @@ image::welcome-quarkus.png[port, 900]
 
 Open a *new* CodeReady Workspaces Terminal:
 
-image::codeready-workspace-terminal.png[livecoding, 900]
+image::cmd-terminal.png[livecoding, 900]
 
 and invoke the `hello` endpoint using the following _curl_ command:
 
