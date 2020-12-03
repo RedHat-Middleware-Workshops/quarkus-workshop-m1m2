@@ -130,7 +130,7 @@ The project has
 
 Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`.
 
-image::initnav.png[codeready-workspace-terminal, 900]
+image::initnav.png[codeready-workspace-terminal, 800]
 
 This class has a very simple RESTful endpoint definition:
 
