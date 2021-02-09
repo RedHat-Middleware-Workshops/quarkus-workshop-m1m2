@@ -108,7 +108,7 @@ image::crw-clone-explorer.png[crw,900]
 The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
 terminal, you can use the **>_ New Terminal** command on the right:
 
-image::cmd-terminal.png[codeready-workspace-terminal, 900]
+image::cmd-terminal.png[codeready-workspace-terminal, 700]
 ====
 
 ==== IMPORTANT: Check out proper Git branch
