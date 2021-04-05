@@ -1,5 +1,6 @@
 = Debugging in Dev Mode
 :experimental:
+:imagesdir: images
 
 Debugging is an art of finding errors (bugs) and eradicating (debug) them from a piece of code written in any programming language. Quarkus apps are no different in this regard and you can use the raw Java command line debugger (`jdb`) or, if your IDE supports it, graphical debugging. Most IDEs have integration with Java debuggers, including Eclipse Che, so let's exercise it.
 

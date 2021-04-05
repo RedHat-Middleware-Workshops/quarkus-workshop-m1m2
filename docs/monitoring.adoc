@@ -1,5 +1,6 @@
 = Monitoring Quarkus Apps using MicroProfile Metrics
 :experimental:
+:imagesdir: images
 
 This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics^] specification through the SmallRye Metrics extension.
 

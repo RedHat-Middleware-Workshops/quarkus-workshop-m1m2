@@ -1,5 +1,6 @@
 = Asynchronous messaging between beans
 :experimental:
+:imagesdir: images
 
 Quarkus allows different beans to interact using asynchronous messages, enforcing loose-coupling. The messages are sent to _virtual_ addresses. It offers 3 types of delivery mechanism:
 

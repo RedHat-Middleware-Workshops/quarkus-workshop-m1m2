@@ -1,5 +1,6 @@
 = Building Native Images
 :experimental:
+:imagesdir: images
 
 Let’s now produce a native executable for our application. It improves the startup time of the application, and produces a minimal disk and memory footprint. The executable would have everything to run the application including the "JVM" (shrunk to be just enough to run the application), and the application. This is accomplished using https://github.com/graalvm/mandrel[Mandrel^].
 

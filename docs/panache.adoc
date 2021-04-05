@@ -1,5 +1,6 @@
 = Hibernate ORM with Panache
 :experimental:
+:imagesdir: images
 
 Hibernate ORM is the de facto JPA implementation and offers you the full breadth of an Object Relational Mapper. It makes complex mappings possible, but many simple and common mappings can also be complex. Hibernate ORM with https://quarkus.io/guides/hibernate-orm-panache[*Panache*^] focuses on making your entities trivial and fun to write and use with Quarkus.
 

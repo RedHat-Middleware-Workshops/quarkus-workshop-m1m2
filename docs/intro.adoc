@@ -1,5 +1,6 @@
 = What is Quarkus?
 :experimental:
+:imagesdir: images
 
 image::logo.png[quarkus-logo, 900]
 

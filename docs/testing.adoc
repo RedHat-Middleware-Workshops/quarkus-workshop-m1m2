@@ -1,5 +1,6 @@
 = Testing
 :experimental:
+:imagesdir: images
 
 In this step we'll show you how to effectively write functional and unit tests for your Quarkus Apps.
 

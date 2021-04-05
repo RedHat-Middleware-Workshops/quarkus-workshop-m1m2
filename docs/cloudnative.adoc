@@ -1,5 +1,6 @@
 = Cloud Native
 :experimental:
+:imagesdir: images
 
 In this step we will package the application as a Linux Container image, and deploy it to Kubernetes, and add a few features common to cloud native apps that you as a developer will need to handle. We'll use OpenShift 4 as our deployment target, which is a distribution of Kubernetes from Red Hat.
 

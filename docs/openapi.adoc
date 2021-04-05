@@ -1,5 +1,6 @@
 = Documenting APIs in Quarkus
 :experimental:
+:imagesdir: images
 
 Exposing APIs has become an essential part of all modern applications. At the center of this revolution known as the _API Economy_ we find _RESTful_ APIs, which can transform any application into language agnostic services that can be called from anywhere: on-premises, private cloud, public cloud, etc.
 

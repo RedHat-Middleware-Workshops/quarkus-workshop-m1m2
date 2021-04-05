@@ -1,5 +1,6 @@
 = Tracing with MicroProfile OpenTracing
 :experimental:
+:imagesdir: images
 
 This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing^] to provide distributed tracing for interactive web applications.
 

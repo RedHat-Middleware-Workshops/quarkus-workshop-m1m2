@@ -1,5 +1,6 @@
 = Deploy to OpenShift
 :experimental:
+:imagesdir: images
 
 With our app fully ready for its first cloud native deployment, let's package it up for deployment to our Kubernetes platform as a native image. We'll use some OpenShift tooling to accomplish this, as outlined in the https://quarkus.io/guides/kubernetes-guide[Quarkus - Deploying on Kubernetes Guide^].
 

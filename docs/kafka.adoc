@@ -1,5 +1,6 @@
 = Reactive Streams with Quarkus and Kafka
 :experimental:
+:imagesdir: images
 
 In this exercise, you will use the Quarkus Kafka extension to build a streaming application using MicroProfile Reactive Streams Messaging and https://kafka.apache.org[Apache Kafka^], a distributed streaming platform. You will also use https://www.redhat.com/en/resources/amq-streams-datasheet[Red Hat AMQ streams^], which provides an easy way to run an Apache Kafka cluster on Kubernetes and OpenShift using https://operatorhub.io/what-is-an-operator[Operators^].
 
