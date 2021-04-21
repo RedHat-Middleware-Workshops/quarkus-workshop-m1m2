@@ -71,7 +71,7 @@ you will see:
 ✅ Extension io.quarkus:quarkus-openshift has been installed
 ----
 
-Next, add the following variables in `src/main/resources/application.properties` for native compilation using `Mandrel` builder image:
+Next, add the following variables in `src/main/resources/application.properties` for deploying the application to OpenShift. native compilation using `Mandrel` builder image:
 
 [source,properties,role="copypaste"]
 ----
@@ -79,12 +79,16 @@ Next, add the following variables in `src/main/resources/application.properties`
 %prod.quarkus.kubernetes.deploy=true<2>
 %prod.quarkus.kubernetes.deployment-target=openshift<3>
 %prod.quarkus.openshift.expose=true<4>
+%prod.quarkus.native.container-build=true<5>
+%prod.quarkus.openshift.build-strategy=docker<6>
 ----
 
 <1> We are using self-signed certs in this simple example, so this simply says to the extension to trust them.
 <2> Instructs the extension to deploy to OpenShift after the container image is built
 <3> Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig` and `Service`) after building the container
 <4> Instructs the extension to generate an OpenShift `Route`.
+<5> Build a native binary executable using the mandrel build image by default
+<6> Set the Docker build strategy. This strategy builds the artifacts (JAR files or a native executable) outside the OpenShift cluster, either locally or in a CI environment, and then provides them to the OpenShift build system together with a Dockerfile. The container is built inside the OpenShift cluster and provided as an image stream.
 
 Rebuild and re-deploy the people application via running the following maven plugin in CodeReady Workspaces Terminal:
 

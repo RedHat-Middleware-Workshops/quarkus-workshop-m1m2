@@ -45,7 +45,7 @@ With no code, Quarkus still provides a default health check which may be enough 
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/health/ready
+curl http://localhost:8080/q/health/ready
 ----
 
 You'll see:
@@ -102,7 +102,7 @@ Thanks to Live Coding mode, simply open a Terminal window and run:
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/health/ready
+curl http://localhost:8080/q/health/ready
 ----
 
 The new health check procedure is now present in the `checks` array:
@@ -159,7 +159,7 @@ Access the liveness health checks:
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/health/live
+curl http://localhost:8080/q/health/live
 ----
 
 You can see that the new health check with data is present in the `checks` array. This check contains a new attribute called `data` which is a JSON object consisting of the properties (e.g. `bar=barValue`) we have defined in our health check procedure above:
@@ -236,7 +236,7 @@ Re-run the health check test:
 
 [source, sh, role="copypaste"]
 ----
-curl -i http://localhost:8080/health/live
+curl -i http://localhost:8080/q/health/live
 ----
 
 You should see at the beginning the HTTP response:
@@ -277,14 +277,14 @@ Access the two endpoints. Each endpoint will only report on its specific type of
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/health/live
+curl http://localhost:8080/q/health/live
 ----
 
 You should only see the two Liveness probes.
 
 [source, sh, role="copypaste"]
 ----
-curl http://localhost:8080/health/ready
+curl http://localhost:8080/q/health/ready
 ----
 
 You should only see our single readiness probes.

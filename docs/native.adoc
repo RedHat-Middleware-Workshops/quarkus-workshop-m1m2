@@ -89,10 +89,10 @@ Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
 ----
-2020-11-04 23:24:38,770 INFO  [io.quarkus] (main) people 1.0-SNAPSHOT native (powered by Quarkus x.x.x.) started in 0.018s. Listening on: http://0.0.0.0:8081
+INFO  [io.quarkus] (main) people 1.0-SNAPSHOT native (powered by Quarkus xx.xx.xx) started in 0.019s. Listening on: http://0.0.0.0:8081
 ----
 
-That's 16 milliseconds to start up.
+That's 19 milliseconds to start up.
 
 And extremely low memory usage as reported by the Linux `ps` utility. While the app is running, open another Terminal and run:
 
@@ -105,10 +105,10 @@ You should see something like:
 [source,none]
 ----
     PID   RSS COMMAND
-   1108 61196 /projects/quarkus-workshop-m1m2-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+   2036 64584 /projects/quarkus-workshop-m1m2-labs/target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
 ----
 
-This shows that our process is taking around 60 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
+This shows that our process is taking around 64 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
 
 [NOTE]
 ====
