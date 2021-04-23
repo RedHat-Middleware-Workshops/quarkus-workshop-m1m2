@@ -30,13 +30,13 @@ You should see:
 ✅ Extension io.quarkus:quarkus-smallrye-openapi has been installed
 ----
 
-This will add the necessary extension for using OpenAPI, and a graphical frontend extension called *Swagger* which we'll discuss later. It also enables a new RESTful endpoint in the app accessible at `/openapi`.
+This will add the necessary extension for using OpenAPI, and a graphical frontend extension called *Swagger* which we'll discuss later. It also enables a new RESTful endpoint in the app accessible at `/q/openapi`.
 
 Access the new endpoint using the following command in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/openapi
+curl http://localhost:8080/q/openapi
 ----
 
 This endpoint was created as part of the Quarkus OpenAPI Extension, and emits a programmatic description of your current endpoints as yaml (or json):
@@ -73,7 +73,7 @@ If you want JSON instead of YAML, use
 
 [source,sh]
 ----
-curl -H "Accept: application/json" http://localhost:8080/openapi
+curl -H "Accept: application/json" http://localhost:8080/q/openapi
 ----
 ====
 
@@ -99,7 +99,7 @@ Since our app is still running, click on the `web-{{USER_ID}}` link on the right
 image::weblink.png[swagger,700]
 
 
-Then, add `/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
+Then, add `/q/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
 
 image::swagger.png[swagger,700]
 

@@ -181,12 +181,12 @@ You should see:
 
 [source,none]
 ----
-2020-11-03 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus x.x.x) started in 0.972s. Listening on: http://0.0.0.0:8080
-2020-11-03 14:27:00,102 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2020-11-03 14:27:00,103 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy]
+INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus xx.xx.xx) started in 1.102s. Listening on: http://0.0.0.0:8080
+INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy]
 ----
 
-Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything).
+Note the amazingly fast startup time! The app is now running *locally* (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything).
 
 CodeReady will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Do not open port 5005*, but when prompted, *open the port `8080`*, which opens a small web browser in CodeReady:
 
@@ -235,17 +235,16 @@ If you are only doing the *Advanced* lab today, or you didn’t quite complete t
 
 ==== Login to OpenShift
 
-Although your CodeReady workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So, in CodeReady, log in with your workshop user. Click on **Login to OpenShift**, and enter your given credentials:
+Although your CodeReady workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So, in CodeReady, log in with your workshop user. Click on *Login to OpenShift*:
 
-* Username: **`{{ USER_ID }}`**
-* Password: **`{{ OPENSHIFT_USER_PASSWORD }}`**
+[NOTE]
+====
+When you click on this, CodeReady Workspaces executes the following command:
+*oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true --username={{ USER_ID }} --password={{ OPENSHIFT_USER_PASSWORD }}*
+====
 
 image::cmd-login.png[login,700]
 
-[WARNING]
-====
-Use the username and password you were assigned by the instructor.
-====
 
 You should see:
 
@@ -341,20 +340,18 @@ In Live Coding mode, Quarkus will monitor the state of `pom.xml` and bring in ne
 
 == Add an extension
 
-Later on in this lab we'll be using MicroProfile metrics, so let's add that extension here. In the Terminal, run the following command to add the _MicroProfile Metrics_ extension to your project:
+Later on in this lab we'll be using `JSON-B` serialization support for RESTEasy, so let's add that extension here. In the Terminal, run the following command to add the _RESTEasy JSON-B_ extension to your project:
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn -q quarkus:add-extension -Dextensions="resteasy-jsonb" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-smallrye-metrics has been installed
+✅ Extension io.quarkus:quarkus-resteasy-jsonb has been installed
 ----
-
-Notice we are using the "short" name `metrics` instead of the fully qualified name `io.quarkus:quarkus-smallrye-metrics`.
 
 The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences you've made up till now.
 

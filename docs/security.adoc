@@ -10,7 +10,7 @@ Like other exercises, we'll need another extension to enable the use of MicroPro
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn -q quarkus:add-extension -Dextensions="smallrye-jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
@@ -304,7 +304,7 @@ Since we will use Keycloak authentication rather than JWT, we'll need to disable
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:remove-extension -Dextensions="jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn -q quarkus:remove-extension -Dextensions="smallrye-jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
@@ -440,7 +440,7 @@ content-length: 0
 set-cookie: xxxxxxxxxxxx; path=/; HttpOnly
 ----
 
-*Failed* as expected!
+`Failed` as expected!
 
 To access the confidential endpoint, you should obtain an access token for user `jdoe`:
 

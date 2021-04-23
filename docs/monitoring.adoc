@@ -1,10 +1,12 @@
-= Monitoring Quarkus Apps using MicroProfile Metrics
+= Monitoring Quarkus Apps using Micrometer
 :experimental:
 :imagesdir: images
 
-This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics^] specification through the SmallRye Metrics extension.
+This exercise demonstrates how your Quarkus application can utilize the https://quarkus.io/guides/micrometer[Micrometer Metrics^] specification through the Micrometer Registry Prometheus extension.
 
-MicroProfile Metrics allows applications to gather various metrics and statistics that provide insights into what is happening inside the application. They ey serve to pinpoint issues, provide long term trend data for capacity planning and pro-active discovery of issues (e.g. disk usage growing without bounds). Metrics can also help those scheduling systems decide when to scale the application to run on more or fewer machines.
+https://micrometer.io/[Micrometer^] allows applications to gather various metrics and statistics that provide insights into what is happening inside the application. They serve to pinpoint issues, provide long term trend data for capacity planning and pro-active discovery of issues (e.g. disk usage growing without bounds). Metrics can also help those scheduling systems decide when to scale the application to run on more or fewer machines.
+
+Micrometer defines a core library and a set of additional libraries that support different monitoring systems. Quarkus Micrometer extensions are structured similarly: _quarkus-micrometer_ provides core micrometer support and runtime integration and other supporting Quarkus and _Quarkiverse_ extensions bring in additional dependencies and requirements to support specific monitoring systems.
 
 The metrics can be read remotely using JSON format or the https://prometheus.io/docs/instrumenting/exposition_formats/#text-based-format[OpenMetrics text format^], so that they can be processed by additional tools such as Prometheus, and stored for analysis and visualisation. You can then use tools like http://prometheus.io[Prometheus^] and http://grafana.com[Grafana^] to collect and display metrics for your Quarkus apps.
 
@@ -23,7 +25,7 @@ To install it, first create a Kubernetes ConfigMap that will hold the Prometheus
 oc create configmap prom --from-file=prometheus.yml=$CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/src/main/kubernetes/prometheus.yml
 ----
 
-This will create a ConfigMap using the contents of the `src/main/kubernetes/prometheus.yml` file in your project (we've created this file for you). It contains basic Prometheus configuration, plus a specific _target_ which instructs it to look for application metrics from both Prometheus itself, and our `people` app, on HTTP port 8080 at the `/metrics` endpoint. Here's a snippet of that file:
+This will create a ConfigMap using the contents of the `src/main/kubernetes/prometheus.yml` file in your project (we've created this file for you). It contains basic Prometheus configuration, plus a specific _target_ which instructs it to look for application metrics from both Prometheus itself, and our `people` app, on HTTP port 8080 at the `/q/metrics` endpoint. Here's a snippet of that file:
 
 [source,yml]
 ----
@@ -33,11 +35,12 @@ scrape_configs:
     - targets: ['localhost:9090']
 
   - job_name: 'quarkus-people-app' # <2>
+    metrics_path: '/q/metrics'
     static_configs:
     - targets: ['people:8080']
 ----
 <1> Configures Prometheus to scrape metrics from itself
-<2> COnfigures Prometheus to scrape metrics from Kubernetes service `people` on port `8080` with HTTP, at the default metrics endpoint of `/metrics`
+<2> COnfigures Prometheus to scrape metrics from Kubernetes service `people` on port `8080` with HTTP, at the default metrics endpoint of `/q/metrics`
 
 === Deploy Prometheus from Container Image
 
@@ -49,7 +52,7 @@ Press *Enter Key* once you type `quay.io/prometheus/prometheus` in *Image Name*.
 
 Next, fill out the following fields:
 
-* *Application*: `Create Applcation`
+* *Application*: `Create Application`
 * *Application Name*: `prometheus`
 * *Name*: `prometheus`
 
@@ -91,15 +94,17 @@ Like other exercises, we'll need another extension to enable metrics. Install it
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-metrics" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn -q quarkus:add-extension -Dextensions="micrometer-registry-prometheus" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
-[INFO]
-====
-If you previously added this extension in earlier exercises, then you'll see nothing.
-====
+You should see:
 
-This will add the necessary entries in your `pom.xml` to bring in the Metrics capability. It will import the `smallrye-metrics` extension which is an implementation of the MicroProfile Metrics specification used in Quarkus.
+[source,console]
+----
+✅ Extension io.quarkus:quarkus-micrometer-registry-prometheus has been installed
+----
+
+This will add the necessary entries in your `pom.xml` to bring in the Metrics capability. It will import the `micrometer-registry-prometheus` extension which is an implementation of the Micrometer specification used in Quarkus.
 
 == Test Metrics endpoint
 
@@ -107,41 +112,56 @@ You will be able to immediately see the raw metrics generated from Quarkus apps.
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/metrics
+curl http://localhost:8080/q/metrics
 ----
 
 You will see a bunch of metrics in the OpenMetrics format:
 
 [source, none]
 ----
-# TYPE base_cpu_availableProcessors gauge
-base_cpu_availableProcessors 1.0
-# HELP base_thread_max_count Displays the peak live thread count since the Java virtual machine started or peak was reset. This includes daemon and non-daemon threads.
-# TYPE base_thread_max_count gauge
-base_thread_max_count 39.0
-# HELP base_memory_usedHeap_bytes Displays the amount of used heap memory in bytes.
-# TYPE base_memory_usedHeap_bytes gauge
-base_memory_usedHeap_bytes 9.824268E7
+# TYPE http_server_bytes_read summary
+http_server_bytes_read_count 1.0
+http_server_bytes_read_sum 0.0
+# HELP http_server_bytes_read_max
+# TYPE http_server_bytes_read_max gauge
+http_server_bytes_read_max 0.0
 ----
 
 This is what Prometheus will use to access and index the metrics from our app when we deploy it to the cluster.
 
 == Add additional metrics
 
-Out of the box, you get a lot of basic JVM metrics which are useful, but what if you wanted to provide metrics for your app? Let's add a few using the MicroProfile Metrics APIs.
+Out of the box, you get a lot of basic JVM metrics which are useful, but what if you wanted to provide metrics for your app? Let's add a few using the Micrometer APIs.
 
-Open the `GreetingResource` class (in the `org.acme.people.rest` package). Let's add a metric to count the number of times we've greeted someone. Add the following annotation to the `hello()` method:
+Open the `GreetingResource` class (in the `org.acme.people.rest` package). Let's add a metric to count the number of times we've greeted someone. Add the following `MeterRegistry` specification:
 
 [source,java,role="copypaste"]
 ----
-    @Counted(name = "greetings", description = "How many greetings we've given.")
+    private final MeterRegistry registry;
+
+    GreetingResource(MeterRegistry registry) {
+        this.registry = registry;
+    }
+----
+
+
+Replace the `hello()` method with the following code for adding the `counter` API:
+
+[source,java,role="copypaste"]
+----
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        registry.counter("greeting.hello.counter").increment();
+        return "hello";
+    }
 ----
 
 Also, add the necessary import statement at the top of the file:
 
 [source,java,role="copypaste"]
 ----
-import org.eclipse.microprofile.metrics.annotation.Counted;
+import io.micrometer.core.instrument.MeterRegistry;
 ----
 
 [NOTE]
@@ -156,20 +176,20 @@ Next, trigger a greeting:
 curl http://localhost:8080/hello
 ----
 
-And then access the metrics again, this time we'll look for our new metric, specifying a scope of _application_ in the URL so that only metrics in that _scope_ are returned:
+And then access the metrics again, this time we'll look for our new metric, specifying _greeting_ in the URL:
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8080/metrics/application
+curl -s http://localhost:8080/q/metrics | grep -i greeting
 ----
 
 You'll see:
 
 [source, none]
 ----
-# HELP application_org_acme_people_rest_GreetingResource_greetings_total How many greetings we've given.
-# TYPE application_org_acme_people_rest_GreetingResource_greetings_total counter
-application_org_acme_people_rest_GreetingResource_greetings_total 1.0
+# HELP greeting_hello_counter_total  
+# TYPE greeting_hello_counter_total counter
+greeting_hello_counter_total 1.0
 ----
 
 This shows we've accessed the greetings once (`1.0`). Repeat the `curl` greeting a few times and then access metrics again, and you'll see the number rise.
@@ -179,19 +199,32 @@ This shows we've accessed the greetings once (`1.0`). Repeat the `curl` greeting
 The comments in the metrics output starting with `#` are part of the format and give human-readable descriptions to the metrics which you'll see later on.
 ====
 
-[NOTE]
-====
-In the OpenMicroProfile Metrics names are prefixed with things like `vendor:` or `application:` or `base:`. These _scopes_ can be selectively accessed by adding the name to the accessed endpoint, e.g. `curl http://localhost:8080/metrics/application` or `curl http://localhost:8080/metrics/base`.
-====
-
 == Add a few more
 
-Let's add a few more metrics for our Kafka stream we setup in the previous exercise. Open the `NameConverter` class (in the `org.acme.people.stream` package), and add these metrics annotations to the `process()` method:
+Let's add a few more metrics for our Kafka stream we setup in the previous exercise. Open the `NameConverter` class (in the `org.acme.people.stream` package), add the following `MeterRegistry` specification:
 
 [source,java,role="copypaste"]
 ----
-    @Counted(name = "convertedNames", description = "How many names have been converted.") // <1>
-    @Timed(name = "converter", description = "A measure how long it takes to convert names.", unit = MetricUnits.MILLISECONDS) // <2>
+    private final MeterRegistry registry;
+
+    NameConverter(MeterRegistry registry) {
+        this.registry = registry;
+    }
+----
+
+Replace the `process()` method with the following code for adding the `counter` API:
+
+[source,java,role="copypaste"]
+----
+    @Incoming("names")               
+    @Outgoing("my-data-stream")      
+    @Broadcast                       
+    public String process(String name) {
+        String honorific = honorifics[(int)Math.floor(Math.random() * honorifics.length)];
+        registry.counter("nameconvert.process.counter").increment(); <1>
+        registry.timer("nameconvert.process.timer").record(3000, TimeUnit.MILLISECONDS); <2>
+        return honorific + " " + name;
+    }
 ----
 <1> This metric will count the number of times this method is called
 <2> This metric will measure how long it takes the method to run
@@ -200,19 +233,9 @@ Don't forget to import the correct classes as before using _Quick Fix..._ or sim
 
 [source,java,role="copypaste"]
 ----
-import org.eclipse.microprofile.metrics.MetricUnits;
-import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.eclipse.microprofile.metrics.annotation.Timed;
+import java.util.concurrent.TimeUnit;
+import io.micrometer.core.instrument.MeterRegistry;
 ----
-
-Access the app once more to confirm you've got it all correct:
-
-[source,sh,role="copypaste"]
-----
-curl http://localhost:8080/metrics/application
-----
-
-You'll get many more metrics this time which we'll explore soon.
 
 == Rebuild and redeploy to OpenShift
 
@@ -244,14 +267,14 @@ Within about 15-30 seconds, Prometheus should start scraping the metrics. Once a
 
 [NOTE]
 ====
-If you do not see any `acme` metrics when querying, wait 15 seconds, reload the Prometheus page, and try again. They will eventually show up!
+If you do not see any `name` metrics when querying, wait 15 seconds, reload the Prometheus page, and try again. They will eventually show up!
 ====
 
 image:prom.png[Prometheus,800]
 
-These are the metrics exposed by our application, both raw numbers (like number of converted names in the `application_org_acme_people_stream_NameConverter_convertedNames_total` metric) along with quantiles of the same data across different time periods (e.g. `application_org_acme_people_stream_NameConverter_converter_rate_per_second`).
+These are the metrics exposed by our application, both raw numbers (like number of converted names in the `nameconvert_process_counter_total` metric) along with quantiles of the same data across different time periods.
 
-Select `application_org_acme_people_stream_NameConverter_convertedNames_total` in the box, and click **Execute**. This will fetch the values from our metric showing the number of converted names:
+Select `nameconvert_process_counter_total` in the box, and click **Execute**. This will fetch the values from our metric showing the number of converted names:
 
 image:promnames.png[names,800]
 
@@ -319,7 +342,7 @@ Click on *Save & Test* and confirm you get a success message:
 
 image::grafana-ds-success.png[Grafana, 300]
 
-At this point Granana is set up to pull collected metrics from Prometheus as they are collected from the application(s) you are monitoring.
+At this point Grafana is set up to pull collected metrics from Prometheus as they are collected from the application(s) you are monitoring.
 
 With our prometheus data source working, let's make a dashboard.
 
@@ -335,11 +358,11 @@ Click on *Add new panel* to add a new panel with a query:
 
 image::grafana-add-query.png[metrics_grafana, 700]
 
-In the Query box, type `acme` to again get an autocompleted list of available metrics from our app:
+In the Query box, type `name` to again get an autocompleted list of available metrics from our app:
 
 image::grafquery.png[query,600]
 
-Look for the one ending in `convertedNames_total` and select it. Click the **Refresh** button in the upper right:
+Look for the one ending in `nameconvert_process_counter_total` and select it. Click the **Refresh** button in the upper right:
 
 image::grafrefresh.png[query,400]
 
@@ -369,7 +392,7 @@ Follow the same steps as before to create a few more panels, and **don't forget 
 
 Add Panels for:
 
-* The different quantiles of time it takes to process names `application_org_acme_people_stream_NameConverter_converter_seconds` (Turn on _Stack_ in the _Display_ section of the _Panel_ tab , and name it `Converter Performance` for the _Panel Title_).
+* The different quantiles of time it takes to process names `http_server_requests_seconds_count` (Turn on _Stack_ in the _Display_ section of the _Panel_ tab , and name it `Converter Performance` for the _Panel Title_).
 * The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Unit in _Field_ tab to `bytes(IEC)` on the _Visualization_, and the title to `Memory` on the _Panel Title_.
 
 image::grafjvm.png[jvm,500]
@@ -390,6 +413,6 @@ Beautiful, and useful! You can add many more metrics to monitor and alert for Qu
 
 == Congratulations!
 
-This exercise demonstrates how your Quarkus application can utilize the https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics^] specification through the SmallRye Metrics extension. You also consumed these metrics using a popular monitoring stack with Prometheus and Grafana.
+This exercise demonstrates how your Quarkus application the https://quarkus.io/guides/micrometer[Micrometer Metrics^] specification through the Micrometer Registry Prometheus extension. You also consumed these metrics using a popular monitoring stack with Prometheus and Grafana.
 
 There are many more possibilities for application metrics, and it's a useful way to not only gather metrics, but act on them through alerting and other features of the monitoring stack you may be using.
