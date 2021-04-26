@@ -144,7 +144,6 @@ Open the `GreetingResource` class (in the `org.acme.people.rest` package). Let's
     }
 ----
 
-
 Replace the `hello()` method with the following code for adding the `counter` API:
 
 [source,java,role="copypaste"]
@@ -212,7 +211,7 @@ Let's add a few more metrics for our Kafka stream we setup in the previous exerc
     }
 ----
 
-Replace the `process()` method with the following code for adding the `counter` API:
+Replace the `process()` method with the following code for adding the `counter` and  `timer`API:
 
 [source,java,role="copypaste"]
 ----
