@@ -211,7 +211,7 @@ Let's add a few more metrics for our Kafka stream we setup in the previous exerc
     }
 ----
 
-Replace the `process()` method with the following code for adding the `counter` and  `timer`API:
+Replace the `process()` method with the following code for adding the `counter` and  `timer`APIs:
 
 [source,java,role="copypaste"]
 ----
