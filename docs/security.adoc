@@ -329,10 +329,10 @@ quarkus.http.cors=true
 # Enable Policy Enforcement
 quarkus.keycloak.policy-enforcer.enable=true
 quarkus.keycloak.policy-enforcer.paths.ready.name=Readiness
-quarkus.keycloak.policy-enforcer.paths.ready.path=/health/ready
+quarkus.keycloak.policy-enforcer.paths.ready.path=/q/health/ready
 quarkus.keycloak.policy-enforcer.paths.ready.enforcement-mode=DISABLED
 quarkus.keycloak.policy-enforcer.paths.live.name=Liveness
-quarkus.keycloak.policy-enforcer.paths.live.path=/health/live
+quarkus.keycloak.policy-enforcer.paths.live.path=/q/health/live
 quarkus.keycloak.policy-enforcer.paths.live.enforcement-mode=DISABLED
 ----
 
