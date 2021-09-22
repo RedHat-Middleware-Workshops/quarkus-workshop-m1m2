@@ -48,7 +48,7 @@ image::fromcat.png[names,800]
 
 These are all of the Kafka cluster elements you can install. Click on **Create**. This will open a yaml file for you to configure the cluster before it's installed. Change the name of the cluster from `my-cluster` to `names-cluster` (under the _metadata_ section of the YAML file). Leave all other values as-is, and click **Create**:
 
-image::createkafka.png[createkafka,600]
+image::createkafka.png[createkafka,800]
 
 This will create a new Kafka Kubernetes object in your namespace, triggering the Operator to deploy Kafka.
 
