@@ -42,15 +42,11 @@ image::names.png[names,800]
 
 The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace.
 
-First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add** and, then _From Catalog_:
+First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add to Project** on the left. Then, Type in `Kafka` in the search box, and click on the *Kafka*:
 
 image::fromcat.png[names,800]
 
-Type in `kafka` in the keyword filter box:
-
-image::kafkacatalog.png[kafkacatalog,800]
-
-These are all of the Kafka cluster elements you can install. Click on **Kafka**, and then click on **Create**. This will open a yaml file for you to configure the cluster before it's installed. Change the name of the cluster from `my-cluster` to `names-cluster` (under the _metadata_ section of the YAML file). Leave all other values as-is, and click **Create**:
+These are all of the Kafka cluster elements you can install. Click on **Create**. This will open a yaml file for you to configure the cluster before it's installed. Change the name of the cluster from `my-cluster` to `names-cluster` (under the _metadata_ section of the YAML file). Leave all other values as-is, and click **Create**:
 
 image::createkafka.png[createkafka,600]
 
@@ -60,7 +56,7 @@ This will create a new Kafka Kubernetes object in your namespace, triggering the
 
 Follow the same process to create a Kafka _Topic_:
 
-Click **+Add** on the left again, select **From Catalog**, and enter `topic` into the search box. Click on the _Kafka Topic_ box, then click **Create**:
+Click **+Add to Project** on the left. Then, Type in `Topic` in the search box, and click on the *Create*:
 
 image::createkafkatopic.png[createkafka,800]
 

@@ -546,13 +546,9 @@ You should get up to 2 records returned (since we passed `length=2` in the query
 
 == Deploy to OpenShift
 
-Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add** on the left, on the _Database_ box on the project overview:
+Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add to Project** on the left. Then, Type in `PostgreSQL (Ephemeral)` in the search box, and click on the *PostgreSQL (ephemeral)*:
 
 image::db.png[db, 700]
-
-Type in `postgres` in the search box, and click on the *PostgreSQL (ephemeral)*:
-
-image::db-postgres.png[db, 700]
 
 Click on *Instantiate Template* and fill in the following fields, leaving the others as their default values:
 

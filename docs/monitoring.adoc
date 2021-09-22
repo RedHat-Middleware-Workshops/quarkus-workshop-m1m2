@@ -44,7 +44,7 @@ scrape_configs:
 
 === Deploy Prometheus from Container Image
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^], click on `+Add`, and choose "Container Image"
+On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^], **right-click** on `+Add to Project`, and choose "Container Image"
 
 image::add-to-project.png[Prometheus, 800]
 
@@ -297,7 +297,7 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 == Install Grafana
 
-Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on `+Add`, and choose "Container Image", and fill in the fields:
+Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on `+Add to Project`, and choose "Container Image", and fill in the fields:
 
 * *Image Name*: `registry.redhat.io/openshift4/ose-grafana` (Press Enter key then make sure to see *Validated*)
 * *Application*: `Create Application`
@@ -353,7 +353,7 @@ image::grafana-create-dashboard.png[metrics_grafana, 900]
 
 This will create a new dashboard with a single Panel. Each Panel can visualize a computed metric (either a single metric, or a more complex query) and display the results in the Panel.
 
-Click on *Add new panel* to add a new panel with a query:
+Click on *Add an empty panel* to add a new panel with a query:
 
 image::grafana-add-query.png[metrics_grafana, 700]
 
@@ -383,7 +383,7 @@ image::grafdashsave.png[graf,800]
 
 == Add more Panels
 
-See if you can add additional Panels to your new Dashboard. Use the **Add new panel** button to add a new Panel:
+See if you can add additional Panels to your new Dashboard. Use the **Add an empty panel** button to add a new Panel:
 
 image::grafmorepanels.png[graf,800]
 
