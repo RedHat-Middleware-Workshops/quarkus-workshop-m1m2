@@ -105,15 +105,15 @@ image::swagger.png[swagger,700]
 
 Using the UI, expand the `/person/birth/before/{year}` endpoint. Here you can basic detail about the endpoint: the name of the endpoint, parameters and their type, and the response type one can expect.
 
-image::swaggeryear.png[swaggeryear,600]
+image::swaggeryear.png[swaggeryear,900]
 
 Click the **Try it out** button to expand the box allowing you to try it. Enter the year `1990` in the box and click **Execute**:
 
-image::swaggeryeartest.png[swaggeryeartest,600]
+image::swaggeryeartest.png[swaggeryeartest,900]
 
 This accesses the endpoint in the same way that `curl` does, and shows you the result (along with corresponding metadata in the HTTP response):
 
-image::swaggeryeartestresult.png[swaggeryeartestresult,600]
+image::swaggeryeartestresult.png[swaggeryeartestresult,900]
 
 Pretty handy way to test out your APIs!
 
@@ -201,7 +201,7 @@ public List<Person> getBeforeYear(
 
 Now reload the same Swagger UI webpage (and expand the `/person/birth/before/{year}` section). Notice the Swagger documention is more filled out for the endpoint to which we added extra OpenAPI documentation:
 
-image::swaggerparams.png[swaggerparams,600]
+image::swaggerparams.png[swaggerparams,900]
 
 == Congratulations
 
