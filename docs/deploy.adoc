@@ -59,14 +59,14 @@ Add _openshift_ extension via CodeReady Workspaces Terminal:
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 you will see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-openshift has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-openshift has been installed
 ----
 
 Next, add the following variables in `src/main/resources/application.properties` for deploying the application to OpenShift. native compilation using `Mandrel` builder image:
@@ -138,27 +138,27 @@ Your hostname (the Kubernetes _pod_ in which your app runs) name will be differe
 
 So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_URL}}[OpenShift Console^]. Login with your assigned username and password (e.g. `{{ USER_ID }}/{{ OPENSHIFT_USER_PASSWORD }}`):
 
-image::ocplogin.png[login,600]
+image::ocplogin.png[login,700]
 
 Once logged in, click on the name of your project (`{{ USER_ID }}-project`):
 
-image::ocpproj.png[project,600]
+image::ocpproj.png[project,700]
 
 Switch to the _Developer Perspective_ using the upper-left drop-down:
 
-image::devperspective.png[perspective, 700]
+image::devperspective.png[perspective, 800]
 
 This provides a developer-centric Topology view of applications deployed to the project. You can see the single `people` deployment that we just deployed earlier using the CLI:
 
-image::peopledc.png[project,600]
+image::peopledc.png[project,700]
 
 Click on the circle to get details:
 
-image::container1.png[container,600]
+image::container1.png[container,700]
 
 Click on the **View Logs** link to see the console output from the app:
 
-image::podlogs.png[logs,700]
+image::podlogs.png[logs,800]
 
 This is the same output you saw earlier when you ran it "locally" with it's super-fast startup time.
 

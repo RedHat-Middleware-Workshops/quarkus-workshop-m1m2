@@ -21,14 +21,14 @@ We'll need to add a https://quarkus.io/extensions[Quarkus Extension^] to enable 
 
 [source, sh, role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-health" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="smallrye-health" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should get:
 
 [source,console,role="copypaste"]
 ----
-✅ Extension io.quarkus:quarkus-smallrye-health has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-health has been installed
 ----
 
 This will add the extension below to your `pom.xml`:
@@ -40,6 +40,11 @@ This will add the extension below to your `pom.xml`:
     <artifactId>quarkus-smallrye-health</artifactId>
 </dependency>
 ----
+
+When you go back to Dev UI, you will see a new `SmallRye Health` extension:
+
+image::quarkus-devui-health.png[native, 800]
+
 
 With no code, Quarkus still provides a default health check which may be enough for you if all you need is to know the app started. Try to access the `/health/ready` endpoint on the Terminal:
 
@@ -287,7 +292,15 @@ You should only see the two Liveness probes.
 curl http://localhost:8080/q/health/ready
 ----
 
-You should only see our single readiness probes.
+You should only see our single readiness probes. 
+
+Go back to Dev UI and click on `Health UI` in SmallRye Health extension:
+
+image::quarkus-devui-healthui.png[livecoding, 700]
+
+It shows all health checks:
+
+image::quarkus-devui-healthui2.png[livecoding, 700]
 
 Later, when we deploy this to our Kubernetes cluster, we'll configure it to use these endpoints.
 
@@ -353,9 +366,11 @@ Now, modify the `hello()` method to use the injected properties:
 ----
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @NonBlocking
     public String hello() {
         return message + " " + name.orElse("world") + suffix;
     }
+}
 ----
 <1> Here we use the _Optional_ API to safely access the value using `name.orElse()` and provide a default `world` value in case the value for `name` is not defined in `application.properties`.
 
@@ -383,6 +398,28 @@ You should get `hello quarkus!`.
 If the application requires configuration values and these values are not set, an error is thrown. So you can quickly know when your configuration is complete.
 ====
 
+Quarkus Dev UI also allows you to edit the configuration values then the change is automatically updated in your local file system (e.g., _application.properties_). Let's go to the Dev UI, then click on `Config Editor` in _Configuration_ extension box:
+
+image::quarkus-devui-configeditor.png[quarkus-devui-configeditor, 700]
+
+Key `greeting` in the search box then it will show *greeting.message* property. Then update the value to `hi` then click on `Check` icon: 
+
+image::quarkus-devui-configeditor-update.png[quarkus-devui-configeditor, 700]
+
+Make sure if the _application.properties_ file is updated automatically:
+
+image::quarkus-devui-configeditor-update2.png[quarkus-devui-configeditor, 700]
+
+Re-run a `curl` command to test the changes:
+
+[source, sh, role="copypaste"]
+----
+curl http://localhost:8080/hello
+----
+
+You should get `hi quarkus!`.
+
+
 === Update the test
 
 We also need to update the functional test to reflect the changes made to endpoint. Edit the `src/test/java/org/acme/people/GreetingResourceTest.java` file and change the content of the `testHelloEndpoint` method to:
@@ -395,11 +432,11 @@ We also need to update the functional test to reflect the changes made to endpoi
           .when().get("/hello")
           .then()
              .statusCode(200)
-             .body(is("hello quarkus!")); // Modified line
+             .body(is("hi quarkus!")); // Modified line
     }
 ----
 
-Since our applcation is still running from before, thanks to Quarkus Live Reload we should immediately see changes. Update `application.properties`, by changing the `greeting.message`, `greeting.name`, or adding `greeting.suffix` and running the same `curl http://localhost:8080/hello` after each change.
+Since our application is still running from before, thanks to Quarkus Live Reload we should immediately see changes. Update `application.properties`, by changing the `greeting.message`, `greeting.name`, or adding `greeting.suffix` and running the same `curl http://localhost:8080/hello` after each change.
 
 == Quarkus Configuration options
 
@@ -461,9 +498,9 @@ Let's give this a go. In your `application.properties`, add a different `message
 
 [source,none,role="copypaste"]
 ----
-greeting.message = hello
-greeting.name = quarkus in dev mode
-%prod.greeting.name = production quarkus
+greeting.message=hi
+greeting.name=quarkus in dev mode
+%prod.greeting.name=production quarkus
 ----
 
 Verify that in _dev_ mode (which you're currently running in) that:
@@ -473,7 +510,7 @@ Verify that in _dev_ mode (which you're currently running in) that:
 curl http://localhost:8080/hello
 ----
 
-produces `hello quarkus in dev mode!`.
+produces `hi quarkus in dev mode!`.
 
 Next, let's re-build the app as an executable JAR (which will run with the `prod` profile active).
 
@@ -485,7 +522,7 @@ Next, run the the rebuilt app in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
-java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/*-runner.jar
+java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/quarkus-app/quarkus-run.jar
 ----
 
 Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`.
@@ -497,7 +534,7 @@ While the app is running, open a separate Terminal window and test it by running
 curl http://localhost:8081/hello
 ----
 
-What did you get? You should get `hello production quarkus!` indicating that the `prod` profile was active by default. In other sections in this workshop we'll use this feature to overrride important variables like database credentials.
+What did you get? You should get `hi production quarkus!` indicating that the `prod` profile was active by default. In other sections in this workshop we'll use this feature to override important variables like database credentials.
 
 [NOTE]
 ====

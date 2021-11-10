@@ -36,11 +36,11 @@ https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
 
 image::crw-clone-repo.png[crw,900]
 
-Click on *Select Repository Location* then click on *Open in New Window*. It will reload your web browser immediately:
+Ensure `projects/` is selected, then click on *Select Repository Location* then click on *Add to Workspace*:
 
-image::crw-add-workspace.png[crw, 900]
+image::crw-add-workspace-2.png[crw, 900]
 
-The project is imported into your workspace and is visible in the project explorer (click on the top-most icon for project explorer):
+The project is imported into your workspace and is visible in the project explorer (collapse the _OPEN EDITORS_):
 
 image::crw-clone-explorer.png[crw,900]
 
@@ -121,12 +121,18 @@ You should see:
 
 [source,none]
 ----
-INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus xx.xx.xx) started in 1.102s. Listening on: http://0.0.0.0:8080
+INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus 2.2.3.Final-redhat-00013) started in 8.393s. Listening on: http://0.0.0.0:8080
 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy]
+INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy-reactive, smallrye-context-propagation]
+
+--
+Tests paused
+Press [r] to resume testing, [o] Toggle test output, [h] for more options>
 ----
 
-Note the amazingly fast startup time! The app is now running "locally" (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything).
+Note the amazingly fast startup time! The app is now running *locally* (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not *your* laptop (so therefore opening localhost:8080 in your browser will not do anything).
+
+You can also see *Tests paused* by default when a Quarkus application gets started. We will learn more details in the _Testing Quarkus App_ lab.
 
 CodeReady will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Do not open port 5005*, but when prompted, *open the port `8080`*, which opens a small web browser in CodeReady:
 
@@ -177,11 +183,11 @@ Click on 'Package app for OpenShift':
 
 image::cmd-package.png[livecoding, 700]
 
-This produces an executable jar file in the `target/` directory:
+This produces an executable jar file in the `target/quarkus-app/` directory:
 
 image::jar.png[jar,800]
 
-* `people-1.0-SNAPSHOT-runner.jar` - being an executable jar. Be aware that it’s not an über-jar as the dependencies are copied into the `target/lib` directory.
+* `quarkus-run.jar` - being an executable fast jar. Be aware that it’s not an über-jar as the dependencies are copied into the `target/lib` directory.
 
 ## Run the executable JAR
 
@@ -189,13 +195,17 @@ Run the packaged application. In a Terminal, run the following command:
 
 [source, sh, role="copypaste"]
 ----
-java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/*-runner.jar
+java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/quarkus-app/quarkus-run.jar
 ----
 
 [NOTE]
 ====
 We use `-Dquarkus.http.port=8081` to avoid conflicting with port `8080` used for Live Coding mode
 ====
+
+Click on `Yes` to make 8081 port available then click on `x` not to open link.
+
+image::popup_8081.png[port_8081,800]
 
 With the app running, open a separate terminal window, and ensure the app _is_ running by executing a `curl` command:
 

@@ -2,9 +2,9 @@
 :experimental:
 :imagesdir: images
 
-In this step we'll show you how to effectively write functional and unit tests for your Quarkus Apps.
+Quarkus supports continuous testing, where tests run immediately after code changes have been saved. This allows you to get instant feedback on your code changes. Quarkus detects which tests cover which code, and uses this information to only run the relevant tests when code is changed.
 
-You should already have a completed test written for you, including the correct `pom.xml` setup where you should see 2 test dependencies:
+In this step we'll show you how to effectively write functional and continuous testing for your Quarkus Apps. You should already have a completed test written for you, including the correct `pom.xml` setup where you should see 2 test dependencies:
 
 [source, xml]
 ----
@@ -46,7 +46,27 @@ When creating new tests, always double-check to be sure you are in the `src/test
 image::testshere.png[testshere, 700]
 ====
 
-== Add a new test
+== Starting Continuous Testing
+
+Go back to the terminal and go down the bottom of the screen you should see the following:
+
+image::ct-resume.png[testshere, 800]
+
+Press `r` and the continuous testing will start running. You should see the status change down the bottom of the screen as they are running, and it should finish with the following error:
+
+image::ct-error.png[testshere, 800]
+
+This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and the tests will run again automatically. Confirm all tests pass in the terminal:
+
+[source, none]
+----
+INFO  [io.qua.test] (Test runner thread) All tests are now passing
+
+
+--
+All 1 test is passing (0 skipped), 1 test was run in 2600ms. Tests completed at 03:10:51 due to changes to GreetingResource.class.
+Press [r] to re-run, [o] Toggle test output, [h] for more options>
+----
 
 Add a new test in the existing `GreetingResourceTest.java` class under the `// add more tests` marker that tests the `/hello/greeting` endpoint by copying this code below the existing test:
 
@@ -64,61 +84,48 @@ Add a new test in the existing `GreetingResourceTest.java` class under the `// a
     }
 ----
 
-== Test the app
-
-Let's test our app. Click on the **Run Tests** command:
-
-image::cmd-test.png[livecoding, 700]
-
-The tests will run, and eventually complete. Did you get any errors? You should have! You probably got:
+You will see new test result instantly in the terminal:
 
 [source, none]
 ----
-[ERROR] Failures: 
-[ERROR]   GreetingResourceTest.testHelloEndpoint:20 1 expectation failed.
-Response body doesn't match expectation.
-Expected: is "hello"
-  Actual: hola
+--
+All 2 tests are passing (0 skipped), 2 tests were run in 1610ms. Tests completed at 03:12:56 due to changes to GreetingResource.class and 1 other files.
+Press [r] to re-run, [o] Toggle test output, [h] for more options>
 ----
 
-This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and re-run the test and confirm it passes with `BUILD SUCCESS` using the same command:
+== Controlling Continuous Testing
 
-image::cmd-test.png[livecoding, 700]
-
-== Controlling the test port
-
-While Quarkus will listen on port `8080` by default, when running tests it defaults to `8081`. This allows you to run tests while having the application running in parallel (which you just did - your app is still running from the previous exercises).
-
-You can configure the port used by tests by configuring `quarkus.http.test-port` in your `application.properties`. Open that file (it's in `src/main/resources`) and add a new line at the end:
-
-[source, none, role="copypaste"]
-----
-quarkus.http.test-port=8083
-----
-
-[NOTE]
-====
-You may see yellow lines underneath the `quarkus.datasource.*` properties:
-
-image::yellow-squigglies.png[yellow, 300]
-
-This is due to not yet installing any database extensions. That's part of the _Advanced_ labs which you may or may not be doing today, so you can ignore them for now!
-
-====
-
-Now re-run the tests (click on **Run Tests** again) and look for
+There are various hotkeys you can use to control continuous testing. Pressing `h` will display the following list of commands in the terminal:
 
 [source, none]
 ----
-INFO  [io.quarkus] (main) Quarkus xx.xx.xx on JVM started in 1.286s. Listening on: http://localhost:8083
+== Continuous Testing
+
+[r] - Re-run all tests
+[f] - Re-run failed tests
+[b] - Toggle 'broken only' mode, where only failing tests are run (disabled)
+[v] - Print failures from the last test run
+[p] - Pause tests
+[o] - Toggle test output (disabled)
 ----
 
-Notice the port `8083`.
+Quarkus also provides a new experimental Dev UI, which is available in dev mode (when you start quarkus with mvn quarkus:dev) at `/q/dev` by default. It allows you to quickly visualize all the extensions currently loaded, see their status and go directly to their documentation.
 
-[NOTE]
-====
-You will also get a pop-up letting you know CodeReady detected the app opened a new port on `8083` and offers a way to open it in a browser. Simply dismiss the popup.
-====
+Click on `quarkus-devui` endpoint:
+
+image::devui-endpoint.png[devui-endpoint, 700]
+
+A new web browser will open automatically then it will show you something like this:
+
+image::quarkus-devui.png[devui-endpoint, 800]
+
+As you see, `All tests passed` on the right bottom. When you click on `Open` on the left bottom, it will show the Quarkus runtime logs:
+
+image::quarkus-devui-open.png[devui-endpoint, 800]
+
+Click on `Test results` then it will show the details of the test results:
+
+image::quarkus-devui-test-result.png[devui-endpoint, 800]
 
 == Injecting a URI
 
@@ -190,7 +197,12 @@ public class StaticContentTest {
 ----
 <1> The `@TestHTTPResource` annotation allows you to directly inject the URL of the Quarkus instance, the value of the annotation will be the path component of the URL. For now `@TestHTTPResource` allows you to inject URI, URL and String representations of the URL.
 
-Re-run the tests (with **Run Tests**) to ensure they're still passing.
+The test results will be updated automatically in the terminal:
+
+[source, none]
+----
+All 3 tests are passing (0 skipped), 1 test was run in 1395ms. Tests completed at 03:58:45 due to changes to StaticContentTest.class.
+----
 
 == Injection into tests
 
@@ -308,9 +320,14 @@ Now modify our existing `GreetingServiceTest` class to add a log statement showi
     }
 ----
 
-Basically we've added a new `LOGGER.info` line.
+The test results of the mock will be updated automatically in the terminal:
 
-Now run the tests again (with **Run Tests**) and watch the output closely - you will see:
+[source, none]
+----
+All 4 tests are passing (0 skipped), 1 test was run in 1307ms. Tests completed at 04:02:29 due to changes to MockGreetingService.class and 1 other files.
+----
+
+Press `o` to toggle test output and press `r` to re-run the continuous testing. Then, you will see:
 
 [source, none]
 ----
@@ -318,6 +335,14 @@ INFO  [GreetingServiceTest] (main) greeting: hello Quarkus <<<<<<<<<< from mock 
 ----
 
 This confirms that our `MockGreetingService` is being used instead of the original `GreetingService`.
+
+Make sure to press `p` to pause the continuous testing before you go to the next lab:
+
+[source, none]
+----
+Tests paused
+Press [r] to resume testing, [o] Toggle test output, [h] for more options>
+----
 
 == Congratulations!
 

@@ -43,6 +43,7 @@ Next, open the existing `GreetingResource.java` file (in the `org.acme.people.re
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/greeting/{name}")
+    @NonBlocking
     public String greeting(@PathParam("name") String name) {
         return service.greeting(name);
     }
