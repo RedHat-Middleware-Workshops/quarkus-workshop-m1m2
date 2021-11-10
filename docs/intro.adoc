@@ -67,7 +67,7 @@ image::crw-landing-start.png[cdw, 800]
 
 After a minute or two, you’ll be placed in the workspace:
 
-image::che-workspace.png[cdw, 900]
+image::che-workspace.png[cdw, 800]
 
 Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
 
