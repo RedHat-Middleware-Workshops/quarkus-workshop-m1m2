@@ -54,16 +54,16 @@ To get started, {{ CHE_URL }}[access the CodeReady Workspaces instance^] and log
 * *Username*: `{{ USER_ID }}`
 * *Password*: `{{ CHE_USER_PASSWORD }}`
 
-image::che-login.png[login,400]
+image::che-login.png[login,800]
 
 Once you log in, you’ll be placed on your personal dashboard. Click on the name of
 the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number).
 
-image::crw-landing.png[cdw, 700]
+image::crw-landing.png[cdw, 800]
 
 You can also click on the name of the workspace in the center, and then click on the green {{ USER_ID}}-namespace that says _Open_ on the top right hand side of the screen:
 
-image::crw-landing-start.png[cdw, 700]
+image::crw-landing-start.png[cdw, 800]
 
 After a minute or two, you’ll be placed in the workspace:
 
