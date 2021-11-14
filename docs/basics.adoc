@@ -40,7 +40,7 @@ Ensure `projects/` is selected, then click on *Select Repository Location* then 
 
 image::crw-add-workspace-2.png[crw, 900]
 
-The project is imported into your workspace and is visible in the project explorer (collapse the _OPEN EDITORS_):
+The project is imported into your workspace and is visible in the project explorer (collapse the *OPEN EDITORS*):
 
 image::crw-clone-explorer.png[crw,900]
 
