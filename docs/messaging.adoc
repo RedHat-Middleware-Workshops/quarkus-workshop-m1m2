@@ -23,14 +23,14 @@ This mechanism uses the https://vertx.io/docs/vertx-core/java/#event_bus[Vert.x 
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="vertx" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="vertx" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-vertx has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-vertx has been installed
 ----
 
 [NOTE]
@@ -59,7 +59,7 @@ You'll also need to add more import statements at the top:
 
 [source,java,role="copypaste"]
 ----
-import io.vertx.axle.core.eventbus.EventBus;
+import io.vertx.mutiny.core.eventbus.EventBus;
 import javax.inject.Inject;
 ----
 
@@ -69,19 +69,16 @@ Next, create two new endpoints in the same class which creates new people in our
 ----
     @POST
     @Path("/{name}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<Person> addPerson(@PathParam("name") String name) {
-        return bus.<Person>send("add-person", name) // <1>
-          .thenApply(Message::body); // <2>
+    public Uni<Person> addPerson(String name) {
+          return bus.<Person>request("add-person", name)
+                .onItem().transform(response -> response.body());
     }
 
     @GET
     @Path("/name/{name}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Person byName(@PathParam("name") String name) {
+    public Person byName(String name) {
         return Person.find("name", name).firstResult();
     }
-
 ----
 <1> send the name to the `add-person` address
 <2> when we get the reply, extract the body and send this as response to the user
@@ -90,9 +87,8 @@ And add the imports:
 
 [source,java,role="copypaste"]
 ----
+import io.smallrye.mutiny.Uni;
 import javax.ws.rs.POST;
-import java.util.concurrent.CompletionStage;
-import io.vertx.axle.core.eventbus.Message;
 ----
 
 This uses the request/reply dispatching mechanism. Instead of implementing the business logic inside the JAX-RS endpoint, we are sending a message. This message is consumed by another bean and the response is sent using the reply mechanism.

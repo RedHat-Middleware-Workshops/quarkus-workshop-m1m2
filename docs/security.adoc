@@ -10,14 +10,14 @@ Like other exercises, we'll need another extension to enable the use of MicroPro
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="smallrye-jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-smallrye-jwt has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-jwt has been installed
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in JWT support.

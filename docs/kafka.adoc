@@ -44,7 +44,7 @@ The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's bee
 
 First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add to Project** on the left. Then, Type in `Kafka` in the search box, and click on the *Kafka*:
 
-image::fromcat.png[names,800]
+image::fromcat-kafka.png[names,800]
 
 These are all of the Kafka cluster elements you can install. Click on **Create**. This will open a yaml file for you to configure the cluster before it's installed. Change the name of the cluster from `my-cluster` to `names-cluster` (under the _metadata_ section of the YAML file). Leave all other values as-is, and click **Create**:
 
@@ -83,14 +83,14 @@ With Kafka installing, turn your attention back to the app. Like other exercises
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="messaging-kafka" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="messaging-kafka" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-smallrye-reactive-messaging-kafka has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-reactive-messaging-kafka has been installed
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the Kafka extension.
@@ -109,25 +109,28 @@ To start building the app, create a new Java class file in the `org.acme.people.
 ----
 package org.acme.people.stream;
 
-import io.reactivex.Flowable;
 import javax.enterprise.context.ApplicationScoped;
 import org.acme.people.utils.CuteNameGenerator;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import java.util.concurrent.TimeUnit;
+
+import io.smallrye.mutiny.Multi;
+
+import java.time.Duration;
 
 @ApplicationScoped
 public class NameGenerator {
 
-    @Outgoing("generated-name")           // <1>
-    public Flowable<String> generate() {  // <2>
-        return Flowable.interval(5, TimeUnit.SECONDS)
+    @Outgoing("generated-name")        // <1>
+    public Multi<String> generate() {  // <2>  
+        return Multi.createFrom().ticks().every(Duration.ofSeconds(5))
+                .onOverflow().drop()
                 .map(tick -> CuteNameGenerator.generate());
     }
 
 }
 ----
 <1> Instruct Reactive Messaging to dispatch the items from returned stream to `generated-name`
-<2> The method returns a RX Java 2 stream (Flowable) emitting a random name every 5 seconds
+<2> The method returns Reactive Stream emitting a random name every 5 seconds
 
 The method returns a Reactive Stream. The generated items are sent to the stream named `generated-name`. This stream is mapped to Kafka using the application.properties file that we will create soon.
 
@@ -181,7 +184,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.jboss.resteasy.annotations.SseElementType;
 
 /**
  * A simple resource retrieving the in-memory "my-data-stream" and sending the items as server-sent events.
@@ -195,16 +197,14 @@ public class NameResource {
     @GET
     @Path("/stream")
     @Produces(MediaType.SERVER_SENT_EVENTS)// <2>
-    @SseElementType("text/plain") // <3>
-    public Publisher<String> stream() { // <4>
+    public Publisher<String> stream() { // <3>
         return names;
     }
 }
 ----
 <1> Injects the `my-data-stream` stream using the `@Channel` qualifier
 <2> Indicates that the content is sent using _Server Sent Events_
-<3> Indicates that the data contained within the server sent events is of type `text/plain`
-<4> Returns the stream (Reactive Stream)
+<3> Returns the stream (Reactive Stream)
 
 [NOTE]
 ====

@@ -19,19 +19,19 @@ You may have wondered why we are using `people` in our Java APIs, and now you'll
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-hibernate-orm-panache has been installed
-✅ Extension io.quarkus:quarkus-jdbc-h2 has been installed
-✅ Extension io.quarkus:quarkus-jdbc-postgresql has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-hibernate-orm-panache has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-jdbc-h2 has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-jdbc-postgresql has been installed
 ----
 
-We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-jsonb` is used to encode JSON objects.
+We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-reactive-jackson` is used to encode JSON objects.
 
 The database connection details (JDBC url, database credentials) are specified in `application.properties` using the Quarkus Profile support. So for example you'll find this:
 
@@ -328,15 +328,15 @@ You should see **two** people born in 1990 or earlier:
 [
   {
     "id": 1,
+    "name": "Farid Ulyanov",
     "birth": "1974-08-15",
-    "eyes": "BLUE",
-    "name": "Farid Ulyanov"
+    "eyes": "BLUE"
   },
   {
     "id": 2,
+    "name": "Salvador L. Witcher",
     "birth": "1984-05-24",
-    "eyes": "BROWN",
-    "name": "Salvador L. Witcher"
+    "eyes": "BROWN"
   }
 ]
 ----
@@ -460,22 +460,22 @@ This should return a single entity (since in our 3-person sample data, only one 
 [source,json]
 ----
 {
+  "draw": 1,
+  "recordsTotal": 3,
+  "recordsFiltered": 1,
   "data": [
     {
       "id": 1,
+      "name": "Farid Ulyanov",
       "birth": "1974-08-15",
-      "eyes": "BLUE",
-      "name": "Farid Ulyanov"
+      "eyes": "BLUE"
     }
   ],
-  "draw": 1,
-  "recordsFiltered": 1,
-  "recordsTotal": 3
+  "error": null
 }
 ----
 
 The `data`, `draw`, `recordsFiltered` and `recordsTotal` values are what the DataTables frontend will be expecting when it calls this endpoint.
-
 
 === Add lifecycle hook
 
@@ -523,23 +523,24 @@ You should get up to 2 records returned (since we passed `length=2` in the query
 [source, json]
 ----
 {
+  "draw": 1,
+  "recordsTotal": 1003,
+  "recordsFiltered": 140, // <1>
   "data": [
     {
       "id": 1,
+      "name": "Farid Ulyanov",
       "birth": "1974-08-15",
-      "eyes": "BLUE",
-      "name": "Farid Ulyanov"
+      "eyes": "BLUE"
     },
     {
-      "id": 8,
-      "birth": "2008-06-26",
-      "eyes": "BROWN",
-      "name": "Cyan Face"
+      "id": 9,
+      "name": "Crimson Ferret",
+      "birth": "1988-03-10",
+      "eyes": "BROWN"
     }
   ],
-  "draw": 1,
-  "recordsFiltered": 126, // <1>
-  "recordsTotal": 1003
+  "error": null
 }
 ----
 <1> Note the values for `recordsFiltered` (the number of records with the letter `F` in the name), and `recordsTotal`. The value you see for `recordsFiltered` may be different than the above value, since the number of records with an `F` in the name may vary since the data is random. But the `recordsTotal` shows our initial 3 values, plus the 1000 additional values we added in the lifecycle hook code.

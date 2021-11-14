@@ -84,7 +84,7 @@ Once it completes, click on the arrow to access the prometheus query UI:
 
 image::prometheus-route.png[Prometheus, 700]
 
-Which should load the Prometheus Web UI (we'll use this later):
+Which should load the Prometheus Web UI (we'll use this later). If you see a dark mode, you can simply turn it off:
 
 image::promgui.png[Prometheus, 800]
 
@@ -94,14 +94,15 @@ Like other exercises, we'll need another extension to enable metrics. Install it
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="micrometer-registry-prometheus" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="micrometer-registry-prometheus" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-micrometer-registry-prometheus has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-metrics has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-micrometer-registry-prometheus has been installed
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the Metrics capability. It will import the `micrometer-registry-prometheus` extension which is an implementation of the Micrometer specification used in Quarkus.
@@ -119,12 +120,13 @@ You will see a bunch of metrics in the OpenMetrics format:
 
 [source, none]
 ----
-# TYPE http_server_bytes_read summary
-http_server_bytes_read_count 1.0
-http_server_bytes_read_sum 0.0
-# HELP http_server_bytes_read_max
-# TYPE http_server_bytes_read_max gauge
-http_server_bytes_read_max 0.0
+# TYPE http_server_connections_seconds summary
+http_server_connections_seconds_active_count 1.0
+# HELP http_server_bytes_written_max  
+# TYPE http_server_bytes_written_max gauge
+http_server_bytes_written_max 4096.0
+# TYPE http_server_bytes_written summary
+http_server_bytes_written_count 2.0
 ----
 
 This is what Prometheus will use to access and index the metrics from our app when we deploy it to the cluster.
@@ -150,6 +152,7 @@ Replace the `hello()` method with the following code for adding the `counter` AP
 ----
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @NonBlocking
     public String hello() {
         registry.counter("greeting.hello.counter").increment();
         return "hello";

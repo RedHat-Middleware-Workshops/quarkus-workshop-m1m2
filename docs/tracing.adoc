@@ -55,15 +55,15 @@ With Jaeger installed, let's turn back to our Quarkus app. Like other exercises,
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client-reactive" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You will see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-rest-client has been installed
-✅ Extension io.quarkus:quarkus-smallrye-opentracing has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-rest-client-reactive has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-opentracing has been installed
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and an HTTP REST Client we'll use pater.

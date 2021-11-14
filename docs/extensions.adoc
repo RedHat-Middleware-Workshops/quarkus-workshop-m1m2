@@ -56,24 +56,20 @@ To get started, {{ CHE_URL }}[access the CodeReady Workspaces instance^] and log
 * *Username*: `{{ USER_ID }}`
 * *Password*: `{{ CHE_USER_PASSWORD }}`
 
-image::che-login.png[login,400]
+image::che-login.png[login,800]
 
 Once you log in, you’ll be placed on your personal dashboard. Click on the name of
 the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number).
 
-image::crw-landing.png[cdw, 700]
+image::crw-landing.png[cdw, 800]
 
 You can also click on the name of the workspace in the center, and then click on the green {{ USER_ID}}-namespace that says _Open_ on the top right hand side of the screen:
 
-image::crw-landing-start.png[cdw, 700]
+image::crw-landing-start.png[cdw, 800]
 
 After a minute or two, you’ll be placed in the workspace:
 
-image::che-workspace.png[cdw, 900]
-
-After a minute or two, you'll be placed in the workspace:
-
-image::che-workspace.png[workspace,800]
+image::che-workspace.png[cdw, 800]
 
 Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
 
@@ -105,11 +101,11 @@ https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
 
 image::crw-clone-repo.png[crw,900]
 
-Click on *Select Repository Location* then click on *Open in New Window*. It will reload your web browser immediately:
+Ensure `projects/` is selected, then click on *Select Repository Location* then click on *Add to Workspace*:
 
-image::crw-add-workspace.png[crw, 900]
+image::crw-add-workspace-2.png[crw, 900]
 
-The project is imported into your workspace and is visible in the project explorer (click on the top-most icon for project explorer):
+The project is imported into your workspace and is visible in the project explorer (collapse the _OPEN EDITORS_):
 
 image::crw-clone-explorer.png[crw,900]
 
@@ -190,12 +186,16 @@ You should see:
 
 [source,none]
 ----
-INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus xx.xx.xx) started in 1.102s. Listening on: http://0.0.0.0:8080
+INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus 2.2.3.Final-redhat-00013) started in 8.393s. Listening on: http://0.0.0.0:8080
 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy]
+INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy-reactive, smallrye-context-propagation]
+
+--
+Tests paused
+Press [r] to resume testing, [o] Toggle test output, [h] for more options>
 ----
 
-Note the amazingly fast startup time! The app is now running *locally* (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not "your" laptop (so therefore opening localhost:8080 in your browser will not do anything).
+Note the amazingly fast startup time! The app is now running *locally* (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not *your* laptop (so therefore opening localhost:8080 in your browser will not do anything). You can also see *Tests paused* by default when a Quarkus application gets started.
 
 CodeReady will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Do not open port 5005*, but when prompted, *open the port `8080`*, which opens a small web browser in CodeReady:
 
@@ -313,14 +313,15 @@ Retrieve the list of possible extensions using the Maven plugin. Run this in the
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
-You can see the list of ~286 different extensions available to you in the output:
+You can see the list of ~453 different extensions available to you in the output:
 
 [source,none]
 ----
 Current Quarkus extensions available:
+...
 OpenShift                                          quarkus-openshift
 Quarkus - Core                                     quarkus-core
 JAXB                                               quarkus-jaxb
@@ -349,17 +350,17 @@ In Live Coding mode, Quarkus will monitor the state of `pom.xml` and bring in ne
 
 == Add an extension
 
-Later on in this lab we'll be using `JSON-B` serialization support for RESTEasy, so let's add that extension here. In the Terminal, run the following command to add the _RESTEasy JSON-B_ extension to your project:
+Later on in this lab we'll be using `Jackson` serialization support for RESTEasy Reactive, so let's add that extension here. In the Terminal, run the following command to add the _RESTEasy Reactive Jackson_ extension to your project:
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="resteasy-jsonb" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="resteasy-reactive-jackson" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-resteasy-jsonb has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-resteasy-reactive-jackson has been installed
 ----
 
 The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences you've made up till now.
