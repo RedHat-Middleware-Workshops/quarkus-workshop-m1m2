@@ -467,7 +467,7 @@ You should see:
 
 [source,none]
 ----
-TTP/1.1 200 OK
+HTTP/1.1 200 OK
 content-length: 380
 content-type: text/plain;charset=UTF-8
 set-cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=8392213f62a8f2a2ccc58851e9316cc7; path=/; HttpOnly
