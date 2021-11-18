@@ -287,15 +287,15 @@ First, you'll need to enable the Keycloak extension by running this command in a
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:add-extension -Dextensions="oidc, keycloak-authorization" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="oidc, keycloak-authorization" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-oidc has been installed
-✅ Extension io.quarkus:quarkus-keycloak-authorization has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-oidc has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-keycloak-authorization has been installed
 ----
 
 == Disable MicroProfile JWT Extension
@@ -304,14 +304,14 @@ Since we will use Keycloak authentication rather than JWT, we'll need to disable
 
 [source,sh,role="copypaste"]
 ----
-mvn -q quarkus:remove-extension -Dextensions="smallrye-jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:remove-extension -Dextensions="smallrye-jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
 ----
 
 You should see:
 
 [source,console]
 ----
-✅ Extension io.quarkus:quarkus-smallrye-jwt has been uninstalled
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-jwt has been uninstalled
 ----
 
 === Configuring Keycloak
@@ -467,13 +467,13 @@ You should see:
 
 [source,none]
 ----
-HTTP/1.1 200 OK
-Content-Length: 153
-Content-Type: text/plain;charset=UTF-8
-Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=ee5925163f2245aa33c406a14815e450; path=/; HttpOnly
-Cache-control: private
+TTP/1.1 200 OK
+content-length: 380
+content-type: text/plain;charset=UTF-8
+set-cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=8392213f62a8f2a2ccc58851e9316cc7; path=/; HttpOnly
+cache-control: private
 
-confidential access for: jdoe with attributes:{permissions=[Permission {id=99856673-24fa-431b-9e26-93e2113f69db, name=Confidential Resource, scopes=[]}]}
+confidential access for: jdoe with attributes:{configuration-metadata=io.quarkus.oidc.OidcConfigurationMetadata@46b1783a, io.quarkus.security.identity.AuthenticationRequestContext=io.quarkus.security.runtime.QuarkusIdentityProviderManagerImpl$1@7a5e12e6, tenant-id=Default, permissions=[Permission {id=99856673-24fa-431b-9e26-93e2113f69db, name=Confidential Resource, scopes=[]}]}
 ----
 
 Success! Even though our code did not explicitly protect the `/secured/confidential` endpoint, we can protect arbitrary URLs in Quarkus apps when using Keycloak.
