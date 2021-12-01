@@ -88,7 +88,7 @@ If you ever need to run commands that you don't see in a menu, you can press kbd
 
 ## Import Project
 
-Let's import our project. Click on **Git Clone..** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
+Let's import our project. Click on **Clone Repository** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
 
 image::che-workspace-gitclone.png[cdw, 900]
 

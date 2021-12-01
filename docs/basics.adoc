@@ -23,7 +23,7 @@ If you ever need to run commands that you don't see in a menu, you can press kbd
 
 ## Import Project
 
-Let's import our project. Click on **Git Clone..** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
+Let's import our project. Click on **Clone Repository** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
 
 image::che-workspace-gitclone.png[cdw, 900]
 
@@ -36,9 +36,11 @@ https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
 
 image::crw-clone-repo.png[crw,900]
 
-Ensure `projects/` is selected, then click on *Select Repository Location* then click on *Add to Workspace*:
+Ensure `projects/` is selected, then click on *Select Repository Location* then click on *Open*:
 
 image::crw-add-workspace-2.png[crw, 900]
+
+Note that you probably need to reload your web browser to load the new workspace.
 
 The project is imported into your workspace and is visible in the project explorer (collapse the *OPEN EDITORS*):
 
@@ -179,7 +181,7 @@ This will also listen for a debugger on port `5005`. If you want to wait for the
 
 Quarkus apps can be packaged as an executable JAR file or a native binary. We'll cover native binaries later, so for now, let's package as an executable JAR.
 
-Click on 'Package app for OpenShift':
+Click on `Package app for OpenShift`:
 
 image::cmd-package.png[livecoding, 700]
 

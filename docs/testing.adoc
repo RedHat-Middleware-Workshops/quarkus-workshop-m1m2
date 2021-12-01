@@ -56,6 +56,10 @@ Press `r` and the continuous testing will start running. You should see the stat
 
 image::ct-error.png[testshere, 800]
 
+Note that you don't need to make _8081_ port available so close the popup window.
+
+image::ct-8081-popup.png[testshere, 800]
+
 This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and the tests will run again automatically. Confirm all tests pass in the terminal:
 
 [source, none]
