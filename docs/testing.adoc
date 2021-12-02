@@ -246,7 +246,7 @@ public class GreetingServiceTest {
 ----
 <1> Here we are injecting our `GreetingService` and calling it, just as our RESTful resource endpoint does in the production code.
 
-Run the tests again (with **Run Tests**) to verify the new test passes.
+You will see new test along with your existing tests run instantly in the terminal once again. Verify the tests are passing.
 
 [NOTE]
 ====
