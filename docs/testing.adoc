@@ -133,7 +133,7 @@ image::quarkus-devui-test-result.png[devui-endpoint, 800]
 
 == Injecting a URI
 
-It is also possible to directly inject the URL into the test which can make is easy to use a different client. This is done via the `@TestHTTPResource` annotation.
+It is also possible to directly inject the URL into the test which can make it easy to use a different client. This is done via the `@TestHTTPResource` annotation.
 
 Let’s write a simple test that shows this off to load some static resources. First create a simple HTML file in `src/main/resources/META-INF/resources/`. Right-click on this directory and select _New -> File_. Name the file `test.html` in the dialog box:
 
