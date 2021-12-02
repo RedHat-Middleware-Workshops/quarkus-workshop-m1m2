@@ -48,7 +48,7 @@ On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for you
 
 image::add-to-project.png[Prometheus, 800]
 
-Press *Enter Key* once you type `quay.io/prometheus/prometheus` in *Image Name*. You will see *green checked* icon and *Validated* under the input box.
+Type in `quay.io/prometheus/prometheus` in *Image Name from external registry* field. You will see *green checked* icon and *Validated* under the input box.
 
 Next, fill out the following fields:
 
