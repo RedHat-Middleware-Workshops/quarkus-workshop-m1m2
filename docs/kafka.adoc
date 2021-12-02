@@ -290,7 +290,7 @@ It takes a few seconds to establish the connection to Kafka. If you don't see ne
 
 image::names.png[names,800]
 
-These are the original names streamed through Kafka, altered to add a random honorific like "Sir" or "Madam", and displayed in a "word cloud" for you to enjoy!
+These are the original names streamed through Kafka, altered to add a random honorific like *Sir* or *Madam*, and displayed in a *word cloud* for you to enjoy!
 
 == Congratulations!
 

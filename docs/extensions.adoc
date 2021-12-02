@@ -207,7 +207,7 @@ image::welcome-quarkus.png[port, 900]
 
 Open a *new* CodeReady Workspaces Terminal:
 
-image::cmd-terminal.png[livecoding, 900]
+image::cmd-terminal-2.png[livecoding, 900]
 
 and invoke the `hello` endpoint using the following _curl_ command:
 
