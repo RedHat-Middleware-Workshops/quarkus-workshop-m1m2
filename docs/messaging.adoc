@@ -38,14 +38,6 @@ You should see:
 https://vertx.io/[Eclipse Vert.x^] is a toolkit for building reactive applications. It is designed to be lightweight and embeddable. Vert.x defines a reactive execution model and provides a large ecosystem. Quarkus integrates Vert.x to implement different reactive features, such as asynchronous message passing (the subject of this exercise), and non-blocking HTTP client. Basically, Quarkus uses Vert.x as its reactive engine. While lots of reactive features from Quarkus don’t show Vert.x, it’s used underneath. But you can also access the managed Vert.x instance and benefit from the Vert.x ecosystem.
 ====
 
-Quarkus provides 3 Vert.x APIs:
-
-* _bare_ - for advanced usage or if you have existing Vert.x code you want to reuse in your Quarkus application
-* _Axle_ - works well with Quarkus and MicroProfile APIs (`CompletionStage` for single results and `Publisher` for streams)
-* _Rx Java 2_ - when you need support for a wide range of data transformation operators on your streams
-
-We're using the _Axle_ variant here, which provides good support for async operations in HTTP resources.
-
 == Create RESTful resource
 
 We'll start by creating a new asynchronous endpoint. Open the `PersonResource` class and add a new field which will provide access to the Vert.x event bus which is used to pass messages between components:
@@ -90,6 +82,11 @@ And add the imports:
 import io.smallrye.mutiny.Uni;
 import javax.ws.rs.POST;
 ----
+
+[NOTE]
+====
+This code uses Mutiny reactive types. If you are not familiar with Mutiny, check out https://quarkus.io/guides/mutiny-primer[Mutiny - an intuitive reactive programming library^].
+====
 
 This uses the request/reply dispatching mechanism. Instead of implementing the business logic inside the JAX-RS endpoint, we are sending a message. This message is consumed by another bean and the response is sent using the reply mechanism.
 
