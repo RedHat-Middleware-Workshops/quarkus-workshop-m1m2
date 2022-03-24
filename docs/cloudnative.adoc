@@ -380,8 +380,8 @@ By default, Quarkus reads `application.properties`. Add the following properties
 
 [source, java, role="copypaste"]
 ----
-greeting.message = hello
-greeting.name = quarkus
+greeting.message=hello
+greeting.name=quarkus
 ----
 
 Open up a Terminal window and run a `curl` command to test the changes:
