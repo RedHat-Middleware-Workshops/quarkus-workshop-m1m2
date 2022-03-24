@@ -296,7 +296,7 @@ https://grafana.com/[Grafana^] is commonly used to visualize metrics and provide
 
 image::https://grafana.com/api/dashboards/3308/images/2099/image[Grafana dashboard,800]
 
-Let's create a Grafana Dashboard for our Quarkus App!
+Let's create a Grafana Dashboard for our Quarkus App! 
 
 == Install Grafana
 
