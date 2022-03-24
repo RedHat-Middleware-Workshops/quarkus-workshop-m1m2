@@ -302,7 +302,7 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on `+Add to Project`, and choose "Container Image", and fill in the fields:
 
-* *Image Name*: `registry.redhat.io/openshift4/ose-grafana`
+* *Image Name*: `quay.io/openshiftlabs/ccn-grafana:1.0`
 * *Application*: `Create Application`
 * *Application Name*: `grafana`
 * *Name*: `grafana`
