@@ -160,7 +160,7 @@ Click on the **View Logs** link to see the console output from the app:
 
 image::podlogs.png[logs,800]
 
-This is the same output you saw earlier when you ran it "locally" with it's super-fast startup time.
+This is the same output you saw earlier when you ran it "locally" with its super-fast startup time.
 
 Go back to the _Topology_ view. Since this app is exposed to the world, a _Route_ was created which you can access using the small arrow in the upper right of the circle. Click on the route link:
 
