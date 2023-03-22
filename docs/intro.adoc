@@ -47,28 +47,55 @@ echo "This is a bash shell command that you can copy/paste by clicking"
 
 ## Access Your Development Environment
 
-You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[CodeReady Workspaces^]. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
+You will be using Visual Studio Code (VS Code) based on https://developers.redhat.com/products/openshift-dev-spaces/overview[Red Hat OpenShift Dev Spaces]. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
 
-To get started, {{ CHE_URL }}[access the CodeReady Workspaces instance^] and log in using the username and password you've been assigned:
+To get started, {{ DS_URL }}[access the Red Hat OpenShift Dev Spaces instance^] and click on *Log in with OpenShift* button:
+
+image::login_with_openshift.png[login,800]
+
+
+Type in the following credentail:
 
 * *Username*: `{{ USER_ID }}`
-* *Password*: `{{ CHE_USER_PASSWORD }}`
+* *Password*: `{{ DS_USER_PASSWORD }}`
 
 image::che-login.png[login,800]
 
-Once you log in, you’ll be placed on your personal dashboard. Click on the name of
-the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number).
+[NOTE]
+====
+In case you see the *Authorize Access* page as below, click on *Allow selected permissions* button.
 
-image::crw-landing.png[cdw, 800]
+image::auth-access.png[auth-access, 800]
+====
 
-You can also click on the name of the workspace in the center, and then click on the green {{ USER_ID}}-namespace that says _Open_ on the top right hand side of the screen:
+Once you log in, you’ll be placed on the *Create Workspace* dashboard. Copy the following `Git Repo URL` and click on `Create & Open`.
 
-image::crw-landing-start.png[cdw, 800]
+* *Git Repo URL*: `https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs/tree/ocp-4.12`
 
-After a minute or two, you’ll be placed in the workspace:
+image::ds-landing.png[ds, 800]
 
-image::che-workspace.png[cdw, 800]
+A new window or tab in your web browser will open automatically to showcase the progess about *Starting workspace quarkus-workshop*. It takes less than *30* seconds to finish the process.
 
-Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
+image::starting-workspace.png[ds, 800]
+
+[NOTE]
+====
+In case you see this information page, select on `Start your workspace` to continue  using your workspace.
+
+image::starting-workspace-info.png[ds, 800]
+====
+
+After a few seconds, you’ll be placed in the workspace.
+
+image::ds-workspace.png[ds, 800]
+
+[NOTE]
+====
+In case you see this infomation page, check on `Trust the authors of all files in the parent folder 'projects'`. Then, select `Yes, I trust the authors. Trust folder and enable all features`.
+
+image::ds-trust-popup.png[ds, 800]
+====
+
+You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
 
 Ready? Let's go!

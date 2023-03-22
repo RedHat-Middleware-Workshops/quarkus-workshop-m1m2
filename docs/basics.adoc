@@ -10,60 +10,26 @@ This IDE is based on Eclipse Che (which is in turn based on MicroSoft VS Code ed
 
 You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to click on them and see what they do:
 
-image::crw-icons.png[cdw, 800]
+image::ds-icons.png[cdw, 800]
 
 [NOTE]
 ====
 If things get weird or your browser appears, you can simply reload the browser tab to refresh the view.
 ====
 
-Many features of CodeReady Workspaces are accessed via *Commands*. You can see a few of the commands listed with links on the home page (e.g. _New File.._, _Git Clone.._, and others).
+Many features of VS Code are accessed via *Command Palette*. You can see a few of the tutorials on the *Get Started* page (e.g. _Login/Provision OpenShift Cluster_, _Create Component from Devfile registries webview_, and others).
 
-If you ever need to run commands that you don't see in a menu, you can press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on Mac OS X).
+If you ever need to run commands that you don't see in a menu, you can press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on macOS).
 
-## Import Project
+## Explore Project
 
-Let's import our project. Click on **Clone Repository** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
+Let's take a look at the left *Explorer*. Your Quarkus project was already imported when the workspace was created. 
 
-image::che-workspace-gitclone.png[cdw, 900]
+When you select the `pom.xml`, you will see which version fo the Red Hat Build of Quarkus you will use for the workshop today.
 
-Step through the prompts, using the following value for **Repository URL**. If you use *FireFox*, it may end up pasting extra spaces at the end, so just press backspace after pasting:
+image::ds-explorer.png[cdw, 900]
 
-[source,none,role="copypaste"]
-----
-https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
-----
-
-image::crw-clone-repo.png[crw,900]
-
-Ensure `projects/` is selected, then click on *Select Repository Location* then click on *Open*:
-
-image::crw-add-workspace-2.png[crw, 900]
-
-Note that you probably need to reload your web browser to load the new workspace.
-
-The project is imported into your workspace and is visible in the project explorer (collapse the *OPEN EDITORS*):
-
-image::crw-clone-explorer.png[crw,900]
-
-[NOTE]
-====
-The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
-terminal, you can use the **>_ New Terminal** command on the right:
-
-image::cmd-terminal.png[codeready-workspace-terminal, 700]
-====
-
-==== IMPORTANT: Check out proper Git branch
-
-To make sure you're using the right version of the project files, run this command in a CodeReady Terminal:
-
-[source,sh,role="copypaste"]
-----
-cd $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && git checkout ocp-4.10
-----
-
-The project has
+The project also has
 
 * The Maven structure
 * An `org.acme.people.rest.GreetingResource` resource exposed on `/hello`, along with a simple test
@@ -73,7 +39,7 @@ The project has
 
 Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`.
 
-image::initnav.png[codeready-workspace-terminal, 800]
+image::initnav.png[VS Code-workspace-terminal, 800]
 
 This class has a very simple RESTful endpoint definition:
 
@@ -90,7 +56,7 @@ public class GreetingResource {
 }
 ----
 
-It’s a very simple REST endpoint, returning "hello" to requests on `/hello`.
+It’s a very simple REST endpoint, returning *hello* to requests on `/hello`.
 
 [NOTE]
 ====
@@ -101,11 +67,25 @@ Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Applicat
 
 **Live Coding** (also referred to as _dev mode_) allows us to run the app and make changes on the fly. Quarkus will automatically re-compile and reload the app when changes are made. This is a powerful and efficient style of developing that you will use throughout the lab.
 
-You can always use the `mvn` (Maven) commands to run Quarkus apps, but we've created a few helpful shortcuts on the right to run various Maven commands.
+You can always use the `mvn` (Maven) commands to run Quarkus apps, but we've created a few helpful *tasks* on the VS Code.
 
-Start the app by clicking on _Live Coding_:
+Navigate the *Command Palette* menu or the press kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on macOS). 
 
-image::cmd-livecoding.png[livecoding, 700]
+image::navigate-command-palette.png[commands, 800]
+
+Delete `<` then type `task` in the command palette. Make sure to append a `space` character after the *task*. 
+
+Select the `che` task to show the Quarkus tasks up.
+
+image::type-task.png[type-task, 800]
+
+Start the _Live Coding_ by selecting `che: 02. Start Live Coding`.
+
+image::quarkus-tasks.png[quarkus-tasks, 800]
+
+A terminal opens automatically to run the *Quarkus Dev Mode*.
+
+image::cmd-livecoding.png[livecoding, 900]
 
 This will compile and run the app using `mvn compile quarkus:dev` in a Terminal window. Leave this terminal window open throughout the lab! You will complete the entire lab without shutting down Quarkus Live Coding mode, so be careful not to close the tab (if you do, you re-run it). This is very useful for quick experimentation.
 
@@ -123,9 +103,9 @@ You should see:
 
 [source,none]
 ----
-INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus 2.2.3.Final-redhat-00013) started in 8.393s. Listening on: http://0.0.0.0:8080
+INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus xx.xx.xx.) started in 2.692s. Listening on: http://0.0.0.0:8080
 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy-reactive, smallrye-context-propagation]
+INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy-reactive, smallrye-context-propagation, vertx]
 
 --
 Tests paused
@@ -136,15 +116,22 @@ Note the amazingly fast startup time! The app is now running *locally* (within t
 
 You can also see *Tests paused* by default when a Quarkus application gets started. We will learn more details in the _Testing Quarkus App_ lab.
 
-CodeReady will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Do not open port 5005*, but when prompted, *open the port `8080`*, which opens a small web browser in CodeReady:
+VS Code will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Close the popup not to add a port 5005*, but when prompted, *Open In New Tab* to open a port `8080`, which opens a new tab in your web browser:
 
 image::open-port.png[port, 700]
 
-You should see the default Quarkus welcome page (you may need to click the _reload_ icon):
+[NOTE]
+====
+In case you see the popup message below, select `Open`.
+
+image::open-external.png[port, 700]
+====
+
+You should see the default Quarkus welcome page:
 
 image::welcome-quarkus.png[port, 900]
 
-Open a *new* CodeReady Workspaces Terminal:
+Open a *new* terminal by selecting `+` icon:
 
 image::cmd-terminal.png[livecoding, 900]
 
@@ -155,15 +142,13 @@ and invoke the `hello` endpoint using the following _curl_ command:
 curl http://localhost:8080/hello
 ----
 
-You can also click on the URL link at the upper right to open the same default page in a separate browser tab:
-
-image::crw-open-page.png[page, 800]
-
-Add `/hello` in your browser to see the same result as the _curl_ command:
+You can also add `/hello` to the Quarkus welcome page to see the same result as the _curl_ command:
 
 image::crw-open-page-hello.png[page, 800]
 
-Now, let's exercise the **live reload** capabilities of Quarkus. In CodeReady, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. After making this change, reload the same brower tab that was showing `hello`. It should now show `hola`.
+When you fail to access the *hello* page, make sure to call the URL using *http* protocol.
+
+Now, let's exercise the **live reload** capabilities of Quarkus. In VS Code, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. After making this change, reload the same brower tab that was showing `hello`. It should now show `hola`.
 
 Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started. Leave the app running so we can continue to change it on the fly in the next section.
 
@@ -181,7 +166,7 @@ This will also listen for a debugger on port `5005`. If you want to wait for the
 
 Quarkus apps can be packaged as an executable JAR file or a native binary. We'll cover native binaries later, so for now, let's package as an executable JAR.
 
-Click on `Package app for OpenShift`:
+Open the *command palette* again. Select `Package app for OpenShift` in the che tasks:
 
 image::cmd-package.png[livecoding, 700]
 
@@ -197,7 +182,7 @@ Run the packaged application. In a Terminal, run the following command:
 
 [source, sh, role="copypaste"]
 ----
-java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/quarkus-app/quarkus-run.jar
+java -Dquarkus.http.port=8081 -jar target/quarkus-app/quarkus-run.jar
 ----
 
 [NOTE]
@@ -224,7 +209,7 @@ hola
 
 ## Cleanup
 
-Go back to the terminal in which you ran the app with `java -jar` and stop the app by pressing kbd:[CTRL+C]. **Be sure not to close the "Live Coding" terminal!**
+Go back to the terminal in which you ran the app with `java -jar` and stop the app by pressing kbd:[CTRL+C]. **Be sure not to close the "Start Live Coding" terminal!**
 
 ## Congratulations!
 

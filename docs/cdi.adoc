@@ -6,10 +6,13 @@ In the previous step you created a basic RESTful Java application with Quarkus. 
 
 == Add Custom Bean
 
-Let’s modify the application and add a companion bean. In CodeReady, right-click on the `org.acme.people.service` package in the project browser and select _New_ --> _File_. Name the file `GreetingService.java`.
+Let’s modify the application and add a companion bean. In VS Code, right-click on the `org.acme.people.service` package in the project browser and select _New File..._.
 
 image::newclass.png[newclass,600]
-image::classname.png[classname,400]
+
+Name the file `GreetingService.java`.
+
+image::classname.png[classname,600]
 
 Next, replace the below code into the class:
 

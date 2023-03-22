@@ -49,12 +49,12 @@ echo "This is a bash shell command that you can copy/paste by clicking"
 
 ## Access Your Development Environment
 
-You will be using Red Hat CodeReady Workspaces, an online IDE based on https://www.eclipse.org/che/[CodeReady Workspaces^]. **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
+You will be using VS Code server based on https://developers.redhat.com/products/openshift-dev-spaces/overview[Red Hat OpenShift Dev Spaces] **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
 
-To get started, {{ CHE_URL }}[access the CodeReady Workspaces instance^] and log in using the username and password you've been assigned:
+To get started, {{ DS_URL }}[access the CodeReady Workspaces instance^] and log in using the username and password you've been assigned:
 
 * *Username*: `{{ USER_ID }}`
-* *Password*: `{{ CHE_USER_PASSWORD }}`
+* *Password*: `{{ DS_USER_PASSWORD }}`
 
 image::che-login.png[login,800]
 
