@@ -38,17 +38,17 @@ You can probably spot the bug right away but let's see how you could find this w
 
 In _Live Coding_ mode, Quarkus apps also listen for debugger connections on port `5005`. Your app should still be running.
 
-To connect to the running app, access the _debugger_ by clicking on the debug icon:
+To connect to the running app, access the _debugger_ by selecting on the debug icon:
 
 image::crwdebug.png[buttons, 600]
 
-The debugger view will appear with several small buttons used to start/stop execution, step into/over/out of code, and other operations. Ensure that **Attach to App** is selected in the drop-down, and click the **Start Debugging** button to attach the debugger to the app:
+The debugger view will appear with several small buttons used to start/stop execution, step into/over/out of code, and other operations. Ensure that **Attach to App** is selected in the drop-down, and select the **Start Debugging** button to attach the debugger to the app:
 
 image::buttons.png[buttons, 600]
 
 == Set a Breakpoint
 
-To debug the app, let's step through our function that has the bug. In the left gutter of the code, to the left of the line numbers, click once next to `int len = name.length();` to set a breakpoint and cause a red circle to appear:
+To debug the app, let's step through our function that has the bug. In the left gutter of the code, to the left of the line numbers, select once next to `int len = name.length();` to set a breakpoint and cause a red circle to appear:
 
 [NOTE]
 ====
@@ -78,9 +78,9 @@ You will see four main sections of the debug view:
 
 * **Variables** - Here you can see the value of _local_ variables in the selected stack frame. In our code we have no local variables defined yet, but once we start stepping through the code, newly defined variables (like `len`) will appear here.
 
-* **Breakpoints** - This lists the breakpoints you've set. Each Breakpoint can be further configured, or selectively disabled, by right-clicking on the breakpoint in the breakpoint list.
+* **Breakpoints** - This lists the breakpoints you've set. Each Breakpoint can be further configured, or selectively disabled, by right-selecting on the breakpoint in the breakpoint list.
 
-Step over the current line by clicking **Step Over**:
+Step over the current line by selecting **Step Over**:
 
 image::stepover.png[length, 800]
 
@@ -90,11 +90,11 @@ At this point, `len` is defined (and listed on the right side):
 
 image::len.png[length, 800]
 
-Click **Step Over** again, which executes the line to grab the last letter using `len` an offset to the `substring` method. See the bug? Look at the value of `lastLetter` in the variables list on the right - it's empty!
+2.13.7.Final-redhat-00003 **Step Over** again, which executes the line to grab the last letter using `len` an offset to the `substring` method. See the bug? Look at the value of `lastLetter` in the variables list on the right - it's empty!
 
 We need to pass an offset that is one _before_ the end, to get the last letter.
 
-Click the **Continue** button to let the method continue, log the erroneous value to the console, and return the value (your `curl` command may have timed out).
+Select the **Continue** button to let the method continue, log the erroneous value to the console, and return the value (your `curl` command may have timed out).
 
 image::debug-continue.png[buttons, 600]
 
@@ -120,14 +120,14 @@ image::fixed.png[length, 800]
 
 [WARNING]
 ====
-Occasionally the debugger gets disconnected from the running app. If your breakpoints aren't being hit, try to click the **Stop** button, and then reconnect with the **Start Debugging** button, and try again.
+Occasionally the debugger gets disconnected from the running app. If your breakpoints aren't being hit, try to select the **Disconnect** button, and then reconnect with the **Start Debugging** button, and try again.
 ====
 
-Remove the breakpoint by clicking on the red circle to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now: You should see `o`.
+Remove the breakpoint by selecting on the red circle to de-highlight it.  Run the `curl` command once more to see the full bugfix which should return the last letter of the generated name now: You should see `o`.
 
-Click **Stop** button to quit the debugging session.
+select **Disconnect** button to quit the debugging session.
 
-image::debug-stop.png[buttons, 600]
+image::debug-disconnect.png[buttons, 600]
 
 == Congratulations!
 
