@@ -56,10 +56,6 @@ Press `r` and the continuous testing will start running. You should see the stat
 
 image::ct-error.png[testshere, 800]
 
-Note that you don't need to make _8081_ port available so close the popup window.
-
-image::ct-8081-popup.png[testshere, 800]
-
 This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and the tests will run again automatically. Confirm all tests pass in the terminal:
 
 [source, none]
@@ -68,8 +64,8 @@ INFO  [io.qua.test] (Test runner thread) All tests are now passing
 
 
 --
-All 1 test is passing (0 skipped), 1 test was run in 2600ms. Tests completed at 03:10:51 due to changes to GreetingResource.class.
-Press [r] to re-run, [o] Toggle test output, [h] for more options>
+All 1 test is passing (0 skipped), 1 test was run in 534ms. Tests completed at 17:54:41 due to changes to GreetingResource.class.
+Press [r] to re-run, [o] Toggle test output, [:] for the terminal, [h] for more options>
 ----
 
 Add a new test in the existing `GreetingResourceTest.java` class under the `// add more tests` marker that tests the `/hello/greeting` endpoint by copying this code below the existing test:
@@ -93,8 +89,8 @@ You will see new test result instantly in the terminal:
 [source, none]
 ----
 --
-All 2 tests are passing (0 skipped), 2 tests were run in 1610ms. Tests completed at 03:12:56 due to changes to GreetingResource.class and 1 other files.
-Press [r] to re-run, [o] Toggle test output, [h] for more options>
+All 2 tests are passing (0 skipped), 2 tests were run in 567ms. Tests completed at 17:55:29 due to changes to GreetingResource.class and 1 other files.
+Press [r] to re-run, [o] Toggle test output, [:] for the terminal, [h] for more options>
 ----
 
 == Controlling Continuous Testing
@@ -111,21 +107,45 @@ There are various hotkeys you can use to control continuous testing. Pressing `h
 [v] - Print failures from the last test run
 [p] - Pause tests
 [o] - Toggle test output (disabled)
+
+== Exceptions
+
+[x] - Opens last exception in IDE (None)
+
+== HTTP
+
+[w] - Open the application in a browser
+[d] - Open the Dev UI in a browser
+
+== System
+
+[s] - Force restart
+[i] - Toggle instrumentation based reload (disabled)
+[l] - Toggle live reload (enabled)
+[j] - Toggle log levels (INFO)
+[h] - Shows this help
+[:] - Enters terminal mode
+[q] - Quits the application
 ----
 
 Quarkus also provides a new experimental Dev UI, which is available in dev mode (when you start quarkus with mvn quarkus:dev) at `/q/dev` by default. It allows you to quickly visualize all the extensions currently loaded, see their status and go directly to their documentation.
 
-Click on `quarkus-devui` endpoint:
+Unfold the `ENDPOINTS > Public` and select the clipboard icon to copy the *Dev UI* URL.
 
 image::devui-endpoint.png[devui-endpoint, 700]
 
-A new web browser will open automatically then it will show you something like this:
+Open a new web browser or tab window and paste the URL.
 
 image::quarkus-devui.png[devui-endpoint, 800]
 
 As you see, `All tests passed` on the right bottom. When you click on `Open` on the left bottom, it will show the Quarkus runtime logs:
 
 image::quarkus-devui-open.png[devui-endpoint, 800]
+
+[NOTE]
+====
+In case you see *Tests not running*, reload the DEV UI page.
+====
 
 Click on `Test results` then it will show the details of the test results:
 
@@ -205,7 +225,7 @@ The test results will be updated automatically in the terminal:
 
 [source, none]
 ----
-All 3 tests are passing (0 skipped), 1 test was run in 1395ms. Tests completed at 03:58:45 due to changes to StaticContentTest.class.
+All 3 tests are passing (0 skipped), 1 test was run in 779ms. Tests completed at 18:16:37 due to changes to StaticContentTest.class.
 ----
 
 == Injection into tests
@@ -328,14 +348,14 @@ The test results of the mock will be updated automatically in the terminal:
 
 [source, none]
 ----
-All 4 tests are passing (0 skipped), 1 test was run in 1307ms. Tests completed at 04:02:29 due to changes to MockGreetingService.class and 1 other files.
+All 4 tests are passing (0 skipped), 1 test was run in 662ms. Tests completed at 18:17:54 due to changes to MockGreetingService.class and 1 other files.
 ----
 
 Press `o` to toggle test output and press `r` to re-run the continuous testing. Then, you will see:
 
 [source, none]
 ----
-INFO  [GreetingServiceTest] (main) greeting: hello Quarkus <<<<<<<<<< from mock greeting >>>>>>>>>>
+INFO  [GreetingServiceTest] (Test runner thread) greeting: hello Quarkus <<<<<<<<<< from mock greeting >>>>>>>>>>
 ----
 
 This confirms that our `MockGreetingService` is being used instead of the original `GreetingService`.
@@ -345,7 +365,7 @@ Make sure to press `p` to pause the continuous testing before you go to the next
 [source, none]
 ----
 Tests paused
-Press [r] to resume testing, [o] Toggle test output, [h] for more options>
+Press [r] to resume testing, [o] Toggle test output, [:] for the terminal, [h] for more options>
 ----
 
 == Congratulations!

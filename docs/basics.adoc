@@ -178,7 +178,7 @@ image::jar.png[jar,800]
 
 ## Run the executable JAR
 
-Run the packaged application. In a Terminal, run the following command:
+Run the packaged application. Go back to the editable Terminal, run the following command:
 
 [source, sh, role="copypaste"]
 ----
@@ -194,7 +194,7 @@ Click on `Yes` to make 8081 port available then click on `x` not to open link.
 
 image::popup_8081.png[port_8081,800]
 
-With the app running, open a separate terminal window, and ensure the app _is_ running by executing a `curl` command:
+With the app running, open a new terminal window, and ensure the app _is_ running by executing a `curl` command:
 
 [source, sh, role="copypaste"]
 ----
