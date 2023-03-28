@@ -6,8 +6,6 @@ With our app fully ready for its first cloud native deployment, let's package it
 
 OpenShift is a commercially supported distribution of Kubernetes from Red Hat. The platform is also available as open source, in the form of https://www.okd.io/[OKD^], the Origin Community Distribution of Kubernetes that powers Red Hat OpenShift.
 
-
-
 == Login to OpenShift
 
 Although your Eclipse Che workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So we'll log in with your workshop user. Click on *Login to OpenShift*:

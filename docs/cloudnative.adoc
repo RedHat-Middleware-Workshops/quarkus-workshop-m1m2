@@ -21,7 +21,7 @@ We'll need to add a https://quarkus.io/extensions[Quarkus Extension^] to enable 
 
 [source, sh, role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="smallrye-health" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="smallrye-health" 
 ----
 
 You should get:
@@ -178,8 +178,8 @@ You can see that the new health check with data is present in the `checks` array
             "name": "Health check with data",
             "status": "UP",
             "data": {
-                "bar": "barValue",
-                "foo": "fooValue"
+                "foo": "fooValue",
+                "bar": "barValue"
             }
         }
     ]
@@ -370,7 +370,6 @@ Now, modify the `hello()` method to use the injected properties:
     public String hello() {
         return message + " " + name.orElse("world") + suffix;
     }
-}
 ----
 <1> Here we use the _Optional_ API to safely access the value using `name.orElse()` and provide a default `world` value in case the value for `name` is not defined in `application.properties`.
 
@@ -431,8 +430,8 @@ We also need to update the functional test to reflect the changes made to endpoi
         given()
           .when().get("/hello")
           .then()
-             .statusCode(200)
-             .body(is("hi quarkus!")); // Modified line
+            .statusCode(200)
+            .body(is("hi quarkus!")); // Modified line
     }
 ----
 
@@ -442,14 +441,9 @@ Since our application is still running from before, thanks to Quarkus Live Reloa
 
 Quarkus itself is configured via the same mechanism as your application. Quarkus reserves the `quarkus.` namespace in `application.properties` for its own configuration.
 
-It is also possible to generate an example `application.properties` with _all known_ configuration properties, to make it easy to see what Quarkus configuration options are available depending on which extensions you've enabled. To do this, open a Terminal and run:
+You can find the https://quarkus.io/guides/all-config[All configuration options^] here:
 
-[source,sh,role=copypaste]
-----
-mvn -q quarkus:generate-config -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
-----
-
-This will create a `src/main/resources/application.properties.example` file that contains all the config options exposed via the extensions you currently have installed. These options are commented out, and have their default value when applicable.
+image::all-config.png[all-config, 700]
 
 [NOTE]
 ====
@@ -514,7 +508,7 @@ produces `hi quarkus in dev mode!`.
 
 Next, let's re-build the app as an executable JAR (which will run with the `prod` profile active).
 
-Build an executable JAR using the **Package app for OpenShift** command to build an Uber-JAR:
+Build an executable JAR using the **Package app for OpenShift** task to build a fast-jar:
 
 image::cmd-package.png[livecoding, 700]
 
@@ -522,7 +516,7 @@ Next, run the the rebuilt app in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
-java -Dquarkus.http.port=8081 -jar $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/target/quarkus-app/quarkus-run.jar
+java -Dquarkus.http.port=8081 -jar target/quarkus-app/quarkus-run.jar
 ----
 
 Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`.
@@ -538,7 +532,7 @@ What did you get? You should get `hi production quarkus!` indicating that the `p
 
 [NOTE]
 ====
-In this example we read configuration properties from `application.properties`. You can also introduce custom configuration sources in the standard MicroProfile Config manner.  https://microprofile.io/project/eclipse/microprofile-config[More Info^]. This would be useful, for example, to read directly from **Kubernetes ConfigMap**s.
+In this example we read configuration properties from `application.properties`. You can also introduce custom configuration sources in the standard MicroProfile Config manner.  https://microprofile.io/project/eclipse/microprofile-config[More Info^]. This would be useful, for example, to read directly from **Kubernetes ConfigMap**.
 ====
 
 == Cleanup
