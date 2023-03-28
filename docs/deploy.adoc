@@ -131,7 +131,7 @@ So now our app is deployed to OpenShift. You can also see it in the {{ CONSOLE_U
 
 image::ocplogin.png[login,700]
 
-Once logged in, click on the name of your project (`{{ USER_ID }}-project`):
+Once logged in, select the name of your project (`{{ USER_ID }}-project`):
 
 image::ocpproj.png[project,700]
 

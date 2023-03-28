@@ -100,7 +100,15 @@ image::ds-trust-popup.png[ds, 800]
 
 You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
 
-The project has
+## Explore Project
+
+Let's take a look at the left *Explorer*. Your Quarkus project was already imported when the workspace was created. 
+
+When you select the `pom.xml`, you will see which version fo the Red Hat Build of Quarkus you will use for the workshop today.
+
+image::ds-explorer.png[cdw, 900]
+
+The project also has
 
 * The Maven structure
 * An `org.acme.people.rest.GreetingResource` resource exposed on `/hello`, along with a simple test
@@ -110,7 +118,7 @@ The project has
 
 Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double select on `GreetingResource.java`.
 
-image::initnav.png[codeready-workspace-terminal, 800]
+image::initnav.png[VS Code-workspace-terminal, 800]
 
 This class has a very simple RESTful endpoint definition:
 
@@ -138,11 +146,25 @@ Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Applicat
 
 **Live Coding** (also referred to as _dev mode_) allows us to run the app and make changes on the fly. Quarkus will automatically re-compile and reload the app when changes are made. This is a powerful and efficient style of developing that you will use throughout the lab.
 
-You can always use the `mvn` (Maven) commands to run Quarkus apps, but we've created a few helpful shortcuts on the right to run various Maven commands.
+You can always use the `mvn` (Maven) commands to run Quarkus apps, but we've created a few helpful *tasks* on the VS Code.
 
-Start the app by selecting on _Live Coding_:
+Navigate the *Command Palette* menu or the press kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on macOS). 
 
-image::cmd-livecoding.png[livecoding, 700]
+image::navigate-command-palette.png[commands, 800]
+
+Delete `<` then type `task` in the command palette. Make sure to append a `space` character after the *task*. 
+
+Select the `che` task to show the Quarkus tasks up.
+
+image::type-task.png[type-task, 800]
+
+Start the _Live Coding_ by selecting `che: 02. Start Live Coding`.
+
+image::quarkus-tasks.png[quarkus-tasks, 800]
+
+A terminal opens automatically to run the *Quarkus Dev Mode*.
+
+image::cmd-livecoding.png[livecoding, 900]
 
 This will compile and run the app using `mvn compile quarkus:dev` in a Terminal window. Leave this terminal window open throughout the lab! You will complete the entire lab without shutting down Quarkus Live Coding mode, so be careful not to close the tab (if you do, you re-run it). This is very useful for quick experimentation.
 
@@ -160,28 +182,37 @@ You should see:
 
 [source,none]
 ----
-INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus 2.2.3.Final-redhat-00013) started in 8.393s. Listening on: http://0.0.0.0:8080
+INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus xx.xx.xx.) started in 2.692s. Listening on: http://0.0.0.0:8080
 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy-reactive, smallrye-context-propagation]
+INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy-reactive, smallrye-context-propagation, vertx]
 
 --
 Tests paused
 Press [r] to resume testing, [o] Toggle test output, [h] for more options>
 ----
 
-Note the amazingly fast startup time! The app is now running *locally* (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not *your* laptop (so therefore opening localhost:8080 in your browser will not do anything). You can also see *Tests paused* by default when a Quarkus application gets started.
+Note the amazingly fast startup time! The app is now running *locally* (within the Che container in which the workspace is also running). `localhost` refers to the Kubernetes pod, not *your* laptop (so therefore opening localhost:8080 in your browser will not do anything).
 
-CodeReady will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Do not open port 5005*, but when prompted, *open the port `8080`*, which opens a small web browser in CodeReady:
+You can also see *Tests paused* by default when a Quarkus application gets started. We will learn more details in the _Testing Quarkus App_ lab.
+
+VS Code will also detect that the Quarkus app opens port `5005` (for debugging) and `8080` (for web requests). *Close the popup not to add a port 5005*, but when prompted, *Open In New Tab* to open a port `8080`, which opens a new tab in your web browser:
 
 image::open-port.png[port, 700]
 
-You should see the default Quarkus welcome page (you may need to select the _reload_ icon):
+[NOTE]
+====
+In case you see the popup message below, select `Open`.
+
+image::open-external.png[port, 700]
+====
+
+You should see the default Quarkus welcome page:
 
 image::welcome-quarkus.png[port, 900]
 
-Open a *new* CodeReady Workspaces Terminal:
+Open a *new* terminal by selecting `+` icon:
 
-image::cmd-terminal-2.png[livecoding, 900]
+image::cmd-terminal.png[livecoding, 900]
 
 and invoke the `hello` endpoint using the following _curl_ command:
 
@@ -190,15 +221,13 @@ and invoke the `hello` endpoint using the following _curl_ command:
 curl http://localhost:8080/hello
 ----
 
-You can also select on the URL link at the upper right to open the same default page in a separate browser tab:
-
-image::crw-open-page.png[page, 800]
-
-Add `/hello` in your browser to see the same result as the _curl_ command:
+You can also add `/hello` to the Quarkus welcome page to see the same result as the _curl_ command:
 
 image::crw-open-page-hello.png[page, 800]
 
-Now, let's exercise the **live reload** capabilities of Quarkus. In CodeReady, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. After making this change, reload the same brower tab that was showing `hello`. It should now show `hola`.
+When you fail to access the *hello* page, make sure to call the URL using *http* protocol.
+
+Now, let's exercise the **live reload** capabilities of Quarkus. In VS Code, open the `GreetingResource.java` file (in `src/main/java/org/acme/people/rest`) and change `return "hello";` to `return "hola";` in the editor. After making this change, reload the same brower tab that was showing `hello`. It should now show `hola`.
 
 Wow, how cool is that? Supersonic Subatomic live reload! Go ahead and change it a few more times and access the endpoint again. And we're just getting started. Leave the app running so we can continue to change it on the fly in the next section.
 
@@ -218,16 +247,12 @@ If you are only doing the *Advanced* lab today, or you didn’t quite complete t
 
 ==== Login to OpenShift
 
-Although your CodeReady workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So, in CodeReady, log in with your workshop user. Select on *Login to OpenShift*:
+Although your VS Code is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So we'll log in with your workshop user. Execute the following command in the VS Code terminal:
 
-[NOTE]
-====
-When you select on this, CodeReady Workspaces executes the following command:
-*oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true --username={{ USER_ID }} --password={{ OPENSHIFT_USER_PASSWORD }}*
-====
-
-image::cmd-login.png[login,700]
-
+[source,sh,role="copypaste"]
+----
+oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true --username={{ USER_ID }} --password={{ OPENSHIFT_USER_PASSWORD }}
+----
 
 You should see:
 
@@ -235,16 +260,14 @@ You should see:
 ----
 Login successful.
 
-You have one project on this server: "{{ USER_ID }}-project"
+You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-Using project "{{ USER_ID }}-project".
+  * {{ USER_ID }}-devspaces
+    {{ USER_ID }}-project
+
+Using project "user1-devspaces".
 Welcome! See 'oc help' to get started.
 ----
-
-[NOTE]
-====
-After you log in using *Login to OpenShift*, the terminal is no longer usable as a regular terminal. You can close the terminal window. You will still be logged in when you open more terminals later!
-====
 
 Congratulations, you are now authenticated to the OpenShift server via the CLI. We'll use the prettier web console later on in this lab.
 
@@ -254,18 +277,18 @@ Deploy the `people` microservice by executing the following shell script in a Co
 
 [source, shell, role="copypaste"]
 ----
-sh $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs/scripts/deploy-people.sh {{ USER_ID }}
+sh scripts/deploy-people.sh {{ USER_ID }}
 ----
 
 Wait for the script to complete before continuing.
 
 When the script completes, the app is deployed to OpenShift. You can see it in the {{ CONSOLE_URL}}[OpenShift Console^]. Login with your assigned username and password (e.g. `{{ USER_ID }}/{{ OPENSHIFT_USER_PASSWORD }}`):
 
-image::ocplogin.png[login,600]
+image::ocplogin.png[login,700]
 
-Once logged in, select on the name of your project (`{{ USER_ID }}-project`):
+Once logged in, select the name of your project (`{{ USER_ID }}-project`):
 
-image::ocpproj.png[project,600]
+image::ocpproj.png[project,700]
 
 Switch to the _Developer Perspective_ using the upper-left drop-down:
 
@@ -287,24 +310,28 @@ Retrieve the list of possible extensions using the Maven plugin. Run this in the
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:list-extensions -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:list-extensions
 ----
 
 You can see the list of ~453 different extensions available to you in the output:
 
 [source,none]
 ----
-Current Quarkus extensions available:
-...
-OpenShift                                          quarkus-openshift
-Quarkus - Core                                     quarkus-core
-JAXB                                               quarkus-jaxb
-Jackson                                            quarkus-jackson
-JSON-B                                             quarkus-jsonb
-JSON-P                                             quarkus-jsonp
-Agroal - Database connection pool                  quarkus-agroal
-YAML Configuration                                 quarkus-config-yaml
-Elytron Security Properties File                   quarkus-elytron-security-properties-file
+[INFO] Current Quarkus extensions available: 
+[INFO] 
+[INFO] ✬ ArtifactId                                         Extension Name
+[INFO] ✬ blaze-persistence-integration-quarkus              Blaze-Persistence
+[INFO] ✬ camel-quarkus-activemq                             Camel ActiveMQ
+[INFO] ✬ camel-quarkus-amqp                                 Camel AMQP
+[INFO] ✬ camel-quarkus-arangodb                             Camel ArangoDb
+[INFO] ✬ camel-quarkus-as2                                  Camel AS2
+[INFO] ✬ camel-quarkus-atlasmap                             Camel AtlasMap
+[INFO] ✬ camel-quarkus-atom                                 Camel Atom
+[INFO] ✬ camel-quarkus-attachments                          Camel Attachments
+[INFO] ✬ camel-quarkus-avro                                 Camel Avro
+[INFO] ✬ camel-quarkus-avro-rpc                             Camel Avro RPC
+[INFO] ✬ camel-quarkus-aws2-athena                          Camel AWS 2 Athena
+[INFO] ✬ camel-quarkus-aws2-cw                              Camel AWS 2 CloudWatch
 ...
 ----
 
@@ -328,7 +355,7 @@ Later on in this lab we'll be using `Jackson` serialization support for RESTEasy
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="resteasy-reactive-jackson" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="resteasy-reactive-jackson"
 ----
 
 You should see
