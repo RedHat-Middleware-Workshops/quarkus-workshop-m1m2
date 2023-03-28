@@ -8,15 +8,12 @@ OpenShift is a commercially supported distribution of Kubernetes from Red Hat. T
 
 == Login to OpenShift
 
-Although your Eclipse Che workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So we'll log in with your workshop user. Click on *Login to OpenShift*:
+Although your VS Code is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So we'll log in with your workshop user. Execute the following command in the VS Code terminal:
 
-[NOTE]
-====
-When you click on this, CodeReady Workspaces executes the following command:
-*oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true --username={{ USER_ID }} --password={{ OPENSHIFT_USER_PASSWORD }}*
-====
-
-image::cmd-login.png[login,700]
+[source,sh,role="copypaste"]
+----
+oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true --username={{ USER_ID }} --password={{ OPENSHIFT_USER_PASSWORD }}
+----
 
 You should see:
 
@@ -24,16 +21,14 @@ You should see:
 ----
 Login successful.
 
-You have one project on this server: "{{ USER_ID }}-project"
+You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-Using project "{{ USER_ID }}-project".
+  * {{ USER_ID }}-devspaces
+    {{ USER_ID }}-project
+
+Using project "user1-devspaces".
 Welcome! See 'oc help' to get started.
 ----
-
-[NOTE]
-====
-After you log in using *Login to OpenShift*, the terminal is no longer usable as a regular terminal. You can close the terminal window. You will still be logged in when you open more terminals later!
-====
 
 Congratulations, you are now authenticated to the OpenShift server via the CLI. We'll use the prettier web console later on in this lab.
 
@@ -42,10 +37,7 @@ Congratulations, you are now authenticated to the OpenShift server via the CLI. 
 The login session might timeout after long periods of inactivity. If this happens, you'll get messages like `Error from server (Forbidden): xxxxx is forbidden: User "system:anonymous" cannot xxxxx`. Simply login again!
 ====
 
-https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[Namespaces^]
-are a top level concept to help you organize your deployments and teams of developers. A
-namespace allows a community of users (or a user) to organize and manage
-their content in isolation from other communities. OpenShift _projects_ provide additional functionality for managing Kubernetes namespaces.
+https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[Namespaces^] are a top level concept to help you organize your deployments and teams of developers. A namespace allows a community of users (or a user) to organize and manage their content in isolation from other communities. OpenShift _projects_ provide additional functionality for managing Kubernetes namespaces.
 
 For this scenario, a project has been created for you called `{{ USER_ID }}-project`. You will use this project to deploy your developed project in the next step.
 
@@ -53,11 +45,11 @@ For this scenario, a project has been created for you called `{{ USER_ID }}-proj
 
 Quarkus offers the ability to automatically generate OpenShift resources based on sane default and user supplied configuration. The OpenShift extension is actually a wrapper extension that brings together the https://quarkus.io/guides/deploying-to-kubernetes[kubernetes^] and https://quarkus.io/guides/container-image#s2i[container-image-s2i^] extensions with defaults so that it’s easier for the user to get started with Quarkus on OpenShift.
 
-Add _openshift_ extension via CodeReady Workspaces Terminal:
+Add _openshift_ extension via VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="openshift" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="openshift"
 ----
 
 you will see:
@@ -87,11 +79,12 @@ Next, add the following variables in `src/main/resources/application.properties`
 
 *Docker build* strategy builds the artifacts (JAR files or a native executable) outside the OpenShift cluster, either locally or in a CI environment, and then provides them to the OpenShift build system together with a Dockerfile. The container is built inside the OpenShift cluster and provided as an image stream.
 
-Rebuild and re-deploy the people application via running the following maven plugin in CodeReady Workspaces Terminal:
+Rebuild and re-deploy the people application via running the following maven plugin in the VS Code Terminal:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -Pnative -DskipTests -Dquarkus.package.uber-jar=false -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+oc project {{ USER_ID }}-project &&
+mvn clean package -Pnative -DskipTests -Dquarkus.package.uber-jar=false
 ----
 
 As you recall, the output of this process is a native Linux binary but also running Source-To-Image(S2I) build processor.
@@ -150,17 +143,17 @@ This provides a developer-centric Topology view of applications deployed to the 
 
 image::peopledc.png[project,700]
 
-Click on the circle to get details:
+Select on the circle to get details:
 
 image::container1.png[container,700]
 
-Click on the **View Logs** link to see the console output from the app:
+Select on the **View Logs** link to see the console output from the app:
 
 image::podlogs.png[logs,800]
 
 This is the same output you saw earlier when you ran it "locally" with its super-fast startup time.
 
-Go back to the _Topology_ view. Since this app is exposed to the world, a _Route_ was created which you can access using the small arrow in the upper right of the circle. Click on the route link:
+Go back to the _Topology_ view. Since this app is exposed to the world, a _Route_ was created which you can access using the small arrow in the upper right of the circle. Select on the route link:
 
 image::routelink.png[logs,600]
 
