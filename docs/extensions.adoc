@@ -51,79 +51,54 @@ echo "This is a bash shell command that you can copy/paste by selecting"
 
 You will be using VS Code server based on https://developers.redhat.com/products/openshift-dev-spaces/overview[Red Hat OpenShift Dev Spaces] **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
 
-To get started, {{ DS_URL }}[access the CodeReady Workspaces instance^] and log in using the username and password you've been assigned:
+To get started, {{ DS_URL }}[access the Red Hat OpenShift Dev Spaces instance^] and click on *Log in with OpenShift* button:
+
+image::login_with_openshift.png[login,800]
+
+Type in the following credentail:
 
 * *Username*: `{{ USER_ID }}`
 * *Password*: `{{ DS_USER_PASSWORD }}`
 
+
 image::che-login.png[login,800]
 
-Once you log in, you’ll be placed on your personal dashboard. Select on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number).
+[NOTE]
+====
+In case you see the *Authorize Access* page as below, click on *Allow selected permissions* button.
 
-image::crw-landing.png[cdw, 800]
+image::auth-access.png[auth-access, 800]
+====
 
-You can also select on the name of the workspace in the center, and then select on the green {{ USER_ID}}-namespace that says _Open_ on the top right hand side of the screen:
+Once you log in, you’ll be placed on the *Create Workspace* dashboard. Copy the following `Git Repo URL` and click on `Create & Open`.
 
-image::crw-landing-start.png[cdw, 800]
+* *Git Repo URL*: `https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs/tree/ocp-4.12`
 
-After a minute or two, you’ll be placed in the workspace:
+image::ds-landing.png[ds, 800]
 
-image::che-workspace.png[cdw, 800]
+A new window or tab in your web browser will open automatically to showcase the progess about *Starting workspace quarkus-workshop*. It takes less than *30* seconds to finish the process.
 
-Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
-
-You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to select on them and see what they do:
-
-image::crw-icons.png[cdw, 800]
+image::starting-workspace.png[ds, 800]
 
 [NOTE]
 ====
-If things get weird or your browser appears, you can simply reload the browser tab to refresh the view.
+In case you see this information page, select on `Start your workspace` to continue  using your workspace.
+
+image::starting-workspace-info.png[ds, 800]
 ====
 
-Many features of CodeReady Workspaces are accessed via *Commands*. You can see a few of the commands listed with links on the home page (e.g. _New File.._, _Git Clone.._, and others).
+After a few seconds, you’ll be placed in the workspace.
 
-If you ever need to run commands that you don't see in a menu, you can press kbd:[F1] to open the command window, or the more traditional kbd:[Control+SHIFT+P] (or kbd:[Command+SHIFT+P] on Mac OS X).
-
-## Import Project
-
-Let's import our project. Select on **Clone Repository** (or type kbd:[F1], enter 'git' and select on the auto-completed _Git Clone.._ )
-
-image::che-workspace-gitclone.png[cdw, 900]
-
-Step through the prompts, using the following value for **Repository URL**. If you use *FireFox*, it may end up pasting extra spaces at the end, so just press backspace after pasting:
-
-[source,none,role="copypaste"]
-----
-https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
-----
-
-image::crw-clone-repo.png[crw,900]
-
-Ensure `projects/` is selected, then select on *Select Repository Location* then select on *Add to Workspace*:
-
-image::crw-add-workspace-2.png[crw, 900]
-
-The project is imported into your workspace and is visible in the project explorer (collapse the *OPEN EDITORS*):
-
-image::crw-clone-explorer.png[crw,900]
+image::ds-workspace.png[ds, 800]
 
 [NOTE]
 ====
-The Terminal window in CodeReady Workspaces. You can open a terminal window for any of the containers running in your Developer workspace. For the rest of these labs, anytime you need to run a command in a
-terminal, you can use the **>_ New Terminal** command on the right:
+In case you see this infomation page, check on `Trust the authors of all files in the parent folder 'projects'`. Then, select `Yes, I trust the authors. Trust folder and enable all features`.
 
-image::cmd-terminal.png[codeready-workspace-terminal, 700]
+image::ds-trust-popup.png[ds, 800]
 ====
 
-==== IMPORTANT: Check out proper Git branch
-
-To make sure you're using the right version of the project files, run this command in a CodeReady Terminal:
-
-[source,sh,role="copypaste"]
-----
-cd $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && git checkout ocp-4.10
-----
+You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
 
 The project has
 
