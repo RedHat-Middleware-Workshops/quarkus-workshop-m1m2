@@ -22,29 +22,29 @@ If your username is properly set, then you can move on. **If not, in the above b
 
 image::setuser.png[Set User ID above, 700]
 
-This will customize the links and copy/paste code for this workshop. If you accidently type the wrong username, just click the green recycle icon to reset it.
+This will customize the links and copy/paste code for this workshop. If you accidently type the wrong username, just select the green recycle icon to reset it.
 
-== Click-to-Copy
+== Select-to-Copy
 
-You will see various code and command blocks throughout these exercises which can be copy/pasted directly by clicking anywhere on the block of text:
+You will see various code and command blocks throughout these exercises which can be copy/pasted directly by selecting anywhere on the block of text:
 
 [source,java,role="copypaste"]
 ----
-/* A sample Java snippet that you can copy/paste by clicking */
+/* A sample Java snippet that you can copy/paste by selecting */
 public class CopyMeDirectly {
     public static void main(String[] args) {
-        System.out.println("You can copy this whole class with a click!");
+        System.out.println("You can copy this whole class with a select!");
     }
 }
 ----
 
-Simply click once and the whole block is copied to your clipboard, ready to be pasted with kbd:[CTRL+V] (or kbd:[Command+V] on Mac OS).
+Simply select once and the whole block is copied to your clipboard, ready to be pasted with kbd:[CTRL+V] (or kbd:[Command+V] on Mac OS).
 
 There are also Linux shell commands that can also be copied and pasted into a Terminal in your Development Environment:
 
 [source,sh,role="copypaste"]
 ----
-echo "This is a bash shell command that you can copy/paste by clicking"
+echo "This is a bash shell command that you can copy/paste by selecting"
 ----
 
 ## Access Your Development Environment
@@ -58,12 +58,11 @@ To get started, {{ DS_URL }}[access the CodeReady Workspaces instance^] and log 
 
 image::che-login.png[login,800]
 
-Once you log in, you’ll be placed on your personal dashboard. Click on the name of
-the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number).
+Once you log in, you’ll be placed on your personal dashboard. Select on the name of the pre-created workspace on the left, as shown below (the name will be different depending on your assigned number).
 
 image::crw-landing.png[cdw, 800]
 
-You can also click on the name of the workspace in the center, and then click on the green {{ USER_ID}}-namespace that says _Open_ on the top right hand side of the screen:
+You can also select on the name of the workspace in the center, and then select on the green {{ USER_ID}}-namespace that says _Open_ on the top right hand side of the screen:
 
 image::crw-landing-start.png[cdw, 800]
 
@@ -73,7 +72,7 @@ image::che-workspace.png[cdw, 800]
 
 Users of Eclipse, IntelliJ IDEA or Visual Studio Code will see a familiar layout: a project/file browser on the left, a code editor on the right, and a terminal at the bottom. You'll use all of these during the course of this workshop, so keep this browser tab open throughout. **If things get weird, you can simply reload the browser tab to refresh the view.**
 
-You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to click on them and see what they do:
+You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to select on them and see what they do:
 
 image::crw-icons.png[cdw, 800]
 
@@ -88,7 +87,7 @@ If you ever need to run commands that you don't see in a menu, you can press kbd
 
 ## Import Project
 
-Let's import our project. Click on **Clone Repository** (or type kbd:[F1], enter 'git' and click on the auto-completed _Git Clone.._ )
+Let's import our project. Select on **Clone Repository** (or type kbd:[F1], enter 'git' and select on the auto-completed _Git Clone.._ )
 
 image::che-workspace-gitclone.png[cdw, 900]
 
@@ -101,7 +100,7 @@ https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs
 
 image::crw-clone-repo.png[crw,900]
 
-Ensure `projects/` is selected, then click on *Select Repository Location* then click on *Add to Workspace*:
+Ensure `projects/` is selected, then select on *Select Repository Location* then select on *Add to Workspace*:
 
 image::crw-add-workspace-2.png[crw, 900]
 
@@ -134,7 +133,7 @@ The project has
 * The application configuration file
 * Other source files we'll use later
 
-Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double click on `GreetingResource.java`.
+Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double select on `GreetingResource.java`.
 
 image::initnav.png[codeready-workspace-terminal, 800]
 
@@ -166,7 +165,7 @@ Compared to vanilla JAX-RS, with Quarkus there is no need to create an `Applicat
 
 You can always use the `mvn` (Maven) commands to run Quarkus apps, but we've created a few helpful shortcuts on the right to run various Maven commands.
 
-Start the app by clicking on _Live Coding_:
+Start the app by selecting on _Live Coding_:
 
 image::cmd-livecoding.png[livecoding, 700]
 
@@ -201,7 +200,7 @@ CodeReady will also detect that the Quarkus app opens port `5005` (for debugging
 
 image::open-port.png[port, 700]
 
-You should see the default Quarkus welcome page (you may need to click the _reload_ icon):
+You should see the default Quarkus welcome page (you may need to select the _reload_ icon):
 
 image::welcome-quarkus.png[port, 900]
 
@@ -216,7 +215,7 @@ and invoke the `hello` endpoint using the following _curl_ command:
 curl http://localhost:8080/hello
 ----
 
-You can also click on the URL link at the upper right to open the same default page in a separate browser tab:
+You can also select on the URL link at the upper right to open the same default page in a separate browser tab:
 
 image::crw-open-page.png[page, 800]
 
@@ -244,11 +243,11 @@ If you are only doing the *Advanced* lab today, or you didn’t quite complete t
 
 ==== Login to OpenShift
 
-Although your CodeReady workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So, in CodeReady, log in with your workshop user. Click on *Login to OpenShift*:
+Although your CodeReady workspace is running on the Kubernetes cluster, it's running with a default restricted _Service Account_ that prevents you from creating most resource types. So, in CodeReady, log in with your workshop user. Select on *Login to OpenShift*:
 
 [NOTE]
 ====
-When you click on this, CodeReady Workspaces executes the following command:
+When you select on this, CodeReady Workspaces executes the following command:
 *oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true --username={{ USER_ID }} --password={{ OPENSHIFT_USER_PASSWORD }}*
 ====
 
@@ -289,7 +288,7 @@ When the script completes, the app is deployed to OpenShift. You can see it in t
 
 image::ocplogin.png[login,600]
 
-Once logged in, click on the name of your project (`{{ USER_ID }}-project`):
+Once logged in, select on the name of your project (`{{ USER_ID }}-project`):
 
 image::ocpproj.png[project,600]
 
@@ -365,7 +364,7 @@ You should see
 
 The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences you've made up till now.
 
-Click on the _Source Control_ view and then double-click on `pom.xml`:
+Select on the _Source Control_ view and then double-select on `pom.xml`:
 
 image::gitdiff.png[login,1000]
 
