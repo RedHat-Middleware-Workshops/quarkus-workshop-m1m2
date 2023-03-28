@@ -294,7 +294,7 @@ curl http://localhost:8080/q/health/ready
 
 You should only see our single readiness probes. 
 
-Go back to Dev UI and click on `Health UI` in SmallRye Health extension:
+Go back to Dev UI and select on `Health UI` in SmallRye Health extension:
 
 image::quarkus-devui-healthui.png[livecoding, 700]
 
@@ -397,11 +397,11 @@ You should get `hello quarkus!`.
 If the application requires configuration values and these values are not set, an error is thrown. So you can quickly know when your configuration is complete.
 ====
 
-Quarkus Dev UI also allows you to edit the configuration values then the change is automatically updated in your local file system (e.g., _application.properties_). Let's go to the Dev UI, then click on `Config Editor` in _Configuration_ extension box:
+Quarkus Dev UI also allows you to edit the configuration values then the change is automatically updated in your local file system (e.g., _application.properties_). Let's go to the Dev UI, then select on `Config Editor` in _Configuration_ extension box:
 
 image::quarkus-devui-configeditor.png[quarkus-devui-configeditor, 700]
 
-Key `greeting` in the search box then it will show *greeting.message* property. Then update the value to `hi` then click on `Check` icon: 
+Key `greeting` in the search box then it will show *greeting.message* property. Then update the value to `hi` then select on `Check` icon: 
 
 image::quarkus-devui-configeditor-update.png[quarkus-devui-configeditor, 700]
 
