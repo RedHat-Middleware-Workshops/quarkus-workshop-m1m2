@@ -60,7 +60,6 @@ Type in the following credentail:
 * *Username*: `{{ USER_ID }}`
 * *Password*: `{{ DS_USER_PASSWORD }}`
 
-
 image::che-login.png[login,800]
 
 [NOTE]
