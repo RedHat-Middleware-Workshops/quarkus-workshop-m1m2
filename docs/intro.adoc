@@ -80,7 +80,7 @@ image::starting-workspace.png[ds, 800]
 
 [NOTE]
 ====
-In case you see this information page, select on `Start your workspace` to continue  using your workspace.
+In case you see this information page, select `Start your workspace` to continue  using your workspace.
 
 image::starting-workspace-info.png[ds, 800]
 ====

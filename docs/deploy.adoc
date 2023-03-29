@@ -143,17 +143,17 @@ This provides a developer-centric Topology view of applications deployed to the 
 
 image::peopledc.png[project,700]
 
-Select on the circle to get details:
+Select the circle to get details:
 
 image::container1.png[container,700]
 
-Select on the **View Logs** link to see the console output from the app:
+Select the **View Logs** link to see the console output from the app:
 
 image::podlogs.png[logs,800]
 
 This is the same output you saw earlier when you ran it "locally" with its super-fast startup time.
 
-Go back to the _Topology_ view. Since this app is exposed to the world, a _Route_ was created which you can access using the small arrow in the upper right of the circle. Select on the route link:
+Go back to the _Topology_ view. Since this app is exposed to the world, a _Route_ was created which you can access using the small arrow in the upper right of the circle. Select the route link:
 
 image::routelink.png[logs,600]
 

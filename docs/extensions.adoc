@@ -82,7 +82,7 @@ image::starting-workspace.png[ds, 800]
 
 [NOTE]
 ====
-In case you see this information page, select on `Start your workspace` to continue  using your workspace.
+In case you see this information page, select `Start your workspace` to continue  using your workspace.
 
 image::starting-workspace-info.png[ds, 800]
 ====
@@ -116,7 +116,7 @@ The project also has
 * The application configuration file
 * Other source files we'll use later
 
-Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double select on `GreetingResource.java`.
+Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and double select `GreetingResource.java`.
 
 image::initnav.png[VS Code-workspace-terminal, 800]
 
@@ -366,7 +366,7 @@ You should see
 
 The result of this command is a new `<dependency>` added to our `pom.xml` which you can see by looking at the differences you've made up till now.
 
-Select on the _Source Control_ view and then double-select on `pom.xml`:
+Select the _Source Control_ view and then select `pom.xml`:
 
 image::gitdiff.png[login,1000]
 

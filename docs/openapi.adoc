@@ -98,7 +98,7 @@ quarkus.swagger-ui.always-include=true
 ----
 ====
 
-Since our app is still running, when you select on the `index-webpage` link in the *ENDPOINTS*, the URL will be copied to clipboard automically. Then, Open a new web browser to paste the URL:
+Since our app is still running, when you select the `index-webpage` link in the *ENDPOINTS*, the URL will be copied to clipboard automically. Then, Open a new web browser to paste the URL:
 
 image::weblink.png[swagger,700]
 

@@ -138,7 +138,7 @@ Open a new web browser or tab window and paste the URL.
 
 image::quarkus-devui.png[devui-endpoint, 800]
 
-As you see, `All tests passed` on the right bottom. When you select on `Open` on the left bottom, it will show the Quarkus runtime logs:
+As you see, `All tests passed` on the right bottom. When you select `Open` on the left bottom, it will show the Quarkus runtime logs:
 
 image::quarkus-devui-open.png[devui-endpoint, 800]
 
@@ -147,7 +147,7 @@ image::quarkus-devui-open.png[devui-endpoint, 800]
 In case you see *Tests not running*, reload the DEV UI page.
 ====
 
-Select on `Test results` then it will show the details of the test results:
+Select `Test results` then it will show the details of the test results:
 
 image::quarkus-devui-test-result.png[devui-endpoint, 800]
 

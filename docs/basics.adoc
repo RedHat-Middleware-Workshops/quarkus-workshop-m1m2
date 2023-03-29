@@ -8,7 +8,7 @@ image::arch.png[arch,800]
 
 This IDE is based on Eclipse Che (which is in turn based on MicroSoft VS Code editor).
 
-You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to select on them and see what they do:
+You can see icons on the left for navigating between project explorer, search, version control (e.g. Git), debugging, and other plugins.  You’ll use these during the course of this workshop. Feel free to select them and see what they do:
 
 image::ds-icons.png[cdw, 800]
 
@@ -37,7 +37,7 @@ The project also has
 * The application configuration file
 * Other source files we'll use later
 
-Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and select on `GreetingResource.java`.
+Navigate to `src -> main -> java -> org.acme.people.rest` in the project tree and select `GreetingResource.java`.
 
 image::initnav.png[VS Code-workspace-terminal, 800]
 
@@ -190,7 +190,7 @@ java -Dquarkus.http.port=8081 -jar target/quarkus-app/quarkus-run.jar
 We use `-Dquarkus.http.port=8081` to avoid conflicting with port `8080` used for Live Coding mode
 ====
 
-Select on `Yes` to make 8081 port available then select on `x` not to open link.
+Select `Yes` to make 8081 port available then select `x` not to open link.
 
 image::popup_8081.png[port_8081,800]
 
