@@ -10,7 +10,7 @@ Like other exercises, we'll need another extension to enable the use of MicroPro
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="smallrye-jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="smallrye-jwt"
 ----
 
 You should see:
@@ -118,7 +118,7 @@ Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && \
+mvn clean package -DskipTests && \
 oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
@@ -287,7 +287,7 @@ First, you'll need to enable the Keycloak extension by running this command in a
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="oidc, keycloak-authorization" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="oidc, keycloak-authorization"
 ----
 
 You should see:
@@ -385,7 +385,7 @@ Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && \
+mvn clean package -DskipTests && \
 oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
