@@ -19,7 +19,7 @@ You may have wondered why we are using `people` in our Java APIs, and now you'll
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql"
 ----
 
 You should see:
@@ -185,9 +185,9 @@ Add these lines to `import.sql` file you just created:
 
 [source,sql,role="copypaste"]
 ----
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Farid Ulyanov', to_date('1974-08-15', 'YYYY-MM-dd'), 'BLUE');
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Salvador L. Witcher', to_date('1984-05-24', 'YYYY-MM-dd'), 'BROWN');
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Kim Hu', to_date('1999-04-25', 'YYYY-MM-dd'), 'HAZEL');
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Farid Ulyanov', '1974-08-15', 'BLUE');
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Salvador L. Witcher', '1984-05-24', 'BROWN');
+INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Kim Hu', '1999-04-25', 'HAZEL');
 ----
 
 These statements will add some fake people to our database on startup.
@@ -360,7 +360,7 @@ https://www.datatables.net/manual/server-side[DataTables documentation^] shows t
 * `start` - The index of the first element needed
 * `length` - Total number records to return (or less, if there are less records that meet criteria)
 * `search[value]` - The value of the search box
-* `draw` - DataTables does asnychronous processing, so this value is sent with each request, expecting it to be returned as-is, so DataTables can piece things back together on the frontend if a user clicks things quickly.
+* `draw` - DataTables does asnychronous processing, so this value is sent with each request, expecting it to be returned as-is, so DataTables can piece things back together on the frontend if a user selects things quickly.
 
 Open the `PersonResource` resource class and add the following code below the `// TODO: add datatable query` comment:
 
@@ -547,11 +547,11 @@ You should get up to 2 records returned (since we passed `length=2` in the query
 
 == Deploy to OpenShift
 
-Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add to Project** on the left. Then, Type in `PostgreSQL (Ephemeral)` in the search box, and click on the *PostgreSQL (ephemeral)*:
+Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], select **+Add to Project** on the left. Then, Type in `PostgreSQL (Ephemeral)` in the search box, and select on the *PostgreSQL (ephemeral)*:
 
 image::db.png[db, 700]
 
-Click on *Instantiate Template* and fill in the following fields, leaving the others as their default values:
+Select on *Instantiate Template* and fill in the following fields, leaving the others as their default values:
 
 * **Namespace** (the first one): Select `{{ USER_ID }}-project`
 * **Namespace** (the _second_ one): `openshift`
@@ -562,7 +562,7 @@ Click on *Instantiate Template* and fill in the following fields, leaving the ot
 
 image::db-postgres-values.png[db, 700]
 
-Click *Create*.
+Select *Create*.
 
 And label the items with proper icons:
 
@@ -574,7 +574,7 @@ oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
-This will deploy the database to our new project. Click on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to see it:
+This will deploy the database to our new project. Select on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to see it:
 
 image::database-deployment.png[inventory_db_deployments, 700]
 
@@ -587,7 +587,7 @@ Now let's deploy the application itself. Run the following command which will bu
 [source,sh,role="copypaste"]
 ----
 oc delete bc/people && \
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn clean package -DskipTests
 ----
 
 The output should end with `BUILD SUCCESS`.
