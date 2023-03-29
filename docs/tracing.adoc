@@ -29,7 +29,7 @@ Each component (microservice) in a distributed trace will contribute its own spa
 
 Jaeger is installed and managed through its Kubernetes Operator (just like AMQ Streams and Kafka that you used in previous exercises).
 
-First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add to Project**. Then, Type in `Jaeger` in the search box, and  click on **Create**:
+First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add to Project**. Then, Type in `Jaeger` in the search box, and  select **Create**:
 
 image::fromcat.png[names,800]
 
@@ -55,7 +55,7 @@ With Jaeger installed, let's turn back to our Quarkus app. Like other exercises,
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client-reactive" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client-reactive"
 ----
 
 You will see:
@@ -91,7 +91,7 @@ Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && \
+mvn clean package -DskipTests && \
 oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
@@ -133,7 +133,7 @@ If you do not see `people` in the _Service_ drop-down, ensure your changes to `a
 
 image::find1.png[jaeger,600]
 
-Click on one of the traces from "a few seconds ago" to show the individual _spans_ of each trace:
+Select one of the traces from "a few seconds ago" to show the individual _spans_ of each trace:
 
 image::trace1.png[jaeger,600]
 
@@ -296,7 +296,7 @@ Let's re-build and re-deploy the application:
 
 [source,sh,role="copypaste"]
 ----
-mvn clean package -DskipTests -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs && \
+mvn clean package -DskipTests && \
 oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
 oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
@@ -349,7 +349,7 @@ You should see:
 
 == Inspect traces
 
-Reload the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^], and click **Find Traces**. The new trace should appear the top with multiple spans. Click on it to display details:
+Reload the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^], and click **Find Traces**. The new trace should appear the top with multiple spans. Select it to display details:
 
 image::swpeople.png[swpeople,800]
 
