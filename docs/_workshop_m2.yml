@@ -1,6 +1,6 @@
 ---
 id: quarkus-lab
-name: Advanced Quarkus Hands-on Lab (Version 2023-03-27)
+name: Advanced Quarkus Hands-on Lab (Version 2023-04-03)
 
 vars:
   ROUTE_SUBDOMAIN:
