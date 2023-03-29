@@ -20,7 +20,7 @@ We need to add another extension for OpenAPI. Run the following command:
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="smallrye-openapi" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:add-extension -Dextensions="smallrye-openapi"
 ----
 
 You should see:
@@ -98,12 +98,12 @@ quarkus.swagger-ui.always-include=true
 ----
 ====
 
-Since our app is still running, click on the `index-webpage` link on the right to open the app's landing page in your browser:
+Since our app is still running, when you select on the `index-webpage` link in the *ENDPOINTS*, the URL will be copied to clipboard automically. Then, Open a new web browser to paste the URL:
 
 image::weblink.png[swagger,700]
 
 
-Then, add `/q/swagger-ui` to the end of the URL to access the Swagger UI and play with your API.
+Then, add `/q/swagger-ui` to the end of the URL to access the Swagger UI and play with your API. Be sure to use *http* protocal to access the Swagger UI page.
 
 image::swagger.png[swagger,700]
 
@@ -111,7 +111,7 @@ Using the UI, expand the `/person/birth/before/{year}` endpoint. Here you can ba
 
 image::swaggeryear.png[swaggeryear,900]
 
-Click the **Try it out** button to expand the box allowing you to try it. Enter the year `1990` in the box and click **Execute**:
+Select the **Try it out** button to expand the box allowing you to try it. Enter the year `1990` in the box and select **Execute**:
 
 image::swaggeryeartest.png[swaggeryeartest,900]
 
