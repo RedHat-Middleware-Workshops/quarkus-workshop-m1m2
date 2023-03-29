@@ -399,7 +399,7 @@ Follow the same steps as before to create a few more panels, and **don't forget 
 
 Add Panels for:
 
-* The different quantiles of time it takes to process names `http_server_requests_seconds_count` (Turn on _Stack_ in the _Display_ section of the _Panel_ tab , and name it `Converter Performance` for the _Panel Title_).
+* The different quantiles of time it takes to process names `http_server_bytes_written_count` (Turn on _Stack_ in the _Display_ section of the _Panel_ tab , and name it `Converter Performance` for the _Panel Title_).
 * The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Unit in _Field_ tab to `bytes(IEC)` on the _Visualization_, and the title to `Memory` on the _Panel Title_.
 
 image::grafjvm.png[jvm,500]
@@ -414,7 +414,7 @@ Finally, move the _Converted Names_ Dashboard to the right of the _Converter Per
 
 Select **Save Dashboad** again to save it. Your final Dashboard should look like:
 
-image::graffinal.png[final,500]
+image::graffinal.png[final,900]
 
 Beautiful, and useful! You can add many more metrics to monitor and alert for Quarkus apps using these tools.
 
