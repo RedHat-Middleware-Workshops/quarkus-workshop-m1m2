@@ -94,8 +94,6 @@ target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081 # <1>
 ----
 <1> We use port `8081` here to avoid conflicting with our already-running development mode Quarkus app.
 
-image::cmd-native-8081.png[livecoding, 700]
-
 Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
@@ -130,14 +128,14 @@ Make sure the app is still working as expected (we'll use `curl` this time to ac
 
 [source,sh,role="copypaste"]
 ----
-curl http://localhost:8081/hello/greeting/quarkus
+curl http://localhost:8081/hello
 ----
 
 You should see:
 
 [source,none]
 ----
-hello quarkus from <your-hostname>
+hello
 ----
 
 Nice!
