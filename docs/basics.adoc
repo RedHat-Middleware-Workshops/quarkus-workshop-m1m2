@@ -75,11 +75,11 @@ image::navigate-command-palette.png[commands, 800]
 
 Delete `<` then type `task` in the command palette. Make sure to append a `space` character after the *task*. 
 
-Select the `che` task to show the Quarkus tasks up.
+Select the `devfile` task to show the Quarkus tasks up.
 
 image::type-task.png[type-task, 800]
 
-Start the _Live Coding_ by selecting `che: 02. Start Live Coding`.
+Start the _Live Coding_ by selecting `devfile: 02. Start Live Coding`.
 
 image::quarkus-tasks.png[quarkus-tasks, 800]
 

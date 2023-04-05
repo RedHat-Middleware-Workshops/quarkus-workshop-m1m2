@@ -74,7 +74,7 @@ Once you log in, you’ll be placed on the *Create Workspace* dashboard. Copy th
 
 image::ds-landing.png[ds, 800]
 
-A new window or tab in your web browser will open automatically to showcase the progess about *Starting workspace quarkus-workshop*. It takes less than *30* seconds to finish the process.
+A new window or tab in your web browser will open automatically to showcase the progess about *Starting workspace quarkus-workshop*. It takes about *60* seconds to finish the process.
 
 image::starting-workspace.png[ds, 800]
 
