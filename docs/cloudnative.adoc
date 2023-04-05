@@ -530,7 +530,7 @@ While the app is running, open a separate Terminal window and test it by running
 curl http://localhost:8081/hello
 ----
 
-What did you get? You should get `hi production quarkus!` indicating that the `prod` profile was active by default. In other sections in this workshop we'll use this feature to override important variables like database credentials. 
+What did you get? You should get `hi production quarkus!` indicating that the `prod` profile was active by default. In other sections in this workshop we'll use this feature to override important variables like database credentials.
 
 [NOTE]
 ====
