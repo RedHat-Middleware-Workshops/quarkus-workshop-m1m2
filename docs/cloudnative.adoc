@@ -512,7 +512,9 @@ Build an executable JAR using the **Package app for OpenShift** task to build a 
 
 image::cmd-package.png[livecoding, 700]
 
-Next, run the the rebuilt app in a Terminal:
+Next, select **devfile: 05. Run Native App** task:
+
+image::run-fastjar.png[livecoding, 700]
 
 [source,sh,role="copypaste"]
 ----
