@@ -537,7 +537,7 @@ What did you get? You should get `hi production quarkus!` indicating that the `p
 In this example we read configuration properties from `application.properties`. You can also introduce custom configuration sources in the standard MicroProfile Config manner.  https://microprofile.io/project/eclipse/microprofile-config[More Info^]. This would be useful, for example, to read directly from **Kubernetes ConfigMap**.
 ====
 
-== Cleanup
+== Cleanup 
 
 Stop the app that you ran with `java -jar` by pressing kbd:[CTRL+C] in the terminal in which the app runs. Make sure to leave the original Live Coding app running!
 
