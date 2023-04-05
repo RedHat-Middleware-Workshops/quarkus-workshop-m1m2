@@ -508,7 +508,7 @@ produces `hi quarkus in dev mode!`.
 
 Next, let's re-build the app as an executable JAR (which will run with the `prod` profile active).
 
-Build an executable JAR using the **Package app for OpenShift** task to build a fast-jar:
+Build an executable JAR using the **Package app for OpenShift** task to build a fast-jar: 
 
 image::cmd-package.png[livecoding, 700]
 
