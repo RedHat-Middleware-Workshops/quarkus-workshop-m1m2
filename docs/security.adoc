@@ -304,7 +304,7 @@ Since we will use Keycloak authentication rather than JWT, we'll need to disable
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:remove-extension -Dextensions="smallrye-jwt" -f $CHE_PROJECTS_ROOT/quarkus-workshop-m1m2-labs
+mvn quarkus:remove-extension -Dextensions="smallrye-jwt"
 ----
 
 You should see:
