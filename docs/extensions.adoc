@@ -250,7 +250,7 @@ Although your VS Code is running on the Kubernetes cluster, it's running with a 
 
 [source,sh,role="copypaste"]
 ----
-oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT --insecure-skip-tls-verify=true --username={{ USER_ID }} --password={{ OPENSHIFT_USER_PASSWORD }}
+oc login -u {{ USER_ID }} --p {{ OPENSHIFT_USER_PASSWORD }} https://openshift.default.svc:443
 ----
 
 You should see:
