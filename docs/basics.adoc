@@ -97,6 +97,7 @@ The first time you build the app, new dependencies may be downloaded via maven. 
 [NOTE]
 ====
 You may see WARNINGs like `Unrecognized configuration key` or `Duplicate entry`. These are configuration values that will take effect later on and can be safely ignored for now.
+Occasionally you may get an error (e.g. `NullPointerException`) during Live Reloading. In this case, simply close the terminal and restart live coding using the task.
 ====
 
 You should see:
@@ -166,7 +167,7 @@ This will also listen for a debugger on port `5005`. If you want to wait for the
 
 Quarkus apps can be packaged as an executable JAR file or a native binary. We'll cover native binaries later, so for now, let's package as an executable JAR.
 
-Open the *command palette* again. Select `Package app for OpenShift` in the che tasks:
+Open the *command palette* again. Select `devfile: 03. Package app for OpenShift` in the che tasks:
 
 image::cmd-package.png[livecoding, 700]
 
@@ -178,23 +179,16 @@ image::jar.png[jar,800]
 
 ## Run the executable JAR
 
-Run the packaged application. Go back to the editable Terminal, run the following command:
+Run the packaged application. Go back to the *command palette* again. Select `devfile: 05. Run Fast Jar` in the che tasks:
 
-[source, sh, role="copypaste"]
-----
-java -Dquarkus.http.port=8081 -jar target/quarkus-app/quarkus-run.jar
-----
+image::run-fast-jar.png[run-fast-jar, 700]
 
 [NOTE]
 ====
 We use `-Dquarkus.http.port=8081` to avoid conflicting with port `8080` used for Live Coding mode
 ====
 
-Select `Yes` to make 8081 port available then select `x` not to open link.
-
-image::popup_8081.png[port_8081,800]
-
-With the app running, open a new terminal window, and ensure the app _is_ running by executing a `curl` command:
+With the app running, go back to the terminal window, and ensure the app _is_ running by executing a `curl` command:
 
 [source, sh, role="copypaste"]
 ----

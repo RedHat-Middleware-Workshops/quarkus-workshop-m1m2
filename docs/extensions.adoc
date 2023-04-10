@@ -175,6 +175,7 @@ The first time you build the app, new dependencies may be downloaded via maven. 
 [NOTE]
 ====
 You may see WARNINGs like `Unrecognized configuration key` or `Duplicate entry`. These are configuration values that will take effect later on and can be safely ignored for now.
+Occasionally you may get an error (e.g. `NullPointerException`) during Live Reloading. In this case, simply close the terminal and restart live coding using the task.
 ====
 
 You should see:
