@@ -19,7 +19,7 @@ You may have wondered why we are using `people` in our Java APIs, and now you'll
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql,resteasy-reactive-jackson"
+mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql"
 ----
 
 You should see:
@@ -29,7 +29,6 @@ You should see:
 [INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-hibernate-orm-panache has been installed
 [INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-jdbc-h2 has been installed
 [INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-jdbc-postgresql has been installed
-[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-resteasy-reactive-jackson has been installed
 ----
 
 We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-reactive-jackson` is used to encode JSON objects.
