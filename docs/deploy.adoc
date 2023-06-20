@@ -161,7 +161,7 @@ You can click on the route link to open up the default Quarkus page that's packa
 
 == Connect MicroProfile health check
 
-Earlier you implemented a series of MicroProfile health checks. To make OpenShift aware of these available health checks and begin using them, run the following commands in a Terminal in CodeReady:
+Earlier you implemented a series of MicroProfile health checks. To make OpenShift aware of these available health checks and begin using them, run the following commands in a Terminal in Dev Spaces:
 
 [source,sh,role="copypaste"]
 ----
