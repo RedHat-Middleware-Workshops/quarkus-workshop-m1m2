@@ -42,8 +42,6 @@ The database connection details (JDBC url, database credentials) are specified i
 %prod.quarkus.datasource.jdbc.driver=org.postgresql.Driver
 
 %dev.quarkus.datasource.db-kind=h2
-
-
 %test.quarkus.datasource.db-kind=h2
 ----
 
