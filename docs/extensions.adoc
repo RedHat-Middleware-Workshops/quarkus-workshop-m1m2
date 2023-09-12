@@ -92,7 +92,7 @@ image::ds-workspace.png[ds, 800]
 
 [NOTE]
 ====
-In case you see this infomation page, check on `Trust the authors of all files in the parent folder 'projects'`. Then, select `Yes, I trust the authors. Trust folder and enable all features`.
+In case you see this infomation page, check on `Trust the authors of all files in the parent folder 'projects'`. Then, select `Yes, I trust the authors.
 
 image::ds-trust-popup.png[ds, 800]
 ====
