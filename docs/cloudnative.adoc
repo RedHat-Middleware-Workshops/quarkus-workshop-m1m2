@@ -78,7 +78,7 @@ import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.Readiness;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Readiness
@@ -142,7 +142,7 @@ import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.Liveness;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Liveness
@@ -203,7 +203,7 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Liveness;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Liveness
@@ -397,15 +397,13 @@ You should get `hello quarkus!`.
 If the application requires configuration values and these values are not set, an error is thrown. So you can quickly know when your configuration is complete.
 ====
 
-Quarkus Dev UI also allows you to edit the configuration values then the change is automatically updated in your local file system (e.g., _application.properties_). Let's go to the Dev UI, then select `Config Editor` in _Configuration_ extension box:
+Quarkus Dev UI also allows you to edit the configuration values then the change is automatically updated in your local file system (e.g., _application.properties_). 
+
+Let's go to the Dev UI, then select `Configuration` on the left menu. Key `greeting` in the search box then it will show *greeting.message* property. Then update the value to `hi` then select `Disk` icon: 
 
 image::quarkus-devui-configeditor.png[quarkus-devui-configeditor, 700]
 
-Key `greeting` in the search box then it will show *greeting.message* property. Then update the value to `hi` then select `Check` icon: 
-
-image::quarkus-devui-configeditor-update.png[quarkus-devui-configeditor, 700]
-
-Make sure if the _application.properties_ file is updated automatically:
+Then, you will see the *Property greeting.message updated*. Make sure if the _application.properties_ file is updated automatically:
 
 image::quarkus-devui-configeditor-update2.png[quarkus-devui-configeditor, 700]
 
