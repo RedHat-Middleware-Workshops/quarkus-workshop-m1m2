@@ -96,7 +96,7 @@ Notice the amazingly fast startup time:
 
 [source,none,role="copypaste"]
 ----
-INFO  [io.quarkus] (main) people 1.0-SNAPSHOT native (powered by Quarkus 2.13.7.Final-redhat-00003) started in 0.019s. Listening on: http://0.0.0.0:8081
+INFO  [io.quarkus] (main) people 1.0-SNAPSHOT native (powered by Quarkus 3.2.6.Final-redhat-00002) started in 0.026s. Listening on: http://0.0.0.0:8081
 ----
 
 That's *19* milliseconds to start up.
@@ -112,10 +112,11 @@ You should see something like:
 [source,none]
 ----
     PID   RSS COMMAND
-   8222 41288 target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+   5385  2684 sh -c cd /projects/quarkus-workshop-m1m2-labs; ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+   5391 53136 ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
 ----
 
-This shows that our process is taking around 41 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
+The 2nd row is the actual process that is taking around 53 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
 
 [NOTE]
 ====
