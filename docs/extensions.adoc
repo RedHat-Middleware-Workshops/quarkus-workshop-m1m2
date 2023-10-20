@@ -182,7 +182,7 @@ You should see:
 
 [source,none]
 ----
-INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus xx.xx.xx.) started in 2.032s. Listening on: http://0.0.0.0:8080
+INFO  [io.quarkus] (Quarkus Main Thread) people 1.0-SNAPSHOT on JVM (powered by Quarkus xx.xx.xx.) started in 2.469s. Listening on: http://0.0.0.0:8080
 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy-reactive, smallrye-context-propagation, vertx]
 
@@ -313,7 +313,7 @@ Retrieve the list of possible extensions using the Maven plugin. Run this in the
 mvn quarkus:list-extensions
 ----
 
-You can see the list of ~453 different extensions available to you in the output:
+You can see the list of ~538 different extensions available to you in the output:
 
 [source,none]
 ----
