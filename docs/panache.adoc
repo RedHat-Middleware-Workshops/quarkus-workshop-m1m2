@@ -62,7 +62,11 @@ Then, press `c` to find more information about the H2 Dev Services.
 ----
 == Dev Services
 
-  Injected Config:  quarkus.datasource.password=sa, quarkus.datasource.db-kind=h2, quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost:42165/mem:quarkus;DB_CLOSE_DELAY=-1, quarkus.datasource.username=sa
+h2
+  Injected config:  - quarkus.datasource.db-kind=h2
+                    - quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost:33329/mem:quarkus;DB_CLOSE_DELAY=-1
+                    - quarkus.datasource.password=sa
+                    - quarkus.datasource.username=sa
 ----
 
 [NOTE]
@@ -198,9 +202,10 @@ Add these lines to `import.sql` file you just created:
 
 [source,sql,role="copypaste"]
 ----
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Farid Ulyanov', '1974-08-15', 'BLUE');
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Salvador L. Witcher', '1984-05-24', 'BROWN');
-INSERT INTO person(id, name, birth, eyes) VALUES (nextval('hibernate_sequence'), 'Kim Hu', '1999-04-25', 'HAZEL');
+INSERT INTO person(id, name, birth, eyes) VALUES (1, 'Farid Ulyanov', '1974-08-15', 'BLUE');
+INSERT INTO person(id, name, birth, eyes) VALUES (2, 'Salvador L. Witcher', '1984-05-24', 'BROWN');
+INSERT INTO person(id, name, birth, eyes) VALUES (3, 'Kim Hu', '1999-04-25', 'HAZEL');
+ALTER SEQUENCE person_seq RESTART WITH 4;
 ----
 
 These statements will add some fake people to our database on startup.
