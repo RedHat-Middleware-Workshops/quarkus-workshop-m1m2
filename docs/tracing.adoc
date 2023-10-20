@@ -2,9 +2,15 @@
 :experimental:
 :imagesdir: images
 
-This exercise shows how your Quarkus application can utilize https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc[Eclipse MicroProfile OpenTracing^] to provide distributed tracing for interactive web applications.
+This exercise shows how your Quarkus application can utilize https://opentelemetry.io/[OpenTelemetry (OTel)^] to provide distributed tracing for interactive web applications.
 
-In a distributed cloud-native application, multiple microservices are collaborating to deliver the expected functionality. If you have hundreds of services, how do you debug an individual request as it travels through a distributed system? For Java enterprise developers, the Eclipse MicroProfile OpenTracing specification makes it easier. Let's find out how.
+OpenTelemetry Metrics and Logging are not yet supported.
+
+* Quarkus now supports the OpenTelemetry Autoconfiguration for Traces. The configurations match what you can see at https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md[OpenTelemetry SDK Autoconfigure] with the `quarkus.*`` prefix.
+
+* Extensions and the libraries they provide, are directly instrumented in Quarkus. The use of the https://opentelemetry.io/docs/instrumentation/java/automatic/[OpenTelemetry Agent^] is not needed nor recommended due to context propagation issues between imperative and reactive libraries.
+
+In a distributed cloud-native application, multiple microservices are collaborating to deliver the expected functionality. If you have hundreds of services, how do you debug an individual request as it travels through a distributed system? For Java enterprise developers, the OpenTelemetry framework enables you to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) which helps you analyze your application performance and behavior. Let's find out how.
 
 == Install Jaeger
 
@@ -16,7 +22,7 @@ https://www.jaegertracing.io/[Jaeger^] is a distributed tracing system originall
 * Service dependency analysis
 * Performance / latency optimization
 
-Jaeger exposes a _collector_ through which apps (like our People app) report tracing details. Jaeger stores and reports on this tracing activity.
+You'll use the Jaeger as a backend to collect the telemetry data because Jaeger exposes a _collector_ through which apps (like our People app) report tracing details. Jaeger stores and reports on this tracing activity.
 
 [NOTE]
 ====
@@ -47,41 +53,82 @@ Jaeger exposes its collector at different ports for different protocols. Most us
 
 image::jaegersvcs.png[spin, 700]
 
-The endpoint on port `14268` is the one we'll use for our app.
+The endpoint on port `14250` is the one we'll use for our app.
 
-== Add Tracing to Quarkus
+== Install OpenTelemetry Collector
 
-With Jaeger installed, let's turn back to our Quarkus app. Like other exercises, we'll need another extension to enable tracing in our app. Install it with:
+OpenTelemetry Collector enables you to offload data quickly alongside your application services in terms of retries, batching, encryption or even sensitive data filtering. You will create an OpenTelemetry Collector to send the telemetry data to the Jaeger server.
+
+Open `otel.yml` in the *src/main/kubernetes* directory. Copy the following YAML to the file. 
+
+[source,yaml,role="copypaste"]
+----
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: otel
+  namespace: {{ USER_ID }}-project
+spec:
+  mode: deployment
+  config: |
+    receivers:
+      zipkin:
+    processors:
+    exporters:
+      jaeger:
+        endpoint: jaeger-collector-headless.{{ USER_ID }}-project.svc:14250
+        tls:
+          ca_file: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
+      logging:
+    service:
+      pipelines:
+        traces:
+          receivers: [zipkin]
+          processors: []
+          exporters: [jaeger, logging]
+----
+
+Then, run the following `oc` command in VS Code terminal.
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="smallrye-opentracing, rest-client-reactive"
+oc apply -f src/main/kubernetes/otel.yml
+----
+
+Go back to the Topology view, you will see the otel-collector deployed.
+
+image::devconsole-otel.png[devconsole-otel,800]
+
+== Add OpenTelemetry to Quarkus
+
+With Jaeger installed, let's turn back to our Quarkus app. Like other exercises, we'll need the following extensions to enable OpenTelemetry in our app. Install it with:
+
+[source,sh,role="copypaste"]
+----
+mvn quarkus:add-extension -Dextensions="quarkus-opentelemetry, rest-client-reactive, quarkus-rest-client-reactive-jackson"
 ----
 
 You will see:
 
 [source,console]
 ----
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-rest-client-reactive-jackson has been installed
 [INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-rest-client-reactive has been installed
-[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-smallrye-opentracing has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-quarkus-opentelemetry has been installed
+
 ----
 
 This will add the necessary entries in your `pom.xml` to bring in the OpenTracing capability, and an HTTP REST Client we'll use pater.
 
 == Configure Quarkus
 
-Next, open the `application.properties` file (in the `src/main/resources` directory). Add the following lines to it to configure the default Jaeger tracer in Quarkus:
+Next, open the `application.properties` file (in the `src/main/resources` directory). Add the following lines to it to configure the OTLP gRPC Exporter in Quarkus:
 
 [source,none,role="copypaste"]
 ----
-%prod.quarkus.jaeger.service-name=people<1>
-%prod.quarkus.jaeger.sampler-type=const<2>
-%prod.quarkus.jaeger.sampler-param=1<2>
-%prod.quarkus.jaeger.endpoint=http://jaeger-collector:14268/api/traces<3>
+%prod.quarkus.otel.exporter.otlp.traces.endpoint=http://jaeger-collector-headless:4317 <1>
 ----
-<1> The name of our service from the perspective of Jaeger (useful when multiple apps report to the same Jaeger instance)
-<2> How Jaeger samples traces. https://www.jaegertracing.io/docs/1.7/sampling/#client-sampling-configuration[Other options exist^] to tune the performance.
-<3> This is the default HTTP-based collector exposed by Jaeger
+<1> gRPC endpoint (Jaeger collector service) to send spans.
 
 == Test it out
 
@@ -120,16 +167,7 @@ Open the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^
 * **Username**: `{{ USER_ID }}`
 * **Password**: `{{ OPENSHIFT_USER_PASSWORD }}`
 
-Then, click **Allow Selected Permissions** to allow Jaeger to access your account details. You'll end up on the Jaeger query page:
-
-image::jaegerui.png[jaeger,600]
-
-Using the menu on the left, select the `people` Service, and click **Find Traces**. Jaeger will show the collected traces on the right:
-
-[WARNING]
-====
-If you do not see `people` in the _Service_ drop-down, ensure your changes to `application.properties` to add Jaeger configuration is correct, and reload the Jaeger UI.
-====
+Then, click **Allow Selected Permissions** to allow Jaeger to access your account details. You'll end up on the Jaeger query page. Using the menu on the left, select the `people` Service, and click **Find Traces**. Jaeger will show the collected traces on the right:
 
 image::find1.png[jaeger,600]
 
@@ -349,7 +387,11 @@ You should see:
 
 == Inspect traces
 
-Reload the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^], and click **Find Traces**. The new trace should appear the top with multiple spans. Select it to display details:
+Reload the https://jaeger-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Jaeger Query UI^]. Then, select `GET /person/swpeople` in the Operation and click **Find Traces**. 
+
+image::swpeople-search.png[swpeople,800]
+
+The new trace should appear the top with multiple spans. Select it to display details:
 
 image::swpeople.png[swpeople,800]
 
