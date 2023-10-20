@@ -20,7 +20,7 @@ Next, replace the below code into the class:
 ----
 package org.acme.people.service;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class GreetingService {
@@ -62,9 +62,9 @@ Add the necessary imports below the existing `import` statements near the top of
 
 [source,java,role="copypaste"]
 ----
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.acme.people.service.GreetingService;
-import javax.ws.rs.PathParam;
+import jakarta.ws.rs.PathParam;
 ----
 
 [WARNING]
