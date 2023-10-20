@@ -64,8 +64,8 @@ INFO  [io.qua.test] (Test runner thread) All tests are now passing
 
 
 --
-All 1 test is passing (0 skipped), 1 test was run in 534ms. Tests completed at 17:54:41 due to changes to GreetingResource.class.
-Press [r] to re-run, [o] Toggle test output, [:] for the terminal, [h] for more options>
+All 1 test is passing (0 skipped), 1 test was run in 351ms. Tests completed at 01:19:02 due to changes to GreetingResource.class.
+Press [e] to edit command line args (currently ''), [r] to re-run, [o] Toggle test output, [:] for the terminal, [h] for more options>
 ----
 
 Add a new test in the existing `GreetingResourceTest.java` class under the `// add more tests` marker that tests the `/hello/greeting` endpoint by copying this code below the existing test:
@@ -89,8 +89,8 @@ You will see new test result instantly in the terminal:
 [source, none]
 ----
 --
-All 2 tests are passing (0 skipped), 2 tests were run in 567ms. Tests completed at 17:55:29 due to changes to GreetingResource.class and 1 other files.
-Press [r] to re-run, [o] Toggle test output, [:] for the terminal, [h] for more options>
+All 2 tests are passing (0 skipped), 2 tests were run in 401ms. Tests completed at 01:20:05 due to changes to GreetingResourceTest.class.
+Press [e] to edit command line args (currently ''), [r] to re-run, [o] Toggle test output, [:] for the terminal, [h] for more options>
 ----
 
 == Controlling Continuous Testing
@@ -110,7 +110,7 @@ There are various hotkeys you can use to control continuous testing. Pressing `h
 
 == Exceptions
 
-[x] - Opens last exception in IDE (None)
+[x] - Open last exception (or project) in IDE (none)
 
 == HTTP
 
@@ -120,12 +120,13 @@ There are various hotkeys you can use to control continuous testing. Pressing `h
 == System
 
 [s] - Force restart
+[e] - Edits the command line parameters and restarts ()
 [i] - Toggle instrumentation based reload (disabled)
 [l] - Toggle live reload (enabled)
 [j] - Toggle log levels (INFO)
-[h] - Shows this help
-[:] - Enters terminal mode
-[q] - Quits the application
+[h] - Show this help
+[:] - Enter terminal mode
+[q] - Quit the application
 ----
 
 Quarkus also provides a new experimental Dev UI, which is available in dev mode (when you start quarkus with mvn quarkus:dev) at `/q/dev` by default. It allows you to quickly visualize all the extensions currently loaded, see their status and go directly to their documentation.
@@ -138,7 +139,7 @@ Open a new web browser or tab window and paste the URL.
 
 image::quarkus-devui.png[devui-endpoint, 800]
 
-As you see, `All tests passed` on the right bottom. When you select `Open` on the left bottom, it will show the Quarkus runtime logs:
+When you select `Open` on the left bottom, it will show the Quarkus runtime logs:
 
 image::quarkus-devui-open.png[devui-endpoint, 800]
 
@@ -147,7 +148,7 @@ image::quarkus-devui-open.png[devui-endpoint, 800]
 In case you see *Tests not running*, reload the DEV UI page.
 ====
 
-Select `Test results` then it will show the details of the test results:
+Select `Continuous Testing` on the left menu, you will that see 2 test cases passed with a green color.
 
 image::quarkus-devui-test-result.png[devui-endpoint, 800]
 
@@ -225,7 +226,7 @@ The test results will be updated automatically in the terminal:
 
 [source, none]
 ----
-All 3 tests are passing (0 skipped), 1 test was run in 779ms. Tests completed at 18:16:37 due to changes to StaticContentTest.class.
+All 3 tests are passing (0 skipped), 1 test was run in 451ms. Tests completed at 01:34:45 due to changes to StaticContentTest.class.
 ----
 
 == Injection into tests
@@ -348,7 +349,7 @@ The test results of the mock will be updated automatically in the terminal:
 
 [source, none]
 ----
-All 4 tests are passing (0 skipped), 1 test was run in 662ms. Tests completed at 18:17:54 due to changes to MockGreetingService.class and 1 other files.
+All 4 tests are passing (0 skipped), 1 test was run in 556ms. Tests completed at 01:37:50 due to changes to MockGreetingService.class and 1 other files.
 ----
 
 Press `o` to toggle test output and press `r` to re-run the continuous testing. Then, you will see:
