@@ -67,7 +67,7 @@ Next, add the following variables in `src/main/resources/application.properties`
 %prod.quarkus.kubernetes.deploy=true<2>
 %prod.quarkus.kubernetes.deployment-target=openshift<3>
 %prod.quarkus.openshift.build-strategy=docker<4>
-%prod.quarkus.openshift.expose=true<5>
+%prod.quarkus.openshift.route.expose=true<5>
 
 ----
 
