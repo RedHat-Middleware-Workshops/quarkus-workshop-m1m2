@@ -240,7 +240,7 @@ Create a new test class file in `src/test` in the `org.acme.people` package call
 ----
 package org.acme.people;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.acme.people.service.GreetingService;
 import org.junit.jupiter.api.Assertions;
@@ -318,7 +318,7 @@ Create a new class file in `src/test/java` in the `org.acme.people` package call
 ----
 package org.acme.people;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.acme.people.service.GreetingService;
 import io.quarkus.test.Mock;
 

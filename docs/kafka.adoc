@@ -109,7 +109,7 @@ To start building the app, create a new Java class file in the `org.acme.people.
 ----
 package org.acme.people.stream;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.acme.people.utils.CuteNameGenerator;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
@@ -144,7 +144,7 @@ Create a new Java class file in the same package called `NameConverter.java`. Us
 ----
 package org.acme.people.stream;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
@@ -179,11 +179,11 @@ package org.acme.people.stream;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.reactivestreams.Publisher;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * A simple resource retrieving the in-memory "my-data-stream" and sending the items as server-sent events.

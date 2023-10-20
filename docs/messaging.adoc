@@ -52,7 +52,7 @@ You'll also need to add more import statements at the top:
 [source,java,role="copypaste"]
 ----
 import io.vertx.mutiny.core.eventbus.EventBus;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 ----
 
 Next, create two new endpoints in the same class which creates new people in our database given a name, and finds people by their name:
@@ -80,7 +80,7 @@ And add the imports:
 [source,java,role="copypaste"]
 ----
 import io.smallrye.mutiny.Uni;
-import javax.ws.rs.POST;
+import jakarta.ws.rs.POST;
 ----
 
 [NOTE]
@@ -126,8 +126,8 @@ package org.acme.people.service;
 
 import java.time.LocalDate;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 
 import org.acme.people.model.EyeColor;
 import org.acme.people.model.Person;
