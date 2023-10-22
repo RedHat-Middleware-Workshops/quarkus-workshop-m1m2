@@ -70,7 +70,7 @@ image::auth-access.png[auth-access, 800]
 
 Once you log in, you’ll be placed on the *Create Workspace* dashboard. Copy the following `Git Repo URL` and select `Create & Open`.
 
-* *Git Repo URL*: `https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs/tree/ocp-4.13`
+* *Git Repo URL*: `https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs/tree/rhbq-3.2`
 
 image::ds-landing.png[ds, 800]
 
