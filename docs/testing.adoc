@@ -139,6 +139,11 @@ Open a new web browser or tab window and paste the URL.
 
 image::quarkus-devui.png[devui-endpoint, 800]
 
+[NOTE]
+====
+In case you have an issue (e.g., _ERROR [io.qua.ver.htt.run.dev.DevConsoleCORSFilter] (vert.x-eventloop-thread-0) Only localhost origin is allowed, but Origin header value is..._) to access the Dev UI, please append `%dev.quarkus.dev-ui.cors.enabled=false` to the *application.properties file*.
+====
+
 When you select `Open` on the left bottom, it will show the Quarkus runtime logs:
 
 image::quarkus-devui-open.png[devui-endpoint, 800]
