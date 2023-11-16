@@ -166,8 +166,7 @@ Earlier you implemented a series of MicroProfile health checks. To make OpenShif
 
 [source,sh,role="copypaste"]
 ----
-oc set probe deployment/people --readiness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20 --get-url=http://:8080/q//health/ready && oc set probe deployment/people --liveness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20  --get-url=http://:8080/q/health/live &&
-oc rollout latest deployment/people
+oc set probe deployment/people --readiness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20 --get-url=http://:8080/q//health/ready && oc set probe deployment/people --liveness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20  --get-url=http://:8080/q/health/live
 ----
 
 You'll see in the Topology view that the app is re-deployed with the new settings and the old app will be _terminated_ soon after:
