@@ -131,7 +131,7 @@ There are various hotkeys you can use to control continuous testing. Pressing `h
 
 Quarkus also provides a new experimental Dev UI, which is available in dev mode (when you start quarkus with mvn quarkus:dev) at `/q/dev` by default. It allows you to quickly visualize all the extensions currently loaded, see their status and go directly to their documentation.
 
-Unfold the `ENDPOINTS > Public` and select the clipboard icon to copy the *Dev UI* URL.
+To show up the public endpoints, select `Show plug-in endpoints`. Then, unfold the `ENDPOINTS > Public` and select the *Open Dev UI* icon.
 
 image::devui-endpoint.png[devui-endpoint, 700]
 

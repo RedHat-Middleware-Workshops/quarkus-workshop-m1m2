@@ -68,6 +68,9 @@ Next, add the following variables in `src/main/resources/application.properties`
 %prod.quarkus.kubernetes.deployment-target=openshift<3>
 %prod.quarkus.openshift.build-strategy=docker<4>
 %prod.quarkus.openshift.route.expose=true<5>
+%prod.quarkus.openshift.deployment-kind=Deployment<6>
+%prod.quarkus.container-image.group={{ USER_ID }}-project<7>
+%prod.quarkus.container-image.registry=image-registry.openshift-image-registry.svc:5000<8>
 
 ----
 
@@ -76,6 +79,9 @@ Next, add the following variables in `src/main/resources/application.properties`
 <3> Instructs the extension to generate and create the OpenShift resources (like `DeploymentConfig` and `Service`) after building the container
 <4> Set the Docker build strategy
 <5> Instructs the extension to generate an OpenShift `Route`
+<6> Generate the Deployment resource
+<7> Specify a project where the application is deployed
+<8> Sepcify an internal container registry to push an application image
 
 *Docker build* strategy builds the artifacts (JAR files or a native executable) outside the OpenShift cluster, either locally or in a CI environment, and then provides them to the OpenShift build system together with a Dockerfile. The container is built inside the OpenShift cluster and provided as an image stream.
 
@@ -93,15 +99,10 @@ As you recall, the output of this process is a native Linux binary but also runn
 
 [source,sh,role="copypaste"]
 ----
-oc rollout status -w dc/people
+oc rollout status -w deployment/people
 ----
 
-[NOTE]
-====
-`dc` in `dc/people` is shorthand for OpenShift's _DeploymentConfig_ object type. There are other shortcuts like `bc` for _BuildConfig_, `svc` for Kubernetes _Services_, and so on.
-====
-
-Wait for that command to report `replication controller "people-1" successfully rolled out` before continuing.
+Wait for that command to report `deployment "people" successfully rolled out` before continuing.
 
 And now we can access using `curl` once again. In the Terminal, run this command to access the endpoint:
 
@@ -165,8 +166,8 @@ Earlier you implemented a series of MicroProfile health checks. To make OpenShif
 
 [source,sh,role="copypaste"]
 ----
-oc set probe dc/people --readiness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20 --get-url=http://:8080/q//health/ready && oc set probe dc/people --liveness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20  --get-url=http://:8080/q/health/live &&
-oc rollout latest dc/people
+oc set probe deployment/people --readiness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20 --get-url=http://:8080/q//health/ready && oc set probe deployment/people --liveness --initial-delay-seconds=5 --period-seconds=5 --failure-threshold=20  --get-url=http://:8080/q/health/live &&
+oc rollout latest deployment/people
 ----
 
 You'll see in the Topology view that the app is re-deployed with the new settings and the old app will be _terminated_ soon after:

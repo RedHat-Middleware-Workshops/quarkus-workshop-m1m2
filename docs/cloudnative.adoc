@@ -514,11 +514,6 @@ Next, select **devfile: 05. Run Fast Jar** task:
 
 image::run-fastjar.png[livecoding, 700]
 
-[source,sh,role="copypaste"]
-----
-java -Dquarkus.http.port=8081 -jar target/quarkus-app/quarkus-run.jar
-----
-
 Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`.
 
 While the app is running, open a separate Terminal window and test it by running:

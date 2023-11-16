@@ -112,11 +112,11 @@ You should see something like:
 [source,none]
 ----
     PID   RSS COMMAND
-   5385  2684 sh -c cd /projects/quarkus-workshop-m1m2-labs; ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
-   5391 53136 ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+  18590  2740 sh -c cd /projects/quarkus-workshop-m1m2-labs; ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+  18597 49332 ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
 ----
 
-The 2nd row is the actual process that is taking around 53 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
+The 2nd row is the actual process that is taking around 49 MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
 
 [NOTE]
 ====

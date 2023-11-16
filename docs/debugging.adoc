@@ -46,6 +46,10 @@ The debugger view will appear with several small buttons used to start/stop exec
 
 image::buttons.png[buttons, 600]
 
+Click on `Yes` to enable the *Debug* mode:
+
+image::debug-mode.png[debug-mode, 600]
+
 == Set a Breakpoint
 
 To debug the app, let's step through our function that has the bug. In the left gutter of the code, to the left of the line numbers, select once next to `int len = name.length();` to set a breakpoint and cause a red circle to appear:
