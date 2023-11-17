@@ -69,8 +69,8 @@ Next, add the following variables in `src/main/resources/application.properties`
 %prod.quarkus.openshift.build-strategy=docker<4>
 %prod.quarkus.openshift.route.expose=true<5>
 quarkus.openshift.deployment-kind=Deployment<6>
-%prod.quarkus.container-image.group={{ USER_ID }}-project<7>
-%prod.quarkus.container-image.registry=image-registry.openshift-image-registry.svc:5000<8>
+quarkus.container-image.group={{ USER_ID }}-project<7>
+quarkus.container-image.registry=image-registry.openshift-image-registry.svc:5000<8>
 
 ----
 
