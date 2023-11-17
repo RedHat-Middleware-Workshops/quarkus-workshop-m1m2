@@ -119,8 +119,8 @@ Let's re-build and re-deploy the application:
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests && \
-oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
+oc label deployment/people app.kubernetes.io/part-of=people --overwrite && \
+oc annotate deployment/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 == Confirm deployment
@@ -129,7 +129,7 @@ Run and wait for the app to complete its rollout:
 
 [source,sh,role="copypaste"]
 ----
-oc rollout status -w dc/people
+oc rollout status -w deployment/people
 ----
 
 == Test endpoints
@@ -386,8 +386,8 @@ Let's re-build and re-deploy the application:
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests && \
-oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
+oc label deployment/people app.kubernetes.io/part-of=people --overwrite && \
+oc annotate deployment/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 === Confirm deployment
@@ -396,7 +396,7 @@ Run and wait for the app to complete its rollout:
 
 [source,sh,role="copypaste"]
 ----
-oc rollout status -w dc/people
+oc rollout status -w deployment/people
 ----
 
 === Test confidential
