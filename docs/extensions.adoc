@@ -341,7 +341,7 @@ When you run Quarkus applications, the list of extensions enabled are shown in t
 
 [source, none]
 ----
-INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, narayana-jta, resteasy]
+INFO  [io.quarkus] (main) Installed features: [cdi, kubernetes, resteasy-reactive, smallrye-context-propagation, vertx]
 ----
 
 [NOTE]

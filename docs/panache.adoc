@@ -19,7 +19,7 @@ You may have wondered why we are using `people` in our Java APIs, and now you'll
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-h2, jdbc-postgresql"
+mvn quarkus:add-extension -Dextensions="hibernate-orm-panache, jdbc-postgresql"
 ----
 
 You should see:
@@ -27,11 +27,40 @@ You should see:
 [source,console]
 ----
 [INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-hibernate-orm-panache has been installed
-[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-jdbc-h2 has been installed
 [INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-jdbc-postgresql has been installed
 ----
 
-We'll use the in-memory H2 database for local testing, and Postgres when we deploy to our production Kubernetes environment. So that's why we have added in the `h2` and `postgresql` extensions. `resteasy-reactive-jackson` is used to encode JSON objects.
+We'll use the Postgres in both your local and the production Kubernetes environment. The `resteasy-reactive-jackson` is used to encode JSON objects.
+
+== Quarkus Dev Services
+
+When testing or running in dev mode Quarkus can provide you with a zero-config database out of the box, a feature we refer to as *Dev Services*. Depending on your database type you may need *Docker* or *Podman* installed in order to use this feature. Dev Services is supported for the *PostgreSQL* databases. With that, you don't need to add required configurations (e.g., username, password, JDBC URL) to set up the PostgreSQL in the _application.properties_ file.
+
+Red Hat Dev Spaces enables you to run the Quarkus Dev Services in the terminal using the _KUBEDOCK_ tool. Unlikely local environment, you need to set the `quarkus.datasource.devservices.volumes` where the PostgreSQL's data is stored inside a container.
+
+when you take a look at the _src/main/resources/application.properties_, you can see the following configuration which we already added for you in advance.
+
+[source,properties]
+----
+%dev.quarkus.datasource.devservices.volumes."/"=/var/lib/postgresql/
+----
+
+Find more information about the Quarkus Dev Services https://quarkus.io/guides/databases-dev-services[here^].
+
+When you take a look at the *02. Start Live Coding* terminal, you should see the following logs:
+
+[source,console]
+----
+Dev Services for the default datasource (postgresql) started
+----
+
+Then, execute `podman ps` in the bash terminal. You will see that a *PostgreSQL* container is running automatically.
+
+[source,console]
+----
+CONTAINER ID  IMAGE                  COMMAND     CREATED         STATUS        PORTS       NAMES
+27ee26a42fae  docker.io/postgres:14              24 seconds ago  Healthy (Up)              27ee26a42faebacacfcccacde227e210b6884f66ffd7dcf13f4470c56ba7a8e7
+----
 
 The database connection details (JDBC url, database credentials) are specified in `application.properties` using the Quarkus Profile support. So for example you'll find this:
 
@@ -40,39 +69,8 @@ The database connection details (JDBC url, database credentials) are specified i
 %prod.quarkus.datasource.db-kind=postgresql
 %prod.quarkus.datasource.jdbc.url=jdbc:postgresql://postgres-database/person
 %prod.quarkus.datasource.jdbc.driver=org.postgresql.Driver
-
-%dev.quarkus.datasource.db-kind=h2
-%test.quarkus.datasource.db-kind=h2
+...
 ----
-
-This causes the `%dev` properties (using H2 database) to be active in development (and the `%test` in test mode), and the `%prod` properties (using Postgres) to be used when in production (not in dev or test).
-
-You probably noticed that there was magic and we didn't specify the JDBC URL, this is because of https://quarkus.io/guides/databases-dev-services[Quarkus Dev Services^] and it works for all DBs, but here we can't have containers so we've done in-memory H2.
-
-When you take a look at the Quarkus Dev Mode terminal, you should see the following logs:
-
-[source,sh]
-----
-Dev Services for the default datasource (h2) started.
-----
-
-Then, press `c` to find more information about the H2 Dev Services.
-
-[source,sh]
-----
-== Dev Services
-
-h2
-  Injected config:  - quarkus.datasource.db-kind=h2
-                    - quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost:33329/mem:quarkus;DB_CLOSE_DELAY=-1
-                    - quarkus.datasource.password=sa
-                    - quarkus.datasource.username=sa
-----
-
-[NOTE]
-====
-These names are known to Quarkus, and you can introduce your own profiles and use them in a similar way for other environments (and can be overridden at runtime). You can read more about externalized config in the https://quarkus.io/guides/application-configuration-guide[Quarkus Application Configuration Guide^].
-====
 
 == Create Entity
 
