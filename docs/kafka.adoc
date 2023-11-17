@@ -272,10 +272,10 @@ Run the following command which will build and deploy using the OpenShift extens
 [source,sh,role="copypaste"]
 ----
 mvn clean package -DskipTests && \
-oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
+oc label deployment/people app.kubernetes.io/part-of=people --overwrite && \
 oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite && \
-oc rollout status -w dc/people
+oc annotate deployment/people app.openshift.io/connects-to=postgres-database --overwrite && \
+oc rollout status -w deployment/people
 ----
 
 The build should take a minute or two to complete.

@@ -98,10 +98,13 @@ quarkus.swagger-ui.always-include=true
 ----
 ====
 
-Since our app is still running, when you select the `index-webpage` link in the *ENDPOINTS*, the URL will be copied to clipboard automically. Then, Open a new web browser to paste the URL:
+Since our app is still running, when you open the `index-webpage` in the *ENDPOINTS*.
 
 image::weblink.png[swagger,700]
 
+Then, click on `Open`.
+
+image::weblink-open.png[swagger,700]
 
 Then, add `/q/swagger-ui` to the end of the URL to access the Swagger UI and play with your API. Be sure to use *http* protocal to access the Swagger UI page.
 

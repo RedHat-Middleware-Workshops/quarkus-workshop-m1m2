@@ -585,9 +585,9 @@ And label the items with proper icons:
 [source,sh,role="copypaste"]
 ----
 oc label dc/postgres-database  app.openshift.io/runtime=postgresql --overwrite && \
-oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
+oc label deployment/people app.kubernetes.io/part-of=people --overwrite && \
 oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
+oc annotate deployment/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 This will deploy the database to our new project. Select the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] to see it:
@@ -608,22 +608,22 @@ mvn clean package -DskipTests
 
 The output should end with `BUILD SUCCESS`.
 
-Finally, make sure it's actually done rolling out:
+Finally, make sure it's actually done rolling out.
 
 [source,sh,role="copypaste"]
 ----
-oc rollout status -w dc/people
+oc rollout status -w deployment/people
 ----
 
-Wait for that command to report *replication controller _people-xx_ successfully rolled out* before continuing.
+Wait for that command to report *deployment "people" successfully rolled out* before continuing.
 
 And let's do again to label the items with proper icons:
 
 [source,sh,role="copypaste"]
 ----
-oc label dc/people app.kubernetes.io/part-of=people --overwrite && \
+oc label deployment/people app.kubernetes.io/part-of=people --overwrite && \
 oc label dc/postgres-database app.kubernetes.io/part-of=people --overwrite && \
-oc annotate dc/people app.openshift.io/connects-to=postgres-database --overwrite
+oc annotate deployment/people app.openshift.io/connects-to=postgres-database --overwrite
 ----
 
 Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], make sure it's done deploying (dark blue circle):
