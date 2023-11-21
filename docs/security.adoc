@@ -2,7 +2,21 @@
 :experimental:
 :imagesdir: images
 
-Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak^], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC^], https://keyloak.org[Keycloak^] and https://en.wikipedia.org/wiki/OAuth[OAuth^] to secure your Quarkus applications.
+Bearer Token Authorization is the process of authorizing HTTP requests based on the existence and validity of a bearer token representing a subject and her access context, where the token provides valuable information to determine the subject of the call as well whether or not a HTTP resource can be accessed. This is commonly used in OAuth-based identity and access management systems like https://keycloak.org[Keycloak^], a popular open source project. In this exercise we'll show you how to use https://github.com/eclipse/microprofile-jwt-auth/releases/download/1.1.1/microprofile-jwt-auth-spec.pdf[Microprofile JSON Web Token (JWT) RBAC^], https://access.redhat.com/documentation/en-us/red_hat_build_of_keycloak[Red Hat build of Keycloak^] and https://en.wikipedia.org/wiki/OAuth[OAuth^] to secure your Quarkus applications.
+
+Red Hat build of Keycloak is well suited for securing web-based and other modern applications, mobile apps, APIs and services, by leveraging popular standards and security protocols such as OpenID Connect, OAuth and SAML with the following features:
+
+* Seamless User Experience, Login, Logout, Self-registration, User Account Management
+* Strong Authentication, MFA, Passwordless authentication
+* Single-Sign-On, Login once to multiple applications
+* Identity Federation, connect to existing LDAP, Active Directory servers, or users in other stores
+* Identity Brokering, authenticating with external OpenID Connect or SAML Identity Providers
+* Social Login, enable login with Google, GitHub, Facebook, Twitter/X, and other social networks
+* Role-based access control, fine-grained Authorization services
+* FIPS Compliance (FIPS 140-2)
+
+Find more information https://developers.redhat.com/articles/2023/11/15/whats-new-red-hat-build-keycloak-version-22[here^].
+
 
 == Add JWT to Quarkus
 
@@ -28,8 +42,8 @@ Some configuration of the extension is required. Add this to your `application.p
 
 [source,properties,role="copypaste"]
 ----
-mp.jwt.verify.publickey.location={{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/certs<1>
-mp.jwt.verify.issuer={{KEYCLOAK_URL}}/auth/realms/quarkus<2>
+mp.jwt.verify.publickey.location={{KEYCLOAK_URL}}/realms/quarkus/protocol/openid-connect/certs<1>
+mp.jwt.verify.issuer={{KEYCLOAK_URL}}/realms/quarkus<2>
 quarkus.smallrye-jwt.auth-mechanism=MP-JWT<3>
 quarkus.smallrye-jwt.realm-name=quarkus
 quarkus.smallrye-jwt.enabled=true
@@ -171,7 +185,7 @@ Get a token for user `alice` with this command:
 [source,sh,role="copypaste"]
 ----
 export ALICE_TOKEN=$(\
-    curl -s -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    curl -s -X POST {{KEYCLOAK_URL}}/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=alice&password=alice&grant_type=password' | jq --raw-output '.access_token' \
@@ -234,7 +248,7 @@ Obtain an Admin token:
 [source,sh,role="copypaste"]
 ----
 export ADMIN_TOKEN=$(\
-    curl -s -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    curl -s -X POST {{KEYCLOAK_URL}}/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=admin&password=admin&grant_type=password' | jq --raw-output '.access_token' \
@@ -260,7 +274,7 @@ Set-Cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1b3560b80b9fad566e105aff1f31f880; p
 Cache-control: private
 
 hello admin, isSecure: false, authScheme: Bearer, hasJWT: true
-Injected issuer: ["{{KEYCLOAK_URL}}/auth/realms/quarkus"]
+Injected issuer: ["{{KEYCLOAK_URL}}/realms/quarkus"]
 
 Claim Name: [sub] Claim Value: [af134cab-f41c-4675-b141-205f975db679]
 Claim Name: [groups] Claim Value: [[admin, user]]
@@ -321,7 +335,7 @@ Next, add these to your `application.properties` for Keycloak:
 [source,none,role="copypaste"]
 ----
 # OIDC config
-quarkus.oidc.auth-server-url={{ KEYCLOAK_URL }}/auth/realms/quarkus
+quarkus.oidc.auth-server-url={{ KEYCLOAK_URL }}/realms/quarkus
 quarkus.oidc.client-id=backend-service
 quarkus.oidc.credentials.secret=secret
 quarkus.http.cors=true
@@ -415,7 +429,7 @@ Refresh the admin token (it may have expired):
 [source,sh,role="copypaste"]
 ----
 export ADMIN_TOKEN=$(\
-    curl -s -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    curl -s -X POST {{KEYCLOAK_URL}}/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=admin&password=admin&grant_type=password' | jq --raw-output '.access_token' \
@@ -447,7 +461,7 @@ To access the confidential endpoint, you should obtain an access token for user 
 [source,sh,role="copypaste"]
 ----
 export JDOE_TOKEN=$(\
-    curl -s -X POST {{KEYCLOAK_URL}}/auth/realms/quarkus/protocol/openid-connect/token \
+    curl -s -X POST {{KEYCLOAK_URL}}/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=jdoe&password=jdoe&grant_type=password' | jq --raw-output '.access_token' \
@@ -468,12 +482,11 @@ You should see:
 [source,none]
 ----
 HTTP/1.1 200 OK
-content-length: 380
+content-length: 503
 content-type: text/plain;charset=UTF-8
-set-cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=8392213f62a8f2a2ccc58851e9316cc7; path=/; HttpOnly
-cache-control: private
+set-cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1bc7e0de32a148dfdf0fc11eff5c9e2c; path=/; HttpOnly
 
-confidential access for: jdoe with attributes:{configuration-metadata=io.quarkus.oidc.OidcConfigurationMetadata@46b1783a, io.quarkus.security.identity.AuthenticationRequestContext=io.quarkus.security.runtime.QuarkusIdentityProviderManagerImpl$1@7a5e12e6, tenant-id=Default, permissions=[Permission {id=99856673-24fa-431b-9e26-93e2113f69db, name=Confidential Resource, scopes=[]}]}
+confidential access for: jdoe with attributes:{configuration-metadata=io.quarkus.oidc.OidcConfigurationMetadata@1e3c7d7f, io.quarkus.security.identity.AuthenticationRequestContext=io.quarkus.security.runtime.QuarkusIdentityProviderManagerImpl$1@2bc2d50d, permissions=[Permission {id=99856673-24fa-431b-9e26-93e2113f69db
 ----
 
 Success! Even though our code did not explicitly protect the `/secured/confidential` endpoint, we can protect arbitrary URLs in Quarkus apps when using Keycloak.
