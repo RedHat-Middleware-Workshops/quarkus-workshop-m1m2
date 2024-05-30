@@ -78,7 +78,7 @@ spec:
   http:
     tlsSecret: keycloak-cert-secret
   hostname:
-    hostname: https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}
+    hostname: keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}
   db:
     vendor: postgres
     host: keycloak-postgresql
@@ -157,7 +157,7 @@ image::realm-job.png[kc, 500]
 
 === Explore Realm
 
-Go back to the https://https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/[Keycloak administration console] and login as `admin` user (using the password from the {{ CONSOLE_URL }}/k8s/ns/{{ USER_ID }}-project/secrets/keycloak-initial-admin[Secret^] as before). You should now see a new realm in the Realm dropdown. Select the `globex` realm by clicking on it.
+Go back to the https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/[Keycloak administration console] and login as `admin` user (using the password from the {{ CONSOLE_URL }}/k8s/ns/{{ USER_ID }}-project/secrets/keycloak-initial-admin[Secret^] as before). You should now see a new realm in the Realm dropdown. Select the `globex` realm by clicking on it.
 
 Within the new realm, click on `Users` to see the pre-created users `admin`, `alice`, and `jdoe`:
 
@@ -199,8 +199,8 @@ Some configuration of the extension is required. Add this to your `application.p
 
 [source,properties,role="copypaste"]
 ----
-mp.jwt.verify.publickey.location=https://https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/realms/quarkus/protocol/openid-connect/certs<1>
-mp.jwt.verify.issuer=https://https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/realms/quarkus<2>
+mp.jwt.verify.publickey.location=https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/realms/quarkus/protocol/openid-connect/certs<1>
+mp.jwt.verify.issuer=https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/realms/quarkus<2>
 smallrye.jwt.client.tls.certificate.path=classpath:certs/certificate.pem<3>
 smallrye.jwt.client.tls.trust-all=true<4>
 ----
