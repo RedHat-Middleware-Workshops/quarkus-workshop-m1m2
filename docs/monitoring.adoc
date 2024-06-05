@@ -266,7 +266,7 @@ oc rollout status -w deployment/people
 
 == Test
 
-You'll need to trigger the methods that we've instrumented, so http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/names.html[reopen the name cloud^], which will start producing names (and generating metrics):
+You'll need to trigger the methods that we've instrumented, so https://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/names.html[reopen the name cloud^], which will start producing names (and generating metrics):
 
 image::names.png[names, 400]
 

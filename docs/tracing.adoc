@@ -155,7 +155,7 @@ oc rollout status -w deployment/people
 
 == Trigger traces
 
-You'll need to trigger some HTTP endpoints to generate traces. Access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/datatable.html[graphical person browser powered by the DataTables library we created earlier^].
+You'll need to trigger some HTTP endpoints to generate traces. Access the https://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/datatable.html[graphical person browser powered by the DataTables library we created earlier^].
 
 Exercise the table a bit by paging through the entries and using various search terms to force several RESTful calls back to our app:
 
@@ -355,7 +355,7 @@ Access the endpoint by running the following command:
 
 [source,sh,role="copypaste"]
 ----
-curl -s http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/swpeople | jq
+curl -s https://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/person/swpeople | jq
 ----
 
 You should see:

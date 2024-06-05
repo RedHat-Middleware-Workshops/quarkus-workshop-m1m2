@@ -255,6 +255,9 @@ Add the following values to the app's `src/main/resources/application.properties
 %prod.mp.messaging.incoming.names.bootstrap.servers=names-cluster-kafka-bootstrap:9092<1>
 %prod.mp.messaging.incoming.names.connector=smallrye-kafka
 %prod.mp.messaging.incoming.names.value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+
+%prod.uarkus.openshift.route.tls.insecure-edge-termination-policy=None
+%prod.quarkus.openshift.route.tls.termination=edge
 ----
 <1> The hostnames you see here will only make sense (be resolvable via DNS) when this app is run in the same Kubernetes namespace as the Kafka cluster you created earlier. So you'll see this and other config values above prefixed with `%prod` which will not try to initialize Kafka when in `dev` mode.
 
@@ -282,7 +285,7 @@ The build should take a minute or two to complete.
 
 == Test
 
-Our application should be up and running in a few seconds after the build completes and generating names. To see if it's working, access the http://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/names.html[graphical name cloud powered by Quarkus, MicroProfile and Kafka^]. You should see a cloud of names updating every 5 seconds (it may take a few seconds for it to start!):
+Our application should be up and running in a few seconds after the build completes and generating names. To see if it's working, access the https://people-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}/names.html[graphical name cloud powered by Quarkus, MicroProfile and Kafka^]. You should see a cloud of names updating every 5 seconds (it may take a few seconds for it to start!):
 
 [NOTE]
 ====

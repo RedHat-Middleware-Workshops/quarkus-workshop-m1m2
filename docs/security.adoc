@@ -157,7 +157,7 @@ image::realm-job.png[kc, 500]
 
 === Explore Realm
 
-Go back to the https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/[Keycloak administration console] and login as `admin` user (using the password from the {{ CONSOLE_URL }}/k8s/ns/{{ USER_ID }}-project/secrets/keycloak-initial-admin[Secret^] as before). You should now see a new realm in the Realm dropdown. Select the `globex` realm by clicking on it.
+Go back to the https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/[Keycloak administration console^] and login as `admin` user (using the password from the {{ CONSOLE_URL }}/k8s/ns/{{ USER_ID }}-project/secrets/keycloak-initial-admin[Secret^] as before). You should now see a new realm in the Realm dropdown. Select the `globex` realm by clicking on it.
 
 Within the new realm, click on `Users` to see the pre-created users `admin`, `alice`, and `jdoe`:
 
@@ -211,7 +211,7 @@ smallrye.jwt.client.tls.trust-all=true<4>
 
 == Create protected endpoints
 
-We'll create 2 protected endpoints. Create a new class file `SecuredResource.java` in the `org.acme.people.rest` package with the following code:
+We'll create 2 protected endpoints. Create a new class file `JWTResource.java` in the `org.acme.people.rest` package with the following code:
 
 [source,java,role="copypaste"]
 ----
@@ -321,7 +321,7 @@ Try to access the endpoint as an anonymous unauthenticated user:
 
 [source,sh,role="copypaste"]
 ----
-curl -i http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me
+curl -i https://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me
 ----
 
 It should fail with:
@@ -355,7 +355,7 @@ Try out the JWT-secured API as Alice:
 
 [source,sh,role="copypaste"]
 ----
-curl -i http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me \
+curl -i https://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me \
   -H "Authorization: Bearer $ALICE_TOKEN"
 ----
 
@@ -376,7 +376,7 @@ Now try to access the `/me/admin` endpoint as `alice`:
 
 [source,sh,role="copypaste"]
 ----
-curl -i http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me/admin \
+curl -i https://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me/admin \
   -H "Authorization: Bearer $ALICE_TOKEN"
 ----
 
@@ -417,7 +417,7 @@ And try again with your new token:
 
 [source,sh,role="copypaste"]
 ----
-curl -i http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me/admin \
+curl -i https://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/me/admin \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ----
 
@@ -600,7 +600,7 @@ And then try to access with it:
 [source,sh,role="copypaste"]
 ----
 curl -i -X GET \
-  http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/confidential \
+  https://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/confidential \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ----
 
@@ -632,7 +632,7 @@ And access the confidential endpoint with your new token:
 [source,sh,role="copypaste"]
 ----
 curl -i -X GET \
-  http://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/confidential \
+  https://$(oc get route people -o=go-template --template={% raw %}'{{ .spec.host }}'{% endraw %})/secured/confidential \
   -H "Authorization: Bearer $JDOE_TOKEN"
 ----
 
@@ -641,11 +641,11 @@ You should see:
 [source,none]
 ----
 HTTP/1.1 200 OK
-content-length: 503
+content-length: 504
 content-type: text/plain;charset=UTF-8
-set-cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=1bc7e0de32a148dfdf0fc11eff5c9e2c; path=/; HttpOnly
+set-cookie: 2a1b392100b8b2cb3705c68f4ecbaf66=2570e701764877eb5f5887a61384aad4; path=/; HttpOnly; Secure; SameSite=None
 
-confidential access for: jdoe with attributes:{configuration-metadata=io.quarkus.oidc.OidcConfigurationMetadata@1e3c7d7f, io.quarkus.security.identity.AuthenticationRequestContext=io.quarkus.security.runtime.QuarkusIdentityProviderManagerImpl$1@2bc2d50d, permissions=[Permission {id=99856673-24fa-431b-9e26-93e2113f69db
+confidential access for: jdoe with attributes:{configuration-metadata=io.quarkus.oidc.OidcConfigurationMetadata@693a8ad7, io.quarkus.security.identity.AuthenticationRequestContext=io.quarkus.security.runtime.QuarkusIdentityProviderManagerImpl$1@72855e40, io.vertx.ext.web.RoutingContext=io.vertx.ext.web.impl.RoutingContextImpl@4a3f7978, quarkus.identity.expire-time=1717656840, tenant-id=Default, permissions=[Permission {id=99856673-24fa-431b-9e26-93e2113f69db, name=Confidential Resource, scopes=[]}]}
 ----
 
 Success! Even though our code did not explicitly protect the `/secured/confidential` endpoint, we can protect arbitrary URLs in Quarkus apps when using Keycloak.
