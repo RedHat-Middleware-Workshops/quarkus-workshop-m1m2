@@ -38,9 +38,12 @@ Within the `pom.xml` is the declaration for the Quarkus Maven plugin which conta
 
 We use a profile because, you will see very soon, packaging the native image takes a few seconds. However, this compilation time is only incurred _once_, as opposed to _every_ time the application starts, which is the case with other approaches for building and executing JARs.
 
-Create a native executable by using the **devfile: 04. Build Native App** task:
+Create a native executable by using the following maven command in a Terminal:
 
-image::cmd-native.png[livecoding, 700]
+[source,sh,role="copypaste"]
+----
+Create a native executable by using
+----
 
 **This will take about 2-3 minutes to finish. Wait for it!**. In the end you should get a *BUILD SUCCESS* message.
 
@@ -86,9 +89,12 @@ It’s a binary that can only run on Linux, but as you’ll see in a moment, thi
 
 == Run native image
 
-Since our environment here is Linux, you can _just run it_. Select **devfile: 06. Run Native App** task:
+Since our environment here is Linux, you can _just run it_. Run the following command in a Terminal:
 
-image::run-native.png[livecoding, 700]
+[source,sh,role="copypaste"]
+----
+./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+----
 
 We use port `8081` here to avoid conflicting with our already-running development mode Quarkus app.
 
@@ -112,11 +118,10 @@ You should see something like:
 [source,none]
 ----
     PID   RSS COMMAND
-  13306  2804 sh -c cd /projects/quarkus-workshop-m1m2-labs; ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
-  13312 44008 ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
+ 253312 46332 ./target/people-1.0-SNAPSHOT-runner -Dquarkus.http.port=8081
 ----
 
-The 2nd row is the actual process that is taking around `44` MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
+The actual process is taking around `46` MB of memory (https://en.wikipedia.org/wiki/Resident_set_size[Resident Set Size^], or RSS). Pretty compact!
 
 [NOTE]
 ====
@@ -134,7 +139,7 @@ You should see:
 
 [source,none]
 ----
-hello quarkus from <hostname>
+hello quarkus
 ----
 
 Nice!

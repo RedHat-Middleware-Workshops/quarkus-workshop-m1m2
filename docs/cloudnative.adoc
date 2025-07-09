@@ -506,13 +506,19 @@ produces `hi quarkus in dev mode!`.
 
 Next, let's re-build the app as an executable JAR (which will run with the `prod` profile active).
 
-Build an executable JAR using the **Package app for OpenShift** task to build a fast-jar: 
+Build an executable JAR using the following command:
 
-image::cmd-package.png[livecoding, 700]
+[source,sh,role="copypaste"]
+----
+mvn clean package -DskipTests
+---- 
 
-Next, select **devfile: 05. Run Fast Jar** task:
+Next, run the fast jar using the following command:
 
-image::run-fastjar.png[livecoding, 700]
+[source,sh,role="copypaste"]
+----
+java -Dquarkus.http.port=8081 -jar target/quarkus-app/quarkus-run.jar
+----
 
 Notice we did not specify any Quarkus profile. When not running in dev mode (`mvn quarkus:dev`), and not running in test mode (`mvn verify`), then the default profile is `prod`.
 

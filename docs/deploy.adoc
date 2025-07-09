@@ -120,7 +120,7 @@ You should see:
 
 [source,none]
 ----
-hello quarkus-on-openshift from people-1-9sgsm
+hello quarkus-on-openshift
 ----
 
 [NOTE]

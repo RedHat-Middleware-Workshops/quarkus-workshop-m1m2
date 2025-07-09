@@ -34,7 +34,7 @@ public class GreetingResourceTest {
           .when().get("/hello")
           .then()
              .statusCode(200)
-             .body(is("hello"));
+             .body(is("Hello from Quarkus REST"));
     }
 }
 ----
@@ -56,7 +56,7 @@ Press `r` and the continuous testing will start running. You should see the stat
 
 image::ct-error.png[testshere, 800]
 
-This is because you changed the greeting in an earlier step. In `GreetingResource`, change `hola` back to `hello` (in the `GreetingResource` class) and the tests will run again automatically. Confirm all tests pass in the terminal:
+This is because you changed the greeting in an earlier step. In `GreetingResource`, change `Hola` back to `Hello` (in the `GreetingResource` class) and the tests will run again automatically. Confirm all tests pass in the terminal:
 
 [source, none]
 ----
@@ -74,13 +74,12 @@ Add a new test in the existing `GreetingResourceTest.java` class under the `// a
 ----
     @Test
     public void testGreetingEndpoint() {
-        String uuid = UUID.randomUUID().toString();
         given()
-          .pathParam("name", uuid)
+          .pathParam("name", "quarkus")
           .when().get("/hello/greeting/{name}")
           .then()
             .statusCode(200)
-            .body(startsWith("hello " + uuid));
+            .body(startsWith("hello "));
     }
 ----
 
@@ -131,27 +130,9 @@ There are various hotkeys you can use to control continuous testing. Pressing `h
 
 Quarkus also provides a new experimental Dev UI, which is available in dev mode (when you start quarkus with mvn quarkus:dev) at `/q/dev` by default. It allows you to quickly visualize all the extensions currently loaded, see their status and go directly to their documentation.
 
-To show up the public endpoints, select `Show plug-in endpoints`. Then, unfold the `ENDPOINTS > Public` and select the *Open Dev UI* icon.
-
-image::devui-endpoint.png[devui-endpoint, 700]
-
-Open a new web browser or tab window and paste the URL.
+Acess the https://{{ USER_ID }}-quarkus-workshop-index-webpage.{{ ROUTE_SUBDOMAIN }}/q/dev-ui/[Quarkus Dev UI^]
 
 image::quarkus-devui.png[devui-endpoint, 800]
-
-[NOTE]
-====
-In case you have an issue (e.g., _ERROR [io.qua.ver.htt.run.dev.DevConsoleCORSFilter] (vert.x-eventloop-thread-0) Only localhost origin is allowed, but Origin header value is..._) to access the Dev UI, please append `%dev.quarkus.dev-ui.cors.enabled=false` to the *application.properties file*.
-====
-
-When you select `Open` on the left bottom, it will show the Quarkus runtime logs:
-
-image::quarkus-devui-open.png[devui-endpoint, 800]
-
-[NOTE]
-====
-In case you see *Tests not running*, reload the DEV UI page.
-====
 
 Select `Continuous Testing` on the left menu, you will that see 2 test cases passed with a green color.
 
@@ -161,16 +142,12 @@ image::quarkus-devui-test-result.png[devui-endpoint, 800]
 
 It is also possible to directly inject the URL into the test which can make it easy to use a different client. This is done via the `@TestHTTPResource` annotation.
 
-Let’s write a simple test that shows this off to load some static resources. First create a simple HTML file in `src/main/resources/META-INF/resources/`. Right-click on this directory and select _New -> File_. Name the file `test.html` in the dialog box:
+Let’s write a simple test that shows this off to load some static resources. First open the `test.html` file in *src/main/resources/META-INF/resources/*. 
 
-image::createhtml.png[html,700]
-image::createhtml2.png[html,500]
-
-Add this code to the file:
+Append the folloing HTML code to the file:
 
 [source,html,role="copypaste"]
 ----
-<!DOCTYPE html>
 <html>
 <head>
   <title>Testing with Quarkus</title>
@@ -180,6 +157,7 @@ Add this code to the file:
 </body>
 </html>
 ----
+
 Our test will verify that the `<title>` tags contain the right content.
 
 Next, create a new test under `src/test/java` in the `org.acme.people` package called `StaticContentTest.java`. Replace this code to the file:

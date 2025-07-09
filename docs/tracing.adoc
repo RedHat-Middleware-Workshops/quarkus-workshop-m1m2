@@ -269,11 +269,11 @@ Having this configuration means that all requests performed using our code will 
 
 Note that `org.acme.people.service.StarWarsService` must match the fully qualified name of the StarWarsService interface we created in the previous section.
 
-Using the configuration above, calling the `getPerson(int)` method of StarWarsService with a value of `1` would result in an HTTP GET request being made to `https://swapi.dev/api/people/1/`. Confirm you can access the Star Wars API using curl:
+Using the configuration above, calling the `getPerson(int)` method of StarWarsService with a value of `1` would result in an HTTP GET request being made to `https://swapi.info/api/people/1/`. Confirm you can access the Star Wars API using curl:
 
 [source,sh,role="copypaste"]
 ----
-curl -s https://swapi.dev/api/people/1/ | jq
+curl -s https://swapi.info/api/people/1/ | jq
 ----
 
 You should get Luke Skywalker back:
@@ -289,7 +289,7 @@ You should get Luke Skywalker back:
   "eye_color": "blue",
   "birth_year": "19BBY",
   "gender": "male",
-  "homeworld": "https://swapi.dev/api/planets/1/",
+  "homeworld": "https://swapi.info/api/planets/1/",
   ....<more here>....
 }
 ----

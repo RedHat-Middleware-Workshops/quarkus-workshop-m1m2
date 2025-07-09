@@ -25,16 +25,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class GreetingService {
 
-    private String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-
     public String greeting(String name) {
-        return "hello " + name + " from " + hostname;
+        return "hello " + name;
     }
 
 }
 ----
 
-This is an injectable bean that implements a `greeting()` method returning a string `hello <hostname>` (where `<hostname>` is the Linux hostname of the machine on which the code runs).
+This is an injectable bean that implements a `greeting()` method returning a string `hello <name>` (where `<name>` is a parameter).
 
 Next, open the existing `GreetingResource.java` file (in the `org.acme.people.rest` package) and add a new field and method above the existing `hello` method:
 
@@ -81,7 +79,7 @@ Check that it works as expected by accessing the `/hello/greeting/quarkus` with 
 curl http://localhost:8080/hello/greeting/quarkus
 ----
 
-Note we are exercising our new bean using the `/hello/greeting/quarkus` endpoint, and you should see `hello quarkus from <hostname>`.
+Note we are exercising our new bean using the `/hello/greeting/quarkus` endpoint, and you should see `hello quarkus`.
 
 [NOTE]
 ====
