@@ -107,11 +107,17 @@ With our endpoint implemented and our app still running in Live Coding mode, con
 curl -i -X POST http://localhost:8080/person/joe
 ----
 
-**This will fail** with an `500 Internal Server Error`. If you look at the Live Coding terminal, you'll also see the reason:
+**This will fail** with the following error:
 
-[source,none]
+[source,sh]
 ----
-ERROR [org.jbo.res.res.i18n] (executor-thread-1) RESTEASY002020: Unhandled asynchronous exception, sending back 500: (NO_HANDLERS,-1) No handlers for address add-person
+500 - Internal Server Error
+---------------------------
+
+Details:
+        Error id d5ad3c58-7af4-4683-8911-00ccf1140f94-2, io.vertx.core.eventbus.ReplyException: No handlers for address add-person
+Stack:
+        (NO_HANDLERS,-1) No handlers for address add-person
 ----
 
 We posted the message to the Vert.x event bus at the `add-person` address, but there's nothing to receive it!

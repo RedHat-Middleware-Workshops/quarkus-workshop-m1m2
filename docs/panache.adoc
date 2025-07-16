@@ -47,7 +47,7 @@ when you take a look at the _src/main/resources/application.properties_, you can
 
 Find more information about the Quarkus Dev Services https://quarkus.io/guides/databases-dev-services[here^].
 
-When you take a look at the *02. Start Live Coding* terminal, you should see the following logs:
+When you take a look at the *Quarkus Dev Mode* terminal, you should see the following logs:
 
 [source,console]
 ----
@@ -61,6 +61,16 @@ Then, execute `podman ps` in the bash terminal. You will see that a *PostgreSQL*
 CONTAINER ID  IMAGE                  COMMAND     CREATED         STATUS        PORTS       NAMES
 27ee26a42fae  docker.io/postgres:14              24 seconds ago  Healthy (Up)              27ee26a42faebacacfcccacde227e210b6884f66ffd7dcf13f4470c56ba7a8e7
 ----
+
+[IMPORTANT]
+====
+If Quarkus fails to pull the PostgreSQL image due to the pull limit in docker.io, add the following configuration to your `application.properties` file:
+
+[source, properties,role="copypaste"]
+----
+%dev.quarkus.datasource.devservices.image-name=quay.io/danieloh30/postgres:14
+----
+====
 
 The database connection details (JDBC url, database credentials) are specified in `application.properties` using the Quarkus Profile support. So for example you'll find this:
 
@@ -575,6 +585,7 @@ Select *Instantiate Template* and fill in the following fields, leaving the othe
 * **PostgreSQL Connection Username**: `sa`
 * **PostgreSQL Connection Password**: `sa`
 * **PostgreSQL Database Name**: `person`
+* **Version of PostgreSQL Image*: `12-el8`
 
 image::db-postgres-values.png[db, 700]
 

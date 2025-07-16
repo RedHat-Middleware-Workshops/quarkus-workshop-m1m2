@@ -160,7 +160,7 @@ Replace the `hello()` method with the following code for adding the `counter` AP
     @NonBlocking
     public String hello() {
         registry.counter("greeting.hello.counter").increment();
-        return "hello";
+        return "Hello from Quarkus REST";
     }
 ----
 
@@ -400,7 +400,7 @@ Follow the same steps as before to create a few more panels, and **don't forget 
 Add Panels for:
 
 * The different quantiles of time it takes to process names `http_server_bytes_written_count` (Name it `Converter Performance` for the _Panel Title_).
-* The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Unit in _Field_ tab to `bytes(IEC)` on the _Visualization_, and the title to `Memory` on the _Panel Title_.
+* The JVM RSS Value `process_resident_memory_bytes` (set the visualization type to `Gauge` and the Unit in _Field_ tab to `Data > bytes(IEC)` on the _Visualization_, and the title to `Memory` on the _Panel Title_.
 
 image::grafjvm.png[jvm,500]
 

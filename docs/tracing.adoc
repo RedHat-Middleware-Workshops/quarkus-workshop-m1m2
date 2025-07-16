@@ -106,16 +106,16 @@ With Jaeger installed, let's turn back to our Quarkus app. Like other exercises,
 
 [source,sh,role="copypaste"]
 ----
-mvn quarkus:add-extension -Dextensions="quarkus-opentelemetry, rest-client-reactive, quarkus-rest-client-reactive-jackson"
+mvn quarkus:add-extension -Dextensions="quarkus-opentelemetry, rest-client, quarkus-rest-client-jackson"
 ----
 
 You will see:
 
 [source,console]
 ----
-[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-rest-client-reactive-jackson has been installed
-[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-rest-client-reactive has been installed
-[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-quarkus-opentelemetry has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-rest-client has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-opentelemetry has been installed
+[INFO] [SUCCESS] ✅  Extension io.quarkus:quarkus-rest-client-jackson has been installed
 
 ----
 
@@ -187,7 +187,7 @@ Service Mesh technologies like https://istio.io[Istio^] can provide even more tr
 
 This exercise showa how to use the https://github.com/eclipse/microprofile-rest-client[MicroProfile REST Client^] with Quarkus in order to trace _external_, outbound requests with very little effort.
 
-We will use the publicly available https://swapi.dev[Star Wars API^] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
+We will use the publicly available https://swapi.info[Star Wars API^] to fetch some characters from the Star Wars universe. Our first order of business is to setup the model we will be using, in the form of a StarWarsPerson POJO.
 
 === Create model
 
@@ -244,7 +244,7 @@ import jakarta.ws.rs.Produces;
 public interface StarWarsService {
 
     @GET
-    @Path("/people/{id}/") // <2>
+    @Path("/people/{id}") // <2>
     @Produces("application/json") // <3>
     @ClientHeaderParam(name="User-Agent", value="QuarkusLab") // <4>
     StarWarsPerson getPerson(@PathParam("id") int id); // <5>
@@ -262,10 +262,10 @@ In order to determine the base URL to which REST calls will be made, the REST Cl
 
 [source,none,role="copypaste"]
 ----
-org.acme.people.service.StarWarsService/mp-rest/url=https://swapi.dev
+org.acme.people.service.StarWarsService/mp-rest/url=https://swapi.info
 ----
 
-Having this configuration means that all requests performed using our code will use `https://swapi.dev` as the base URL.
+Having this configuration means that all requests performed using our code will use `https://swapi.info` as the base URL.
 
 Note that `org.acme.people.service.StarWarsService` must match the fully qualified name of the StarWarsService interface we created in the previous section.
 
