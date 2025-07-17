@@ -273,7 +273,7 @@ Using the configuration above, calling the `getPerson(int)` method of StarWarsSe
 
 [source,sh,role="copypaste"]
 ----
-curl -s https://swapi.info/api/people/1/ | jq
+curl -s https://swapi.info/api/people/1 | jq
 ----
 
 You should get Luke Skywalker back:
