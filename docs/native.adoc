@@ -42,7 +42,7 @@ Create a native executable by using the following maven command in a Terminal:
 
 [source,sh,role="copypaste"]
 ----
-Create a native executable by using
+mvn package -Pnative -DskipTests
 ----
 
 **This will take about 2-3 minutes to finish. Wait for it!**. In the end you should get a *BUILD SUCCESS* message.
