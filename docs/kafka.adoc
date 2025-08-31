@@ -40,38 +40,17 @@ image::names.png[names,800]
 
 === Create Kafka Cluster
 
-The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka cluster inside your namespace.
+The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's been pre-installed for you, so all you have to do is create a Kafka custom resource inside your namespace.
 
-First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], select **+Add to Project** on the left. Then, Type in `Kafka` in the search box, and select the *Kafka*:
+Install Kafka and Kafka Topic CRs with:
+[source,sh,role="copypaste"]
+----
+oc create -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs/refs/heads/ocp-4.19/src/main/kubernetes/kafka.yaml
+----
 
-image::fromcat-kafka.png[names,800]
+This will cause the Operator to provision a new Kafka cluster.
 
-These are all of the Kafka cluster elements you can install. Select **Create**. This will open a yaml file for you to configure the cluster before it's installed. Change the name of the cluster from `my-cluster` to `names-cluster` (under the _metadata_ section of the YAML file). Leave all other values as-is, and select **Create**:
-
-image::createkafka.png[createkafka,800]
-
-This will create a new Kafka Kubernetes object in your namespace, triggering the Operator to deploy Kafka.
-
-== Create Kafka Topic
-
-Follow the same process to create a Kafka _Topic_:
-
-Select **+Add to Project** on the left. Then, Type in `Topic` in the search box, and select the *Create*:
-
-image::createkafkatopic.png[createkafka,800]
-
-We'll need to create a topic for our application to stream to and from, so in the YAML:
-
-* Change the _metadata > name_ value from `my-topic` to `names`.
-* Change the vale of the `strimzi.io/cluster=my-cluster` to `strimzi.io/cluster=names-cluster`
-
-Then select **Create**.
-
-image::topiccreate.png[topiccreate,800]
-
-This will cause the Operator to provision a new Topic in the Kafka cluster.
-
-Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], make sure all the Kafka and Zookeeper pods are up and running (with dark blue circles):
+Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project?view=graph[Topology View^], make sure all the Kafka pods are up and running (with dark blue circles):
 
 image::kafkaup.png[topiccreate,800]
 
