@@ -45,7 +45,7 @@ The Strimzi operator installs and manages Kafka clusters on Kubernetes. It's bee
 Install Kafka and Kafka Topic CRs with:
 [source,sh,role="copypaste"]
 ----
-oc create -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs/refs/heads/ocp-4.19/src/main/kubernetes/kafka.yaml
+oc create -f src/main/kubernetes/kafka.yaml
 ----
 
 This will cause the Operator to provision a new Kafka cluster.
