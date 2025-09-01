@@ -59,7 +59,7 @@ The endpoint on port `14250` is the one we'll use for our app.
 
 OpenTelemetry Collector enables you to offload data quickly alongside your application services in terms of retries, batching, encryption or even sensitive data filtering. You will create an OpenTelemetry Collector to send the telemetry data to the Jaeger server.
 
-Open `otel.yml` in the *src/main/kubernetes* directory. Copy the following YAML to the file. 
+View the `otel.yml` in the *src/main/kubernetes* directory.
 
 [source,yaml,role="copypaste"]
 ----
@@ -67,7 +67,6 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
   name: otel
-  namespace: {{ USER_ID }}-project
 spec:
   mode: deployment
   config: |
@@ -89,7 +88,7 @@ spec:
           exporters: [debug]
 ----
 
-Then, run the following `oc` command in VS Code terminal.
+Then, run the following `oc` command in the VS Code terminal to setup your otel-collector:
 
 [source,sh,role="copypaste"]
 ----
