@@ -35,9 +35,13 @@ Each component (microservice) in a distributed trace will contribute its own spa
 
 Jaeger is installed and managed through its Kubernetes Operator (just like AMQ Streams and Kafka that you used in previous exercises).
 
-First, on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click **+Add to Project**. Then, Type in `Jaeger` in the search box, and  select **Create**:
+From the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on **Installed Operators** in the sidebar menu and select **Jaeger**
 
-image::fromcat.png[names,800]
+image::operators-list.png[operators,800]
+
+Select **Create Jaeger**:
+
+image::jaegers-list.png[jaegers,800]
 
 This will open a dialog for you to configure the Jaeger service before it's installed.
 

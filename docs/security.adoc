@@ -23,9 +23,13 @@ You can install Keycloak in many ways, including just downloading and extracting
 
 === Deploy Keycloak Database
 
-Keycloak needs a database to store its data. We'll use Postgres. Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project?view=graph[OpenShift web console^], click the Add icon once again, type `postgres ephemeral` into the search box, locate the `Postgres (Ephemeral)` template, click on it, and click *Instantiate Template*:
+Keycloak needs a database to store its data. We'll use Postgres. Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project?view=graph[OpenShift web console^], select **Software Catalog**, under **Home** on the left.
 
-image::postgres-create-kc.png[kc, 800]
+ image::db.png[db, 700]
+
+Then, Type in `PostgreSQL (Ephemeral)` in the search box, and select the *PostgreSQL (ephemeral)*:
+
+image::db-postgres.png[postrgesdb, 700]
 
 On the next screen, override the following values (leaving the rest as their defaults):
 
@@ -61,7 +65,9 @@ This secret will be used in the next step.
 
 === Create Keycloak instance
 
-By creating an instance of a `Keycloak` object, the Keycloak operator will process it and instantiate a new Keycloak server. In the OpenShift web console, click the `Add` icon, type `keycloak` into the search box, click on the "Keycloak" item, and click Create:
+By creating an instance of a `Keycloak` object, the Keycloak operator will process it and instantiate a new Keycloak server. In the OpenShift web console, click on **Installed Operators** in the sidebar menu.
+
+Then type `keycloak` into the search box, click on the "Keycloak" item, and click Create:
 
 image::keycloak-create1.png[kc, 800]
 

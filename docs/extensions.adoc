@@ -286,17 +286,17 @@ Wait for the script to complete before continuing.
 
 When the script completes, the app is deployed to OpenShift. You can see it in the {{ CONSOLE_URL}}[OpenShift Console^]. Login with your assigned username and password (e.g. `{{ USER_ID }}/{{ OPENSHIFT_USER_PASSWORD }}`):
 
-image::ocplogin.png[login,700]
+image::che-login.png[login,700]
 
 Once logged in, select the name of your project (`{{ USER_ID }}-project`):
 
 image::ocpproj.png[project,700]
 
-Switch to the _Developer Perspective_ using the upper-left drop-down:
+In the sidebar menu, switch to the Topology View using the drop-down under Workloads:
 
 image::devperspective.png[perspective, 700]
 
-This provides a developer-centric Topology view of applications deployed to the project. You can see the single `people` deployment that we just deployed earlier using the CLI:
+You can see the single `people` deployment that we just deployed earlier using the CLI:
 
 image::peopledc.png[project,600]
 
