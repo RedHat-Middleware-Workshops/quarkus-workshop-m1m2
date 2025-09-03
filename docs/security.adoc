@@ -25,7 +25,7 @@ You can install Keycloak in many ways, including just downloading and extracting
 
 Keycloak needs a database to store its data. We'll use Postgres. Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project?view=graph[OpenShift web console^], select **Software Catalog**, under **Home** on the left.
 
- image::db.png[db, 700]
+image::db.png[db, 700]
 
 Then, Type in `PostgreSQL (Ephemeral)` in the search box, and select the *PostgreSQL (ephemeral)*:
 
