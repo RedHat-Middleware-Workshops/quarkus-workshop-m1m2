@@ -51,7 +51,7 @@ echo "This is a bash shell command that you can copy/paste by selecting"
 
 You will be using VS Code server based on https://developers.redhat.com/products/openshift-dev-spaces/overview[Red Hat OpenShift Dev Spaces^] **Changes to files are auto-saved every few seconds**, so you don't need to explicitly save changes.
 
-To get started, {{ DS_URL }}[access the Red Hat OpenShift Dev Spaces instance^] and select *Log in with OpenShift* button:
+To get started, {{ DS_URL }}#https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs/tree/ocp-4.19[access the Red Hat OpenShift Dev Spaces instance^] and select *Log in with OpenShift* button:
 
 image::login_with_openshift.png[login,800]
 
@@ -69,13 +69,7 @@ In case you see the *Authorize Access* page as below, select *Allow selected per
 image::auth-access.png[auth-access, 800]
 ====
 
-Once you log in, you’ll be placed on the *Create Workspace* dashboard. Copy the following `Git Repo URL` and select `Create & Open`.
-
-* *Git Repo URL*: `https://github.com/RedHat-Middleware-Workshops/quarkus-workshop-m1m2-labs/tree/ocp-4.19`
-
-image::ds-landing.png[ds, 800]
-
-A new window or tab in your web browser will open automatically to showcase the progess about *Starting workspace quarkus-workshop*. It takes about *60* seconds to finish the process.
+The next page will show the progess as devspaces is *Starting workspace quarkus-workshop*. It takes about *60* seconds to finish the process.
 
 image::starting-workspace.png[ds, 800]
 
