@@ -140,13 +140,13 @@ image::admin-home.png[kc, 800]
 
 A Keycloak _realm_ is a space where you manage objects, including users, applications, roles, and groups. A user belongs to and logs into a realm. One Keycloak deployment can define, store, and manage as many realms as there is space for in the database. Keycloak comes with a `master` realm but that's designed to be used for managing Keycloak itself, not for applications.
 
-For authentication purposes, we'll import a new realm called `globex` that has multiple users that we can test our authenticated endpoint code with, as well as a "confidential resource" based on access path, which will enable Keycloak to enforce authorization to this resource without code change.
+For authentication purposes, we'll import a new realm called `quarkus` that has multiple users that we can test our authenticated endpoint code with, as well as a "confidential resource" based on access path, which will enable Keycloak to enforce authorization to this resource without code change.
 
 === Create a KeycloakRealmImport
 
 The Keycloak operator can import realms you supply by creating an instance of a KeycloakRealmImport object in Kubernetes.
 
-We have pre-defined a new realm for this lab, in the `inventory/src/main/resources/globex-realm.yaml` file. The file contains a definition of the realm, which you can see by opening the file in DevSpaces:
+We have pre-defined a new realm for this lab, in the `inventory/src/main/resources/kc-realm.yaml` file. The file contains a definition of the realm, which you can see by opening the file in DevSpaces:
 
 image::realm-file.png[kc, 800]
 
@@ -163,7 +163,7 @@ image::realm-job.png[kc, 500]
 
 === Explore Realm
 
-Go back to the https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/[Keycloak administration console^] and login as `admin` user (using the password from the {{ CONSOLE_URL }}/k8s/ns/{{ USER_ID }}-project/secrets/keycloak-initial-admin[Secret^] as before). You should now see a new realm in the Realm dropdown. Select the `globex` realm by clicking on it.
+Go back to the https://keycloak-{{ USER_ID }}-project.{{ROUTE_SUBDOMAIN}}/[Keycloak administration console^] and login as `admin` user (using the password from the {{ CONSOLE_URL }}/k8s/ns/{{ USER_ID }}-project/secrets/keycloak-initial-admin[Secret^] as before). You should now see a new realm in the Realm dropdown. Select the `quarkus` realm by clicking on it.
 
 Within the new realm, click on `Users` to see the pre-created users `admin`, `alice`, and `jdoe`:
 
