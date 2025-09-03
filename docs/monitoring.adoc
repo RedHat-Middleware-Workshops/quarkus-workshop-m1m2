@@ -270,7 +270,7 @@ You'll need to trigger the methods that we've instrumented, so https://people-{{
 
 image::names.png[names, 400]
 
-Within about 15-30 seconds, Prometheus should start scraping the metrics. Once again, access the http://prometheus-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Prometheus UI^]. Start typing in the query box to look for 'acme':
+Within about 15-30 seconds, Prometheus should start scraping the metrics. Once again, access the http://prometheus-{{USER_ID}}-project.{{ROUTE_SUBDOMAIN}}[Prometheus UI^]. Start typing in the query box to look for metrics that begin with 'name':
 
 [NOTE]
 ====
