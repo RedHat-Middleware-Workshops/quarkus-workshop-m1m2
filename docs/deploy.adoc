@@ -70,7 +70,7 @@ Next, add the following variables in `src/main/resources/application.properties`
 %prod.quarkus.openshift.route.expose=true<5>
 %prod.quarkus.openshift.route.target-port=http<6>
 %prod.quarkus.openshift.route.tls.termination=edge<7>
-%prod.quarkus.openshift.route.tls.insecure-edge-termination-policy=None<8>
+%prod.quarkus.openshift.route.tls.insecure-edge-termination-policy=Allow<8>
 quarkus.openshift.deployment-kind=Deployment<9>
 quarkus.container-image.group={{ USER_ID }}-project<10>
 quarkus.container-image.registry=image-registry.openshift-image-registry.svc:5000<11>
