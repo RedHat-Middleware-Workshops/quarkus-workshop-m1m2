@@ -67,13 +67,14 @@ View the `otel.yml` in the *src/main/kubernetes* directory.
 
 [source,yaml,role="copypaste"]
 ----
-apiVersion: opentelemetry.io/v1alpha1
+apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: otel
 spec:
-  mode: deployment
-  config: |
+  config:
+    exporters:
+      debug: {}
     receivers:
       otlp:
         protocols:
@@ -81,15 +82,13 @@ spec:
             endpoint: 0.0.0.0:4317
           http:
             endpoint: 0.0.0.0:4318
-    processors:
-    exporters:
-      debug:
     service:
       pipelines:
         traces:
-          receivers: [otlp]
-          processors: []
-          exporters: [debug]
+          exporters:
+            - debug
+          receivers:
+            - otlp
 ----
 
 Then, run the following `oc` command in the VS Code terminal to setup your otel-collector:
