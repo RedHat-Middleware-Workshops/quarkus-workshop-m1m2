@@ -31,7 +31,7 @@ Then, Type in `PostgreSQL (Ephemeral)` in the search box, and select the *Postgr
 
 image::db-postgres.png[postrgesdb, 700]
 
-On the next screen, override the following values (leaving the rest as their defaults):
+Select *Instantiate Template*, then override the following values (leaving the rest as their defaults):
 
 * *Database Service Name*: `keycloak-postgresql`
 * *PostgreSQL Database Name*: `keycloak`
