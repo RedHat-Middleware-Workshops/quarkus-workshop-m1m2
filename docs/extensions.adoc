@@ -288,7 +288,7 @@ image::ocpproj.png[project,700]
 
 In the sidebar menu, switch to the Topology View using the drop-down under Workloads:
 
-image::devperspective.png[perspective, 700]
+image::devperspective.png[perspective, 500]
 
 You can see the single `people` deployment that we just deployed earlier using the CLI:
 
