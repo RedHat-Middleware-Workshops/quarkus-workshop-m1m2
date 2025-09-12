@@ -44,9 +44,9 @@ scrape_configs:
 
 === Deploy Prometheus from Container Image
 
-On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^], **right-click** on `+Add to Project`, and choose "Container Image"
+From the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^], click on the `+` icon in the header menu, and choose "Container Image"
 
-image::add-to-project.png[Prometheus, 800]
+image::add-container.png[Prometheus, 800]
 
 Type in `quay.io/prometheus/prometheus` in *Image Name from external registry* field. You will see *green checked* icon and *Validated* under the input box.
 
@@ -305,7 +305,11 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 == Install Grafana
 
-Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], select on `+Add to Project`, and choose "Container Image", and fill in the fields:
+Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], select the `+` icon in the header menu, and choose "Container Image".
+
+image::add-container.png[Grafana, 800]
+
+Fill in the fields:
 
 * *Image Name*: `quay.io/openshiftlabs/ccn-grafana:1.0`
 * *Application*: `Create Application`

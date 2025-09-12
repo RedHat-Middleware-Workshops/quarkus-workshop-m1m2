@@ -575,7 +575,7 @@ You should get up to 2 records returned (since we passed `length=2` in the query
 
 Our production environment needs a "real" database so let's deploy a Postgres database to OpenShift. Back in the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], select **Software Catalog**, under **Home** on the left.
 
-image::db.png[db, 700]
+image::db.png[db, 300]
 
 Then, Type in `PostgreSQL (Ephemeral)` in the search box, and select the *PostgreSQL (ephemeral)*:
 
