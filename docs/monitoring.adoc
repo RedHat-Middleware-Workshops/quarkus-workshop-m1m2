@@ -46,7 +46,7 @@ scrape_configs:
 
 From the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View for your project^], click on the `+` icon in the header menu, and choose "Container Image"
 
-image::add-container.png[Prometheus, 800]
+image::add-container.png[Prometheus, 900]
 
 Type in `quay.io/prometheus/prometheus` in *Image Name from external registry* field. You will see *green checked* icon and *Validated* under the input box.
 
@@ -307,7 +307,7 @@ Let's create a Grafana Dashboard for our Quarkus App!
 
 Follow the same process as before: On the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], select the `+` icon in the header menu, and choose "Container Image".
 
-image::add-container.png[Grafana, 800]
+image::add-container.png[Grafana, 900]
 
 Fill in the fields:
 
