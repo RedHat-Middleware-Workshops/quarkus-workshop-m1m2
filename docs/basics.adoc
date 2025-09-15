@@ -150,7 +150,7 @@ The output should look like this:
 
 [source,sh]
 ----
-"Hello from Quarkus REST"
+Hello from Quarkus REST
 ----
 
 Now, let's exercise the **live reload** capabilities of Quarkus. In VS Code, open the `GreetingResource.java` file in the *src/main/java/org/acme/people/rest* directory and change `return "Hello from Quarkus REST";` to `return "Hola from Quarkus REST";` in the editor. After making this change, reload the same brower tab that was showing `Hello from Quarkus REST`. It should now show `Hola from Quarkus REST`.

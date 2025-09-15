@@ -74,6 +74,11 @@ image::starting-workspace.png[ds, 800]
 
 [NOTE]
 ====
+
+If you see this *Do you trust the authors of this repository?* popup, select `Do not ask again for other repositories` to continue using your workspace.
+
+image::trust-author.png[ds, 800]
+
 In case you see this information page, select `Start your workspace` to continue using your workspace.
 
 image::starting-workspace-info.png[ds, 800]
@@ -85,6 +90,10 @@ image::ds-workspace.png[ds, 800]
 
 [NOTE]
 ====
+In case you see this information page, click on `Trust Publishers & Install`.
+
+image::ds-trust-pub-popup.png[ds, 800]
+
 In case you see this information page, click on `Yes, I trust the authors`.
 
 image::ds-trust-popup.png[ds, 800]
