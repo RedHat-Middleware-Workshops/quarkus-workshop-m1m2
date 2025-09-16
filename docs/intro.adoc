@@ -74,7 +74,6 @@ image::starting-workspace.png[ds, 800]
 
 [NOTE]
 ====
-
 If you see this *Do you trust the authors of this repository?* popup, select `Do not ask again for other repositories` to continue using your workspace.
 
 image::trust-author.png[ds, 800]
