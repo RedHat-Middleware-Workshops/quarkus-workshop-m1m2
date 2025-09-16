@@ -53,7 +53,7 @@ This will create a new `Jaeger` Kubernetes object in your namespace, triggering 
 
 image::jaegerspin.png[spin, 600]
 
-Jaeger exposes its collector at different ports for different protocols. Most use the HTTP collector at `jaeger-collector:14268` but other protocols like gRPC are also supported on different ports. You can see them by clicking on the Jaeger circle and clicking the _Resources_ tab:
+Jaeger exposes its collector at different ports for different protocols. Most use the HTTP collector at `jaeger-collector:14268` but other protocols like gRPC are also supported on different ports. You can see them by clicking on the {{ CONSOLE_URL }}/k8s/ns/{{ USER_ID }}-project/services/jaeger-collector[Service details^]:
 
 image::jaegersvcs.png[spin, 700]
 
@@ -65,7 +65,7 @@ OpenTelemetry Collector enables you to offload data quickly alongside your appli
 
 View the `otel.yml` in the *src/main/kubernetes* directory.
 
-[source,yaml,role="copypaste"]
+[source,yaml]
 ----
 apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
