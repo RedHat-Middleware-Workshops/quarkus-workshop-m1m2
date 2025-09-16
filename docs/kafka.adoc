@@ -48,7 +48,7 @@ Install Kafka and Kafka Topic CRs with:
 oc create -f src/main/kubernetes/kafka.yaml
 ----
 
-This will cause the Operator to provision a new Kafka cluster.
+This will cause the Operator to provision a new Kafka cluster. It will take a few minutes to complete.
 
 Back on the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project?view=graph[Topology View^], make sure all the Kafka pods are up and running (with dark blue circles):
 
