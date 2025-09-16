@@ -122,7 +122,7 @@ When you select the `pom.xml`, you will see which version fo the Red Hat Build o
     </properties>
 ----
 
-The project also has
+The project also has 
 
 * The Maven structure
 * An `org.acme.people.rest.GreetingResource` resource exposed on `/hello`, along with a simple test
