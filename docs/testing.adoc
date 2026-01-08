@@ -336,7 +336,7 @@ The test results of the mock will be updated automatically in the terminal:
 
 [source, none]
 ----
-All 3 tests are passing (0 skipped), 1 test was run in 556ms. Tests completed at 01:37:50 due to changes to MockGreetingService.class and 1 other files.
+All 4 tests are passing (0 skipped), 1 test was run in 556ms. Tests completed at 01:37:50 due to changes to MockGreetingService.class and 1 other files.
 ----
 
 Press `o` to toggle test output and press `r` to re-run the continuous testing. Then, you will see:
