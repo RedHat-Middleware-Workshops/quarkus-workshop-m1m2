@@ -39,7 +39,7 @@ Run the following `oc` command in the VS Code terminal to install a Jaeger insta
 
 [source,sh,role="copypaste"]
 ----
-oc apply -f src/main/kubernetes/jaeger.yml -n {{ USER_ID }}-project
+oc apply -f src/main/kubernetes/jaeger.yaml -n {{ USER_ID }}-project
 ----
 
 // From the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on **Installed Operators** in the sidebar menu and select **Jaeger**
