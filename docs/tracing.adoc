@@ -35,23 +35,30 @@ Each component (microservice) in a distributed trace will contribute its own spa
 
 Jaeger is installed and managed through its Kubernetes Operator (just like AMQ Streams and Kafka that you used in previous exercises).
 
-From the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on **Installed Operators** in the sidebar menu and select **Jaeger**
+Run the following `oc` command in the VS Code terminal to install a Jaeger instance in your project:
 
-image::operators-list.png[operators,800]
+[source,sh,role="copypaste"]
+----
+oc apply -f src/main/kubernetes/otel.yml
+----
 
-Select **Create Jaeger**:
+// From the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^], click on **Installed Operators** in the sidebar menu and select **Jaeger**
 
-image::jaegers-list.png[jaegers,800]
+// image::operators-list.png[operators,800]
 
-This will open a dialog for you to configure the Jaeger service before it's installed.
+// Select **Create Jaeger**:
 
-Change the name to `jaeger` as shown, and click **Create**:
+// image::jaegers-list.png[jaegers,800]
 
-image::jaegerdone.png[kafkacatalog,800]
+// This will open a dialog for you to configure the Jaeger service before it's installed.
 
-This will create a new `Jaeger` Kubernetes object in your namespace, triggering the Operator to deploy Jaeger. In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] you'll see Jaeger spin up:
+// Change the name to `jaeger` as shown, and click **Create**:
 
-image::jaegerspin.png[spin, 600]
+// image::jaegerdone.png[kafkacatalog,800]
+
+// This will create a new `Jaeger` Kubernetes object in your namespace, triggering the Operator to deploy Jaeger. In the {{ CONSOLE_URL }}/topology/ns/{{ USER_ID }}-project[Topology View^] you'll see Jaeger spin up:
+
+// image::jaegerspin.png[spin, 600]
 
 Jaeger exposes its collector at different ports for different protocols. Most use the HTTP collector at `jaeger-collector:14268` but other protocols like gRPC are also supported on different ports. You can see them by clicking on the {{ CONSOLE_URL }}/k8s/ns/{{ USER_ID }}-project/services/jaeger-collector[Service details^]:
 
